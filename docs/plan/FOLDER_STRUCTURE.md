@@ -5,7 +5,7 @@ This document outlines the recommended folder structure and best practices for o
 ## Directory Structure
 
 ```
-.github/
+consumer-repo/.github/
 ├── workflows/              # Reusable GitHub Actions workflows
 │   ├── ci.yml
 │   ├── cd.yml

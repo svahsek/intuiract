@@ -3,7 +3,7 @@
 # Central baseline for classifying git commits into release note schema categories.
 #
 # Consumer repos extend these rules via:
-#   .github/standards/classification-overrides.yaml
+#   standards/classification-overrides.yaml
 #
 # Schema categories (from release-notes-schema.yaml):
 #   newFeatures, enhancedFeatures, bugFixes, securityUpdates,

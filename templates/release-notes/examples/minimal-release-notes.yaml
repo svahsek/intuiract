@@ -2,7 +2,7 @@
 # =============================
 # Bare minimum valid release notes in YAML schema format
 # Use this as a template for quick patches or minor releases
-# Full reference: .github/templates/release-notes/release-notes-schema.yaml
+# Full reference: templates/release-notes/release-notes-schema.yaml
 
 # === REQUIRED METADATA ===
 metadata:

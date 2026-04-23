@@ -6,7 +6,7 @@
 # Agent Mode: Deterministic field validation before markdown generation
 
 $schema: "http://json-schema.org/draft-07/schema#"
-$id: "https://github.com/.github/templates/release-notes/schema/v1"
+$id: "https://github.com/intuiract/intuiract/templates/release-notes/schema/v1"
 title: "Release Notes"
 description: "Strict YAML schema for release notes content generation by agents"
 type: "object"
@@ -822,19 +822,19 @@ validation:
       name: "Required Sections"
       check_type: "presence"
       validation: "All required sections must be present with at least one entry"
-      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+      rules_file: "rules/release-notes/release-notes-rule.yaml"
 
     - rule_id: "STR-002"
       name: "Version Format"
       check_type: "pattern"
       validation: "Version must match semantic versioning (X.Y.Z or vX.Y.Z)"
-      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+      rules_file: "rules/release-notes/release-notes-rule.yaml"
 
     - rule_id: "STR-003"
       name: "Date Format"
       check_type: "pattern"
       validation: "Release date must be in YYYY-MM-DD format internally; rendered as '25th March, 2026'"
-      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+      rules_file: "rules/release-notes/release-notes-rule.yaml"
 
     - rule_id: "CON-013"
       name: "No Placeholder Text"
@@ -847,7 +847,7 @@ validation:
         - "[UPDATE THIS]"
         - "Coming Soon"
       validation: "All placeholder text must be replaced with actual content"
-      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+      rules_file: "rules/release-notes/release-notes-rule.yaml"
 
     - rule_id: "CON-005"
       name: "Migration Guide for Breaking Changes"
@@ -855,7 +855,7 @@ validation:
       condition: "If migrationRequired == true"
       requirement: "migrationNotes must not be empty"
       validation: "Breaking changes must include migration instructions"
-      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+      rules_file: "rules/release-notes/release-notes-rule.yaml"
 
     - rule_id: "PRO-001"
       name: "Language & Clarity"
@@ -867,13 +867,13 @@ validation:
         - "cutting-edge"
       validation: "Avoid marketing superlatives; use factual language"
       note: "PRO-001 also enforces this via Vale on rendered Markdown"
-      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+      rules_file: "rules/release-notes/release-notes-rule.yaml"
 
     - rule_id: "CON-008"
       name: "Documentation Links"
       check_type: "presence"
       validation: "All new features must have documentation links"
-      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+      rules_file: "rules/release-notes/release-notes-rule.yaml"
 
     - rule_id: "SEC-001"
       name: "Prohibited Content"
@@ -884,7 +884,7 @@ validation:
         - "confidential code names"
         - "personal names of individual employees"
       validation: "Remove any internal-only or sensitive information"
-      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+      rules_file: "rules/release-notes/release-notes-rule.yaml"
 
   agent_instructions:
     - |
@@ -892,7 +892,7 @@ validation:
       Step 2: Verify all 'required' fields are populated with non-empty values
       Step 3: Check field types match schema constraints
       Step 4: Run all deterministic checks from validation.deterministic_checks
-             (Full rule definitions: .github/rules/release-notes/release-notes-rule.yaml)
+             (Full rule definitions: rules/release-notes/release-notes-rule.yaml)
       Step 5: If violations found, report by rule ID (STR-*, CON-*, SEC-*, PRO-*) with fix suggestions
       Step 6: Convert YAML to Markdown using the rendering rules in release-notes-rendering.yaml
              (Rendering rule IDs: HDR-*, ROL-*, SUM-*, FEA-*, ENH-*, BUG-*, RSEC-*, API-*, IMP-*, ISS-*)
@@ -925,11 +925,11 @@ examples:
 
   comprehensive:
     description: "Full release notes with multiple categories"
-    url: ".github/templates/release-notes/examples/comprehensive-release-notes.yaml"
+    url: "templates/release-notes/examples/comprehensive-release-notes.yaml"
 
 # ========================================
 # RENDERING RULES
 # ========================================
 rendering:
   description: "How to convert this YAML structure to Markdown for publishing"
-  file: ".github/templates/release-notes/release-notes-rendering.yaml"
+  file: "templates/release-notes/release-notes-rendering.yaml"

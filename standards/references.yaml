@@ -157,16 +157,16 @@ documentation_standards:
     status: "active"
     
   # ============================================================================
-  # INTERNAL REFERENCES (Within this .github repo)
+  # INTERNAL REFERENCES (Within this repository)
   # ============================================================================
   
   internal_standards:
     description: "Custom standards defined in this repository"
     content_registry:
-      path: ".github/standards/content-types.yaml"
+      path: "standards/content-types.yaml"
       description: "Registry of supported content types and their public entrypoints"
     release_notes_manifest:
-      path: ".github/standards/content-types/release-notes.yaml"
+      path: "standards/content-types/release-notes.yaml"
       description: "Consumer-facing manifest for release notes schema, rendering rules, and examples"
     
     skills:
@@ -178,12 +178,12 @@ documentation_standards:
       description: "System and task prompts for agents"
       
     templates:
-      path: ".github/templates/"
+      path: "templates/"
       description: "Output templates and formatting standards"
       
     agents:
-      path: ".github/agents/"
-      description: "Custom agent definitions and configurations"
+      path: "consumer-repo/.github/agents/"
+      description: "Custom agent definitions and configurations (consumer repo example)"
 
 # ============================================================================
 # USAGE GUIDE FOR AGENTS
@@ -221,7 +221,7 @@ agent_usage_guide: |
   
   6. **Fallback Strategy**
      - If external URL is unavailable, check 'fallback' field
-     - Use equivalent internal template from .github/templates/[doc-type]/
+    - Use equivalent internal template from templates/[doc-type]/
      - Update this file with status if URL breaks for >24 hours
 
 # ============================================================================
@@ -234,8 +234,8 @@ metadata:
   url_verification: "2026-04-05 - All external links tested and verified working"
   changes: |
     v1.2.4 (2026-04-09):
-      - Added .github/standards/content-types.yaml as a central content-type registry
-      - Added .github/standards/content-types/release-notes.yaml as the consumer-facing release-notes manifest
+      - Added standards/content-types.yaml as a central content-type registry
+      - Added standards/content-types/release-notes.yaml as the consumer-facing release-notes manifest
       - Exposed release-notes schema, rendering rules, examples, and skill as stable internal entrypoints
 
     v1.2.3 (2026-04-05):
@@ -262,5 +262,5 @@ metadata:
       - Enhanced fallback strategy documentation
   maintained_by: "Engineering Team"
   next_review: "2026-07-05"
-  documentation: "See .github/docs/implement-upstream.md for detailed explanation"
+  documentation: "See docs/INDEX.md for repository structure and navigation"
   issue_reporting: "If any URLs are broken, update this file and report in GitHub Issues"

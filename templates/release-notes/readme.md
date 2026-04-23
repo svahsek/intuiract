@@ -88,7 +88,7 @@ This system provides agents with a **strict, YAML-based schema** for generating 
 ### Schema & Rendering Rules
 
 ```
-.github/templates/release-notes/
+templates/release-notes/
 ├── release-notes-schema.yaml              # AUTHORITY: Complete schema with all fields
 ├── release-notes-rendering.yaml           # HOW-TO: Convert YAML → Markdown
 ├── agent-quick-reference.md              # QUICK: Copy-paste structure for agents
@@ -102,11 +102,11 @@ This system provides agents with a **strict, YAML-based schema** for generating 
 ### Related Files
 
 ```
-.github/rules/release-notes/
+rules/release-notes/
 ├── release-notes-rules.md                 # Human-readable validation rules
 └── (Rules implemented as deterministic checks in schema)
 
-.github/standards/
+standards/
 ├── references.yaml                        # External standards (TGDP, Microsoft, etc.)
 ├── content-types.yaml                     # Content-type registry for consumers
 └── content-types/
@@ -592,9 +592,9 @@ Quick reference with:
 
 ## Related Documentation
 
-- **Templates Directory:** `.github/templates/release-notes/`
-- **Validation Rules:** `.github/rules/release-notes/release-notes-rules.md`
-- **Standards Reference:** `.github/standards/references.yaml` (external resources)
+- **Templates Directory:** `templates/release-notes/`
+- **Validation Rules:** `rules/release-notes/release-notes-rules.md`
+- **Standards Reference:** `standards/references.yaml` (external resources)
 - **Documentation Standards:** [Integration Guide](../..)
 
 ---

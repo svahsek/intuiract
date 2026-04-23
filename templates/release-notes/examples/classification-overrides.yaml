@@ -1,7 +1,7 @@
 # Classification Overrides — Consumer Product Customization
 # ==========================================================
 # Product-specific overrides and extensions to the central classification rules.
-# Place in: .github/standards/classification-overrides.yaml (consumer repo)
+# Place in: standards/classification-overrides.yaml (consumer repo)
 #
 # These are deep-merged on top of:
 #   https://raw.githubusercontent.com/{org}/{repo}/main/standards/classification-rules.yaml

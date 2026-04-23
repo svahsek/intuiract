@@ -88,7 +88,7 @@ This will fetch the latest version of their templates into your `internal/upstre
 ---
 
 ### 4. Integrating with your Custom Agents
-Since you are building **Custom Agents** in `.github/skills` or `.github/agents`, you can now point them to these directories in their **System Instructions**.
+Since you are building **Custom Agents** in `consumer-repo/.github/skills` or `consumer-repo/.github/agents`, you can now point them to these directories in their **System Instructions**.
 
 **Example Agent Instruction:**
 > *"When generating a new 'How-to' guide, first analyze the template structure found in `internal/upstream-libraries/good-docs/templates/how-to.md`. Ensure the output matches this structural hierarchy exactly, but apply our internal brand voice."*
@@ -148,7 +148,7 @@ REFERENCE_LIBRARY_PATH: "internal/upstream-libraries"  # Optional
 When REFERENCE_LIBRARY_PATH exists:
   - Use upstream standards
 When REFERENCE_LIBRARY_PATH does NOT exist:
-  - Fall back to your own standards in .github/templates
+  - Fall back to your own standards in templates
 ```
 
 This way:
@@ -180,7 +180,7 @@ You can have agents **fetch and reference external URLs directly**. No upstream-
 #### **Approach 1: Direct URL in Agent Instructions**
 
 ```yaml
-# .github/agents/doc-writer/AGENT.md
+# consumer-repo/.github/agents/doc-writer/AGENT.md
 
 ## System Instructions
 
@@ -208,7 +208,7 @@ When generating documentation:
 Store all reference URLs in one place for easy updates:
 
 ```yaml
-# .github/standards/references.yaml
+# standards/references.yaml
 documentation_standards:
   diataxis:
     url: "https://diataxis.fr/"
@@ -231,9 +231,9 @@ documentation_standards:
 Your agents reference this file:
 
 ```yaml
-# .github/agents/doc-writer/AGENT.md
+# consumer-repo/.github/agents/doc-writer/AGENT.md
 
-Load documentation standards from: .github/standards/references.yaml
+Load documentation standards from: standards/references.yaml
 
 When generating [doc_type]:
   1. Fetch the relevant URL from references.yaml
@@ -249,7 +249,7 @@ When generating [doc_type]:
 Agents fetch URLs at runtime with optional local caching:
 
 ```typescript
-// .github/skills/fetch-standard.ts
+// consumer-repo/.github/skills/fetch-standard.ts
 async function fetchDocumentationStandard(standardName: string) {
   const standards = require('./standards/references.yaml');
   const url = standards.documentation_standards[standardName].url;
@@ -281,12 +281,12 @@ async function fetchDocumentationStandard(standardName: string) {
 **Skip submodules entirely.** Use this structure instead:
 
 ```
-.github/
+consumer-repo/.github/
 ├── standards/
 │   └── references.yaml              # All external URLs in one place
 ├── agents/
 │   ├── doc-writer/
-│   │   └── AGENT.md                 # Ref: .github/standards/references.yaml
+│   │   └── AGENT.md                 # Ref: standards/references.yaml
 │   └── code-analyzer/
 │       └── AGENT.md
 └── skills/

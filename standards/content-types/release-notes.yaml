@@ -1,7 +1,7 @@
 id: "release-notes"
 name: "Release Notes"
 status: "active"
-last_updated: "2026-04-14"
+last_updated: "2026-04-23"
 description: >-
   Public manifest for the release-notes content type. Consumer repositories can
   fetch this file first, then resolve the schema, rendering rules, examples,
@@ -9,23 +9,23 @@ description: >-
 
 ownership:
   maintained_by: "Documentation Team"
-  repository_scope: "public .github standards"
+  repository_scope: "intuiract standards repository"
 
 entrypoints:
-  schema: ".github/templates/release-notes/release-notes-schema.yaml"
-  rendering: ".github/templates/release-notes/release-notes-rendering.yaml"
-  quick_reference: ".github/templates/release-notes/release-notes-quick-reference.md"
-  overview: ".github/templates/release-notes/readme.md"
+  schema: "templates/release-notes/release-notes-schema.yaml"
+  rendering: "templates/release-notes/release-notes-rendering.yaml"
+  quick_reference: "templates/release-notes/release-notes-quick-reference.md"
+  overview: "templates/release-notes/readme.md"
   skill: ".github/skills/release-notes/SKILL.md"
   consumer_skill: ".github/skills/release-notes/consumer-release-notes.skill.md"
-  human_rules: ".github/rules/release-notes/release-notes-rule.yaml"
-  classification_rules: ".github/standards/classification-rules.yaml"
+  human_rules: "rules/release-notes/release-notes-rule.yaml"
+  classification_rules: "standards/classification-rules.yaml"
 
 examples:
-  minimal: ".github/templates/release-notes/examples/minimal-release-notes.yaml"
-  comprehensive: ".github/templates/release-notes/examples/comprehensive-release-notes.yaml"
-  release_inputs: ".github/templates/release-notes/examples/release-inputs.yaml"
-  classification_overrides: ".github/templates/release-notes/examples/classification-overrides.yaml"
+  minimal: "templates/release-notes/examples/minimal-release-notes.yaml"
+  comprehensive: "templates/release-notes/examples/comprehensive-release-notes.yaml"
+  release_inputs: "templates/release-notes/examples/release-inputs.yaml"
+  classification_overrides: "templates/release-notes/examples/classification-overrides.yaml"
 
 consumer_usage:
   workflow:
@@ -44,4 +44,4 @@ consumer_usage:
     - "The consumer_skill is a full orchestration template for consumer repos — copy and adapt."
     - "classification_rules defines the central baseline for commit-to-category mapping."
     - "Copy release_inputs example to docs/releases/release-inputs.yaml in the consumer repo."
-    - "Copy classification_overrides example to .github/standards/ in the consumer repo and customize."
+    - "Copy classification_overrides example to standards/ in the consumer repo and customize."

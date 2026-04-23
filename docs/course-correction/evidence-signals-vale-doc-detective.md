@@ -312,7 +312,7 @@ validation_gates:
 
 ### GitHub Actions Workflow (Example)
 
-Create `.github/workflows/vale-doc-detective.yml`:
+Create `consumer-repo/.github/workflows/vale-doc-detective.yml`:
 
 ```yaml
 name: Vale + Doc Detective

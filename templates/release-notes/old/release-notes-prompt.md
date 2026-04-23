@@ -24,12 +24,12 @@ relatedTemplates: [release-notes-template.md]
 ## Instructions
 [Release Notes Template]
 
-- Release Notes Template - [.github/templates/release-notes/release-notes-template.md]
+- Release Notes Template - [templates/release-notes/readme.md]
 
 ## Output Format
 [Markdown format with appropriate headings, subheadings, bullet points, and tables as needed.]
 
-- Template to be used to provide the structure: [.github/templates/release-notes/release-notes-template.md]
+- Template to be used to provide the structure: [templates/release-notes/readme.md]
 
 
 ## Constraints
@@ -37,7 +37,7 @@ N/A
 
 ## Quality Criteria
 
-- Guidelines in - [.github/templates/release-notes/release-notes-template.md]
+- Guidelines in - [templates/release-notes/readme.md]
 
 ## Examples
 
@@ -51,9 +51,9 @@ Not Available - [Latest Release Notes]
 
 ## Template
 
-Template that contains the structure of the 'Release Notes' that you will process from crude-content and as per guidelines instructed to you as per [.github/templates/release-notes/release-notes-template.md] and then put the revised writeup in [.github/output.md].
+Template that contains the structure of the 'Release Notes' that you will process from crude-content and as per guidelines instructed to you as per [templates/release-notes/readme.md] and then put the revised writeup in [output.md].
 
-[.github/templates/features.template.md]
+[templates/features/features-page.template.md]
 
 ## Input
 - Release JIRA Page URL
@@ -64,4 +64,4 @@ Template that contains the structure of the 'Release Notes' that you will proces
 
 ### Output
 
-- Put the output in the file: [.github/output.md]
+- Put the output in the file: [output.md]

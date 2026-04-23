@@ -114,7 +114,7 @@ If you want to practice API docs generation later, add Option B (Express API) af
 ```
 automation-test-repo/
 │
-├── .github/
+├── consumer-repo/.github/
 │   ├── workflows/
 │   │   ├── trigger-content-generation.yml      # Main automation pipeline
 │   │   ├── validate-release-notes.yml           # Validation gate
@@ -206,7 +206,7 @@ automation-test-repo/
 ### Workflow 1: Trigger on Feature Branch (PR Created)
 
 ```yaml
-# .github/workflows/trigger-content-generation.yml
+# consumer-repo/.github/workflows/trigger-content-generation.yml
 name: Generate Content on PR
 
 on:
@@ -237,7 +237,7 @@ jobs:
         id: generate
         run: |
           # Call your content generation agent/script
-          bash .github/scripts/generate-release-notes.sh \
+          bash consumer-repo/.github/scripts/generate-release-notes.sh \
             --type ${{ steps.detect.outputs.type }} \
             --component ${{ steps.detect.outputs.component }}
       
@@ -253,13 +253,13 @@ jobs:
             })
       
       - name: Run validation checks
-        run: bash .github/scripts/validate-docs.sh
+        run: bash consumer-repo/.github/scripts/validate-docs.sh
 ```
 
 ### Workflow 2: Validation Gate (Required Status Check)
 
 ```yaml
-# .github/workflows/validate-release-notes.yml
+# consumer-repo/.github/workflows/validate-release-notes.yml
 name: Validate Documentation
 
 on:
@@ -315,7 +315,7 @@ jobs:
 ### Workflow 3: Auto-Merge Safe Changes
 
 ```yaml
-# .github/workflows/auto-merge-safe-prs.yml
+# consumer-repo/.github/workflows/auto-merge-safe-prs.yml
 name: Auto-Merge Safe PRs
 
 on:
@@ -357,7 +357,7 @@ jobs:
 ### Workflow 4: Release Tag Triggers Version Bump
 
 ```yaml
-# .github/workflows/version-bump.yml
+# consumer-repo/.github/workflows/version-bump.yml
 name: Auto-Generate Release Notes on Tag
 
 on:
@@ -381,7 +381,7 @@ jobs:
       - name: Generate release notes YAML
         run: |
           # Query recent commits and generate YAML structure
-          bash .github/scripts/generate-release-notes.sh \
+          bash consumer-repo/.github/scripts/generate-release-notes.sh \
             --version ${{ steps.version.outputs.version }} \
             --auto-from-commits > release-notes.yaml
       
@@ -403,7 +403,7 @@ jobs:
 
 ```bash
 #!/bin/bash
-# .github/scripts/generate-release-notes.sh
+# consumer-repo/.github/scripts/generate-release-notes.sh
 # Generates release notes content (via agent or template)
 
 PR_TYPE=${1:-feature}
@@ -435,7 +435,7 @@ echo "Release notes draft generated"
 
 ```bash
 #!/bin/bash
-# .github/scripts/validate-docs.sh
+# consumer-repo/.github/scripts/validate-docs.sh
 # Deterministic validation checks
 
 FAILED=0
@@ -471,7 +471,7 @@ fi
 
 ```bash
 #!/bin/bash
-# .github/scripts/log-automation.sh
+# consumer-repo/.github/scripts/log-automation.sh
 # Track what automation ran and results
 
 EVENT_TYPE=$1
@@ -485,7 +485,7 @@ LOG_ENTRY="
 - Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 "
 
-echo "$LOG_ENTRY" >> .github/AUTOMATION_LOG.md
+echo "$LOG_ENTRY" >> consumer-repo/.github/AUTOMATION_LOG.md
 ```
 
 ---
@@ -496,7 +496,7 @@ echo "$LOG_ENTRY" >> .github/AUTOMATION_LOG.md
 For first iteration, use structured templates:
 
 ```yaml
-# .github/templates/release-notes.schema.yaml
+# templates/release-notes/release-notes-schema.yaml
 # Reference your production release-notes.schema.yaml
 $schema: "http://json-schema.org/draft-07/schema#"
 # ... (symlink or copy from main repo)
@@ -504,7 +504,7 @@ $schema: "http://json-schema.org/draft-07/schema#"
 
 ### Option B: Claude API Integration
 ```bash
-# .github/scripts/generate-release-notes.sh (with LLM)
+# consumer-repo/.github/scripts/generate-release-notes.sh (with LLM)
 
 COMMIT_MESSAGES=$(git log --oneline main..HEAD | head -20)
 
@@ -650,7 +650,7 @@ git clone https://github.com/yourusername/automation-test-repo.git
 cd automation-test-repo
 
 # Create directory structure
-mkdir -p css js pages docs assets .github/workflows .github/scripts
+mkdir -p css js pages docs assets consumer-repo/.github/workflows consumer-repo/.github/scripts
 
 # Create basic HTML structure
 cat > index.html << 'EOF'
@@ -867,7 +867,7 @@ npm install express
 npm install -D node-dev
 
 # Create basic structure
-mkdir -p src routes models docs tests .github/workflows .github/scripts
+mkdir -p src routes models docs tests consumer-repo/.github/workflows consumer-repo/.github/scripts
 
 # Create minimal app
 cat > src/app.js << 'EOF'
@@ -973,7 +973,7 @@ npm set-script test "echo 'No tests yet'"
 [ ] Push to GitHub main branch
 [ ] Enable GitHub Pages in repo settings (Pages → Deploy from branch → main / root)
 [ ] Verify site lives at https://yourusername.github.io/automation-test-repo
-[ ] Create first GitHub Action workflow (.github/workflows/...)
+[ ] Create first GitHub Action workflow (consumer-repo/.github/workflows/...)
 [ ] Create feature branch and test automation trigger
 [ ] Log results in AUTOMATION_LOG.md
 [ ] Celebrate: Working automation pipeline! 🎉
@@ -990,7 +990,7 @@ Total time: 30-45 minutes for working website + first workflow
 [ ] Create directory structure (src, routes, models, docs, tests, .github)
 [ ] Create minimal 3-endpoint Express app (app.js)
 [ ] Create first GitHub Action workflow
-[ ] Create validation script (.github/scripts/validate-docs.sh)
+[ ] Create validation script (consumer-repo/.github/scripts/validate-docs.sh)
 [ ] Push to GitHub
 [ ] Create test feature branch
 [ ] Create PR and watch automation trigger

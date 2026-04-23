@@ -80,6 +80,12 @@ Major shift to evidence-model-first architecture.
 18. **[public-examples-of-automated-docs-and-release-notes.md](public-examples-of-automated-docs-and-release-notes.md)** — Apr 21, 10:31
     - Public teams and architectures for automated docs
 
+### Path Governance (Apr 23, 2026)
+
+19. **[path-conventions.md](course-correction/path-conventions.md)** — Apr 23
+    - Canonical path policy for standards/templates/rules
+    - Rules for in-repo `.github` paths vs `consumer-repo/.github` examples
+
 ---
 
 ## Logical Groupings by Topic
@@ -123,4 +129,4 @@ This progression shows a maturation from "how to generate better docs" to "how t
 
 ---
 
-Last updated: Apr 22, 2026
+Last updated: Apr 23, 2026

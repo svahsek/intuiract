@@ -149,7 +149,7 @@ release-notes-schema.yaml (source of truth)
 ## File Organization
 
 ```
-.github/
+consumer-repo/.github/
 └── templates/
     └── release-notes/
         ├── readme.md                        ← Start here (architecture)
@@ -161,12 +161,12 @@ release-notes-schema.yaml (source of truth)
             ├── comprehensive-release-notes.yaml  ← Full feature release
             └── sample-output.md             ← Rendered markdown example
 
-.github/
+consumer-repo/.github/
 └── rules/
     └── release-notes/
         └── release-notes-rules.md           ← Human-readable rules
 
-.github/
+consumer-repo/.github/
 └── standards/
     ├── references.yaml                      ← External standards index
     ├── content-types.yaml                   ← Shared content-type registry

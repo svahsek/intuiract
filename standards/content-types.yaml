@@ -1,7 +1,7 @@
 version: "0.1.0"
 last_updated: "2026-04-14"
 description: >-
-  Central registry of content types that can be consumed from this public .github
+  Central registry of content types that can be consumed from this
   repository by local agents, reusable skills, or external repositories.
 
 content_types:
@@ -12,21 +12,21 @@ content_types:
     description: >-
       Schema-driven release notes system with deterministic validation rules,
       rendering rules, agent guidance, and example payloads.
-    manifest: ".github/standards/content-types/release-notes.yaml"
-    templates_root: ".github/templates/release-notes"
+    manifest: "standards/content-types/release-notes.yaml"
+    templates_root: "templates/release-notes"
     skill: ".github/skills/release-notes/SKILL.md"
     consumer_skill: ".github/skills/release-notes/consumer-release-notes.skill.md"
-    classification_rules: ".github/standards/classification-rules.yaml"
+    classification_rules: "standards/classification-rules.yaml"
     source_files:
-      schema: ".github/templates/release-notes/release-notes-schema.yaml"
-      rendering: ".github/templates/release-notes/release-notes-rendering.yaml"
-      quick_reference: ".github/templates/release-notes/release-notes-quick-reference.md"
-      overview: ".github/templates/release-notes/readme.md"
+      schema: "templates/release-notes/release-notes-schema.yaml"
+      rendering: "templates/release-notes/release-notes-rendering.yaml"
+      quick_reference: "templates/release-notes/release-notes-quick-reference.md"
+      overview: "templates/release-notes/readme.md"
       examples:
-        - ".github/templates/release-notes/examples/minimal-release-notes.yaml"
-        - ".github/templates/release-notes/examples/comprehensive-release-notes.yaml"
-        - ".github/templates/release-notes/examples/release-inputs.yaml"
-        - ".github/templates/release-notes/examples/classification-overrides.yaml"
+        - "templates/release-notes/examples/minimal-release-notes.yaml"
+        - "templates/release-notes/examples/comprehensive-release-notes.yaml"
+        - "templates/release-notes/examples/release-inputs.yaml"
+        - "templates/release-notes/examples/classification-overrides.yaml"
     intended_consumers:
       - "Workspace-local agent skills"
       - "Other repositories using raw GitHub file URLs"

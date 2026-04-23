@@ -22,7 +22,7 @@ Basic scripts    →   Organized agents    →   Enterprise AI systems
 
 1. **Complete Your Agent Ecosystem**
    ```
-   .github/
+   consumer-repo/.github/
    ├── agents/           (✓ Done)
    ├── skills/           (Create skill library)
    ├── workflows/        (AI-powered CI/CD)
@@ -32,7 +32,7 @@ Basic scripts    →   Organized agents    →   Enterprise AI systems
 
 2. **Create a Prompt Engineering Library**
    ```
-   .github/prompts/
+   consumer-repo/.github/prompts/
    ├── system-prompts/
    ├── domain-specific/
    ├── role-based/
@@ -64,7 +64,7 @@ Basic scripts    →   Organized agents    →   Enterprise AI systems
 
 5. **Build Custom Tools/Integrations**
    ```
-   .github/tools/
+   consumer-repo/.github/tools/
    ├── ai-code-analyzer/
    ├── intelligent-documenter/
    └── test-generator/
@@ -79,7 +79,7 @@ Basic scripts    →   Organized agents    →   Enterprise AI systems
 
 7. **Enterprise-Ready Setup**
    ```
-   .github/
+   consumer-repo/.github/
    ├── agents/
    ├── skills/
    ├── workflows/
@@ -134,7 +134,7 @@ Basic scripts    →   Organized agents    →   Enterprise AI systems
 
 ### 1. Document Everything
 ```markdown
-.github/docs/
+docs/
 ├── AGENTS.md         (What agents do)
 ├── PROMPTS.md        (How to write good prompts)
 ├── WORKFLOWS.md      (AI-powered workflows)
@@ -144,7 +144,7 @@ Basic scripts    →   Organized agents    →   Enterprise AI systems
 
 ### 2. Create Usage Examples
 ```
-.github/examples/
+consumer-repo/.github/examples/
 ├── using-agents-in-ci.yml
 ├── agent-in-code-review.yml
 └── integrated-workflow.md
@@ -153,7 +153,7 @@ Basic scripts    →   Organized agents    →   Enterprise AI systems
 ### 3. Set Up Cost Tracking
 ```json
 // Monitor API usage across all repos
-.github/monitoring/
+consumer-repo/.github/monitoring/
 ├── api-usage.json
 ├── cost-tracker.json
 └── performance-metrics.json

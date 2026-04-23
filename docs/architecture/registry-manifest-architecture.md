@@ -49,7 +49,7 @@ The manifest is the **single fetch point** — a consumer repo only needs to kno
 
 ## Why Registry-First Matters
 
-A consumer repo **never hardcodes** a path like `.github/templates/release-notes/release-notes-schema.yaml` directly. It discovers the path through the manifest.
+A consumer repo **never hardcodes** a path like `templates/release-notes/release-notes-schema.yaml` directly. It discovers the path through the manifest.
 
 This means:
 - Files can be renamed or moved — update the manifest once, all consumers stay intact

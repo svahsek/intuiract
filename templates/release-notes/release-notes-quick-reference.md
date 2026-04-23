@@ -245,7 +245,7 @@ All text must follow these style guides:
 - Run all SEC-* checks: no internal content, release name matches product and version
 - Verify no placeholder text (TBD, TODO, FIXME, WIP)
 - Ensure all URLs are absolute and accessible
-- Full rule definitions: `.github/rules/release-notes/release-notes-rule.yaml`
+- Full rule definitions: `rules/release-notes/release-notes-rule.yaml`
 
 **Step 4: Convert to Markdown**
 - Use `release-notes-rendering.yaml` for rendering rules
@@ -305,7 +305,7 @@ content:
 ```
 
 **Comprehensive Release (Minor - Many Features):**
-See: `.github/templates/release-notes/examples/comprehensive-release-notes.yaml`
+See: `templates/release-notes/examples/comprehensive-release-notes.yaml`
 
 ---
 
@@ -315,10 +315,10 @@ These are YOUR canonical files. Always reference these:
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `.github/templates/release-notes/release-notes-schema.yaml` | **Schema authority** - complete field documentation | ✅ Source of truth |
-| `.github/templates/release-notes/release-notes-rendering.yaml` | YAML → Markdown conversion rules | ✅ Rendering guide |
-| `.github/templates/release-notes/examples/comprehensive-release-notes.yaml` | Full example with all sections | ✅ Reference example |
-| `.github/rules/release-notes/release-notes-rules.md` | Human-readable validation rules | Original rules guide |
+| `templates/release-notes/release-notes-schema.yaml` | **Schema authority** - complete field documentation | ✅ Source of truth |
+| `templates/release-notes/release-notes-rendering.yaml` | YAML → Markdown conversion rules | ✅ Rendering guide |
+| `templates/release-notes/examples/comprehensive-release-notes.yaml` | Full example with all sections | ✅ Reference example |
+| `rules/release-notes/release-notes-rules.md` | Human-readable validation rules | Original rules guide |
 
 ---
 

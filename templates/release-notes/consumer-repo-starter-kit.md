@@ -29,7 +29,7 @@ This guide shows the minimum setup required in any product (consumer) repository
 ## Minimal Folder Layout (Consumer Repo)
 
 ```text
-.github/
+consumer-repo/.github/
   skills/
     release-notes.skill.md
   standards/
@@ -123,7 +123,7 @@ No partial release-notes publication.
 
 ## Quick Adoption Checklist
 
-- [ ] Added .github/skills/release-notes.skill.md to consumer repo
+- [ ] Added consumer-repo/.github/skills/release-notes.skill.md to consumer repo
 - [ ] Added docs/releases/release-inputs.yaml template
 - [ ] Confirmed output folder docs/releases/
 - [ ] Confirmed standards manifest URL and pinned SHA

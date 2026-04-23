@@ -34,8 +34,8 @@ This repository is a documentation-intelligence workspace for standards, templat
 - [standards/](standards/) holds registries, manifests, and classification references.
 - [templates/](templates/) holds schemas, rendering guidance, examples, and quick references.
 - [rules/](rules/) holds validation-oriented rule files.
-- [skills/](skills/) holds reusable agent workflows. The strongest current example is [skills/release-notes/SKILL.md](skills/release-notes/SKILL.md).
-- [prompts/](prompts/) holds reusable prompt inputs and examples.
+- [.github/skills/](.github/skills/) holds reusable agent workflows. The strongest current example is [.github/skills/release-notes/SKILL.md](.github/skills/release-notes/SKILL.md).
+- [.github/prompts/](.github/prompts/) holds reusable prompt inputs and examples.
 
 ## When Adding Or Updating Content Types
 
@@ -45,13 +45,20 @@ For a new content type or a major extension, update the full set of related asse
 2. Content-type manifest in [standards/content-types/](standards/content-types/)
 3. Schema and rendering assets in [templates/](templates/)
 4. Validation rules in [rules/](rules/)
-5. Agent workflow in [skills/](skills/)
+5. Agent workflow in [.github/skills/](.github/skills/)
 
 Do not add only one layer unless the change is intentionally partial and documented.
 
 ## Release Notes Pattern
 
-When working on release notes, follow [skills/release-notes/SKILL.md](skills/release-notes/SKILL.md) and the release-notes manifest chain. The expected sequence is gather, structure as YAML, validate, then render.
+When working on release notes, follow [.github/skills/release-notes/SKILL.md](.github/skills/release-notes/SKILL.md) and the release-notes manifest chain. The expected sequence is gather, structure as YAML, validate, then render.
+
+## Path Policy
+
+- Use repository-local canonical paths in standards manifests and references: `standards/`, `templates/`, `rules/`.
+- Use `.github/` paths only when the target actually exists in this repo (for example, `.github/skills/` and `.github/prompts/`).
+- In conceptual docs and consumer examples, prefer `consumer-repo/.github/...` to avoid implying those files exist in this repository.
+- See [docs/course-correction/path-conventions.md](docs/course-correction/path-conventions.md) for full conventions, examples, and PR checklist.
 
 ## Editing Guidance For Agents
 

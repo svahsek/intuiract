@@ -669,5 +669,5 @@ agentWorkflow: |
 # EXAMPLE OUTPUT
 # ================================
 exampleOutput:
-  file: ".github/templates/release-notes/examples/sample-output.md"
+  file: "templates/release-notes/examples/comprehensive-release-notes.yaml"
   description: "See this file for a complete example of how YAML renders to Markdown"
