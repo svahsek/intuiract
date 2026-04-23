@@ -1,0 +1,236 @@
+# Classification Rules: Release Notes
+# =====================================
+# Central baseline for classifying git commits into release note schema categories.
+#
+# Consumer repos extend these rules via:
+#   .github/standards/classification-overrides.yaml
+#
+# Schema categories (from release-notes-schema.yaml):
+#   newFeatures, enhancedFeatures, bugFixes, securityUpdates,
+#   technicalImprovements, deprecations
+#
+# Rule precedence: consumer overrides > central baseline
+# Version: 1.0.0
+# Last Updated: 2026-04-14
+
+version: "1.0.0"
+last_updated: "2026-04-14"
+description: "Central baseline classification rules for mapping git commits to release note schema categories"
+
+merge_strategy:
+  rule: "Consumer overrides are deep-merged on top of central rules at runtime"
+  priority: "classification-overrides.yaml > classification-rules.yaml"
+  array_fields: "additional_prefixes and additional_keywords in overrides are appended, not replaced"
+
+# =====================================
+# CATEGORY DEFINITIONS
+# =====================================
+
+categories:
+
+  newFeatures:
+    _meta:
+      schema_field: "content.newFeatures"
+      description: "New capabilities, endpoints, UI, commands, configuration options added for the first time"
+    commit_prefixes:
+      - "feat:"
+      - "feature:"
+    keywords:
+      - "add"
+      - "introduce"
+      - "implement"
+      - "support for"
+      - "new"
+      - "enable"
+      - "allow"
+    excludes:
+      paths:
+        - "test/"
+        - "spec/"
+        - "__tests__/"
+        - "*.test.*"
+        - "*.spec.*"
+      commit_prefixes:
+        - "test:"
+        - "chore:"
+        - "ci:"
+
+  enhancedFeatures:
+    _meta:
+      schema_field: "content.enhancedFeatures"
+      description: "Improvements to existing features — changed behavior, better UX, expanded capabilities"
+    commit_prefixes:
+      - "enhance:"
+      - "improve:"
+      - "update:"
+    keywords:
+      - "improve"
+      - "enhance"
+      - "extend"
+      - "revamp"
+      - "redesign"
+      - "rework"
+      - "expand"
+    excludes:
+      commit_prefixes:
+        - "chore:"
+        - "ci:"
+        - "docs:"
+
+  bugFixes:
+    _meta:
+      schema_field: "content.bugFixes"
+      description: "Defect corrections, crash fixes, incorrect behavior resolved"
+    commit_prefixes:
+      - "fix:"
+      - "bug:"
+      - "bugfix:"
+      - "hotfix:"
+    keywords:
+      - "fix"
+      - "resolve"
+      - "correct"
+      - "patch"
+      - "repair"
+      - "address"
+      - "handle"
+    excludes:
+      keywords:
+        - "fix typo"
+        - "fix comment"
+        - "fix lint"
+
+  securityUpdates:
+    _meta:
+      schema_field: "content.securityUpdates"
+      description: "Security patches, CVE fixes, vulnerability mitigations"
+      note: "Always route to human review before publishing regardless of automation"
+    commit_prefixes:
+      - "security:"
+      - "sec:"
+    keywords:
+      - "CVE"
+      - "vulnerability"
+      - "security"
+      - "injection"
+      - "XSS"
+      - "CSRF"
+      - "auth bypass"
+      - "privilege escalation"
+      - "sanitize"
+      - "exposure"
+    flags:
+      always_human_review: true
+
+  breakingChanges:
+    _meta:
+      schema_field: "content.enhancedFeatures[migrationRequired=true]"
+      description: "Removed/renamed APIs, changed signatures, config format changes, dropped support"
+      note: "Breaking changes populate enhancedFeatures with migrationRequired=true, not a separate top-level section. Triggers CON-005 validation."
+    commit_prefixes:
+      - "feat!:"
+      - "fix!:"
+      - "BREAKING CHANGE:"
+      - "breaking:"
+    keywords:
+      - "remove"
+      - "drop support"
+      - "rename"
+      - "breaking"
+      - "incompatible"
+      - "no longer"
+      - "replaced by"
+    requires:
+      - migrationEntry    # CON-005: migrationNotes must not be empty
+
+  technicalImprovements:
+    _meta:
+      schema_field: "content.technicalImprovements"
+      description: "Performance optimizations, reliability improvements, infrastructure changes"
+    commit_prefixes:
+      - "perf:"
+      - "refactor:"
+      - "infra:"
+      - "deps:"
+    keywords:
+      - "optimize"
+      - "performance"
+      - "reduce latency"
+      - "upgrade"
+      - "migrate to"
+      - "replace"
+      - "consolidate"
+    quantified_impact:
+      required: true
+      hint: "IMP-001: express improvement as %, x, ms, GB, or requests/sec. If no metric available, omit entry or downgrade to internal."
+
+  deprecations:
+    _meta:
+      schema_field: "content.deprecations"
+      description: "Features, APIs, or config options being phased out with a future removal target"
+    commit_prefixes:
+      - "deprecate:"
+      - "deprecated:"
+    keywords:
+      - "deprecate"
+      - "deprecated"
+      - "will be removed"
+      - "scheduled for removal"
+      - "end of life"
+    requires:
+      - removalVersion
+      - replacement
+
+  internal:
+    _meta:
+      schema_field: null
+      description: "Internal changes — omitted from published release notes"
+    commit_prefixes:
+      - "chore:"
+      - "ci:"
+      - "build:"
+      - "test:"
+      - "lint:"
+      - "style:"
+      - "docs:"
+    keywords:
+      - "bump version"
+      - "update changelog"
+      - "merge branch"
+      - "merge pull request"
+      - "typo"
+      - "whitespace"
+    omit_from_output: true
+
+# =====================================
+# AMBIGUITY RESOLUTION
+# =====================================
+
+ambiguity_rules:
+  multi_category_commit:
+    rule: "If a commit matches multiple categories, apply the highest-priority match"
+    priority_order:
+      - securityUpdates    # always wins — security is highest priority
+      - breakingChanges    # always flag breaking behavior
+      - newFeatures
+      - enhancedFeatures
+      - bugFixes
+      - technicalImprovements
+      - deprecations
+      - internal
+
+  unmatched_commit:
+    rule: "If no category matches, classify as internal and omit"
+    consumer_override: "Set fallback_category to 'technicalImprovements' to capture unclassified changes"
+
+  merge_commits:
+    rule: "Skip — do not classify merge commits or version-bump commits"
+    patterns:
+      - "^Merge (branch|pull request)"
+      - "^Bump version"
+      - "^Release v?\\d+\\.\\d+\\.\\d+"
+
+  specificity_rule:
+    rule: "Prefer specific descriptions over generic ones"
+    example_good: "Added --dry-run flag to deploy command"
+    example_bad: "Added a flag"

@@ -1,0 +1,99 @@
+# MINIMAL RELEASE NOTES EXAMPLE
+# =============================
+# Bare minimum valid release notes in YAML schema format
+# Use this as a template for quick patches or minor releases
+# Full reference: .github/templates/release-notes/release-notes-schema.yaml
+
+# === REQUIRED METADATA ===
+metadata:
+  version: "2.1.1"              # REQUIRED: Semantic versioning X.Y.Z
+  releaseDate: "2026-02-16"     # REQUIRED: YYYY-MM-DD format
+  releaseType: "Patch"          # REQUIRED: Major|Minor|Patch|Hotfix
+  productName: "CRVS Platform"  # REQUIRED: Product name
+
+# === REQUIRED SUMMARY ===
+summary:
+  headline: "Security Patch: Critical SQL Injection Vulnerability Fixed"
+  # Headline tips:
+  # - 10-150 characters
+  # - Benefit-driven (why should users care?)
+  # - Start with main impact (security, performance, feature name)
+  # - Include quantified benefit if available
+  
+  paragraphs:
+    - text: |
+        This patch addresses a critical SQL injection vulnerability discovered in the partner search 
+        API endpoint. An attacker could craft malicious search queries to access unauthorized data or 
+        modify database records. All users should upgrade immediately. No user data was compromised; 
+        the vulnerability was discovered through security auditing before exploitation.
+      sectionLabel: "Purpose"
+
+    - text: |
+        Affected versions include 1.9.0, 1.9.1, 2.0.0, and 2.1.0. If you are running any of these 
+        versions, upgrade to 2.1.1 without delay. The upgrade requires 3-5 minutes of downtime and 
+        can be performed during any maintenance window.
+      sectionLabel: "Audience"
+
+  # Summary tips:
+  # - 2-4 paragraphs total (2 minimum, 4 maximum)
+  # - Use sectionLabel to help organize: Purpose, ThemesAndFocus, Audience, DeploymentStrategy
+  # - Clear, jargon-free language (Microsoft Style Guide)
+  # - No marketing superlatives
+
+# === REQUIRED CONTENT (At least ONE subsection) ===
+content:
+  securityUpdates:
+    - title: "SQL Injection Vulnerability in Partner Search API"
+      severity: "Critical"
+      
+      description: |
+        The /api/v1/partners/search endpoint did not parameterize SQL queries, allowing attackers to 
+        inject arbitrary SQL commands through the 'name' parameter. This could result in unauthorized 
+        data access or database modification. The fix implements parameterized queries and input validation.
+      
+      cveid: "CVE-2026-0842"  # CVE identifier
+      cve_url: "https://nvd.nist.gov/vuln/detail/CVE-2026-0842"
+      
+      affectedVersions:
+        - "< 2.1.1"  # All versions before 2.1.1
+      
+      upgradeRecommended: true  # Should users upgrade immediately?
+      
+      workaround: |
+        If immediate upgrade is not possible (e.g., scheduled maintenance window): 
+        Disable the /api/v1/partners/search endpoint at your API gateway or load balancer until you 
+        can upgrade. Use partner lookup via CSV export as temporary alternative (slower but safe).
+
+# That's it! This is a minimal valid release notes document.
+# 
+# To expand it, add any of these sections to 'content':
+#
+#   newFeatures:
+#   enhancedFeatures:
+#   bugFixes:
+#   apiChanges:
+#   technicalImprovements:
+#   knownIssues:
+#   deprecations:
+#   upgradeInstructions:
+#   knownLimitations:
+#   supportResources:
+#
+# See comprehensive-release-notes.yaml for examples of all sections.
+
+# ===== VALIDATION CHECKLIST =====
+# Before converting to Markdown, verify:
+# 
+# [ ] version is in X.Y.Z format (e.g., 2.1.1)
+# [ ] releaseDate is in YYYY-MM-DD format (e.g., 2026-02-16)
+# [ ] releaseType is one of: Major, Minor, Patch, Hotfix, LTS
+# [ ] headline is 10-150 characters and benefit-driven
+# [ ] At least 2 paragraphs in summary (max 4)
+# [ ] At least ONE content subsection has data
+# [ ] NO placeholder text (TBD, TODO, FIXME, [UPDATE])
+# [ ] NO broken links (test with curl or browser)
+# [ ] Security updates have CVE IDs and workarounds
+# [ ] No marketing superlatives (revolutionary, best-in-class, etc.)
+# [ ] All quantified metrics include units (% faster, 40ms, 50GB, etc.)
+#
+# If all checks pass, convert to Markdown using release-notes-rendering.yaml

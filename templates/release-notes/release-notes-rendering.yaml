@@ -1,0 +1,673 @@
+# Release Notes: YAML → Markdown Rendering Rules
+# ================================================
+# This file defines how to convert the strict YAML schema into
+# beautiful, publication-ready Markdown following TGDP and Microsoft Style Guide
+
+renderingRules:
+  overview: |
+    Source: release-notes-schema.yaml (agent authority)
+    Output: RELEASE_NOTES.md (published version)
+    Process: Deterministic rendering with embedded formatting rules
+    Reference: TGDP Release Notes template + Microsoft Style Guide
+
+# ================================
+# SECTION 1: DOCUMENT HEADER
+# ================================
+sections:
+  header:
+    _meta: {prefix: HDR, description: Document header — version, date, product identity}
+    template: |
+      # Release Notes
+      
+      **Version**: {metadata.version}  
+      **Released**: {renderDate(metadata.releaseDate)}  
+      **Release Type**: {metadata.releaseType}  
+      **Product**: {metadata.productName} ({metadata.productNameAbbr})
+    
+    rules:
+      - rule_id: "HDR-001"
+        name: "Header Date Formatting"
+        description: "Convert YYYY-MM-DD to readable format 'DD Month YYYY'"
+        example: "2026-02-16 → 16 February 2026"
+        implementation: |
+          def renderDate(isoDate):
+            date = parse(isoDate)
+            return date.strftime("%d %B %Y")
+
+      - rule_id: "HDR-002"
+        name: "Metadata Visibility"
+        description: "Make release metadata immediately visible"
+        style: "Inline bold with → separator for cleanliness"
+
+# ================================
+# SECTION 2: ROLLOUT & AUDIENCE
+# ================================
+  rolloutInfo:
+    _meta: {prefix: ROL, description: Rollout timeline and target audience quick reference}
+    template: |
+      > **📋 Quick Reference**  
+      > - **Timeline**: {metadata.rolloutTimeline}
+      > - **Target Audience**: {join(metadata.targetAudience, ", ")}
+    
+    condition: "Include only if metadata.rolloutTimeline and metadata.targetAudience are populated"
+    rules:
+      - rule_id: "ROL-001"
+        name: "Quick Reference Block"
+        description: "Blockquote format for metadata summaries"
+        reasoning: "Helps readers scan WHO should care and WHEN to upgrade"
+        icon: "📋 (information icon)"
+
+# ================================
+# SECTION 3: RELEASE SUMMARY
+# ================================
+  summary:
+    _meta: {prefix: SUM, description: Release summary — headline, paragraphs, key benefits}
+    template: |
+      ## Release Summary
+      
+      ### {summary.headline}
+      
+      {renderParagraphs(summary.paragraphs)}
+      
+      **Key Benefits**:
+      {formatList(summary.keyBenefits)}
+    
+    rules:
+      - rule_id: "SUM-001"
+        name: "Headline as Subheading"
+        description: "Use ### (H3) for benefit-driven headline"
+        reference: "Microsoft: Action-oriented headlines"
+        example: "✓ Self-Service OAuth2 Client Management Reduces Partner Onboarding by 40%"
+        example_bad: "✗ OAuth2 Updates in This Release"
+
+      - rule_id: "SUM-002"
+        name: "Paragraph Formatting"
+        description: "Render each paragraph as separate paragraph block"
+        implementation: |
+          for p in summary.paragraphs:
+            render(p.text)  # Plain paragraph, no special formatting
+
+      - rule_id: "SUM-003"
+        name: "Key Benefits Formatting"
+        description: "Bullet list with emoji for emphasis"
+        template: |
+          - ✨ {benefit}
+        example: |
+          **Key Benefits**:
+          - ✨ 40% reduction in partner onboarding time
+          - ✨ Automated certificate rotation reduces security incidents
+
+# ================================
+# SECTION 4: NEW FEATURES
+# ================================
+  newFeatures:
+    _meta: {prefix: FEA, description: New features — headings, use cases, capabilities, links}
+    template: |
+      ## What's New
+      
+      ### New Features
+      
+      {renderFeatures(content.newFeatures)}
+    
+    featureTemplate: |
+      #### {feature.name}
+      
+      {feature.description}
+      
+      - **Use Case**: {feature.useCase}
+      - **Key Capabilities**:
+        {indentList(feature.keyCapabilities)}
+      - **Documentation**: [{feature.documentation.title}]({feature.documentation.url})
+      - **Related Issues**: {formatIssueLinks(feature.relatedIssues)}
+    
+    rules:
+      - rule_id: "FEA-001"
+        name: "Feature Name as H4"
+        description: "Each feature is H4 (####) subheading"
+        reasoning: "Creates scannable hierarchy; features are discoverable via TOC"
+
+      - rule_id: "FEA-002"
+        name: "Use Case First"
+        description: "Start with 'Use Case' before capabilities"
+        reference: "TGDP: Answer 'Why' before 'How'"
+        ordering: "1. Description, 2. Use Case, 3. Capabilities, 4. Links"
+
+      - rule_id: "FEA-003"
+        name: "Documentation Links Must Be Clickable"
+        description: "Use markdown [text](url) format with proper URLs"
+        validation: "Verify all URLs are absolute and accessible"
+
+      - rule_id: "FEA-004"
+        name: "Issue Numbers as Links"
+        description: "Convert #1234 to GitHub issue links"
+        implementation: |
+          pattern: #(\d+)
+          replacement: [#$1](https://github.com/{org}/{repo}/issues/$1)
+
+# ================================
+# SECTION 5: ENHANCED FEATURES
+# ================================
+  enhancedFeatures:
+    _meta: {prefix: ENH, description: Enhanced features — before/after tables, migration notes}
+    template: |
+      ### Enhancements
+      
+      {renderEnhancements(content.enhancedFeatures)}
+    
+    enhancementTemplate: |
+      #### {feature.name}
+      
+      {feature.improvement}
+      
+      | Aspect | Details |
+      |--------|---------|
+      | **Previous Behavior** | {feature.previousBehavior} |
+      | **New Behavior** | {feature.newBehavior} |
+      | **User Impact** | {feature.impactOnExistingUsers} |
+      {conditionalRow("**Migration Required**", feature.migrationRequired, feature.migrationNotes)}
+      
+      **Documentation**: [{feature.documentation.title}]({feature.documentation.url})
+    
+    rules:
+      - rule_id: "ENH-001"
+        name: "Before/After Comparison Table"
+        description: "Use markdown table for clarity"
+        reasoning: "Tables make before/after changes instantly visible"
+        format: "|  |  | format with proper alignment"
+
+      - rule_id: "ENH-002"
+        name: "Migration Notes Conditional"
+        description: "Show migration row only if migrationRequired == true"
+        template: |
+          {if feature.migrationRequired}
+          | **Migration Required** | {feature.migrationNotes} |
+          {/if}
+
+# ================================
+# SECTION 6: BUG FIXES
+# ================================
+  bugFixes:
+    _meta: {prefix: BUG, description: Bug fixes — severity badges, workarounds}
+    template: |
+      ## Bug Fixes
+      
+      {if content.bugFixes is not empty}
+        {renderBugFixes(content.bugFixes)}
+      {else}
+        No bug fixes in this release.
+      {/if}
+    
+    bugTemplate: |
+      ### {bug.bugTitle}
+      
+      **Severity**: {formatSeverityBadge(bug.severity)}  
+      **Affected Versions**: {join(bug.affectedVersions, ", ")}
+      
+      {bug.description}
+      
+      {if bug.workaround}
+      **Workaround for earlier versions**: {bug.workaround}
+      {/if}
+    
+    rules:
+      - rule_id: "BUG-001"
+        name: "Severity Badges"
+        description: "Use emoji badges for severity"
+        mapping:
+          Critical: "🔴 Critical"
+          High: "🟠 High"
+          Medium: "🟡 Medium"
+          Low: "🟢 Low"
+
+      - rule_id: "BUG-002"
+        name: "Include Workarounds"
+        description: "If workaround exists, make it prominent"
+        rationale: "Users on older versions need immediate workaround"
+
+# ================================
+# SECTION 7: SECURITY UPDATES
+# ================================
+  securityUpdates:
+    _meta: {prefix: RSEC, description: Security updates — CVE links, severity, upgrade callouts}
+    template: |
+      ## ⚠️ Security Updates
+      
+      {if content.securityUpdates is not empty}
+        **IMPORTANT**: Review security updates below before deploying.
+        
+        {renderSecurityUpdates(content.securityUpdates)}
+      {/if}
+    
+    updateTemplate: |
+      ### {update.title}
+      
+      **Severity**: {formatSeverityBadge(update.severity)}  
+      **CVE**: [{update.cveid}]({update.cveUrl})  
+      **Affected Versions**: {join(update.affectedVersions, ", ")}  
+      **Upgrade Recommended**: {formatBoolean(update.upgradeRecommended)}
+      
+      {update.description}
+      
+      {if update.workaround}
+      **Temporary Mitigation**: {update.workaround}
+      {/if}
+    
+    rules:
+      - rule_id: "RSEC-001"
+        name: "Security Warning Section Header"
+        description: "Use ⚠️ emoji and 'IMPORTANT' callout"
+        reasoning: "Security updates must be immediately visible"
+
+      - rule_id: "RSEC-002"
+        name: "CVE Links"
+        description: "Link CVE IDs to official CVE database"
+        implementation: |
+          https://nvd.nist.gov/vuln/detail/{cveid}
+
+      - rule_id: "RSEC-003"
+        name: "Upgrade Recommendation"
+        description: "Explicitly state if immediate upgrade recommended"
+        formatting: "Bold for emphasis"
+
+# ================================
+# SECTION 8: API CHANGES
+# ================================
+  apiChanges:
+    _meta: {prefix: API, description: API changes — new, modified, deprecated endpoints}
+    template: |
+      ## API Changes
+      
+      {if content.apiChanges.newApis}
+      ### New API Endpoints
+      {renderNewApis(content.apiChanges.newApis)}
+      {/if}
+      
+      {if content.apiChanges.modifiedApis}
+      ### Modified API Endpoints
+      {renderModifiedApis(content.apiChanges.modifiedApis)}
+      {/if}
+      
+      {if content.apiChanges.deprecatedApis}
+      ### Deprecated API Endpoints
+      {renderDeprecatedApis(content.apiChanges.deprecatedApis)}
+      {/if}
+    
+    newApiTemplate: |
+      #### `{method} {endpoint}`
+      
+      **Purpose**: {purpose}
+      
+      **Parameters**: {formatList(keyParameters)}
+      **Response Format**: {responseFormat}
+      
+      **API Documentation**: [{format}]({url})
+    
+    modifiedApiTemplate: |
+      #### `{method} {endpoint}`
+      
+      {changes}
+      
+      | Aspect | Status |
+      |--------|--------|
+      | **Backward Compatible** | {formatBoolean(backwardCompatible)} |
+      | **Migration Required** | {formatBoolean(migrationRequired)} |
+      {if migrationRequired}
+      
+      **Migration Guide**: [{title}]({url})
+      {/if}
+    
+    deprecatedApiTemplate: |
+      #### `{method} {endpoint}` (Deprecated)
+      
+      - **Deprecated Since**: {deprecatedSince}
+      - **Removal Planned**: {removalVersion}
+      - **Replacement**: Use `{replacement}` instead
+      
+      **Migration Guide**: [{title}]({url})
+    
+    rules:
+      - rule_id: "API-001"
+        name: "API Endpoint Code Formatting"
+        description: "Use backticks for method and path: `GET /api/v2/oauth/clients`"
+        format: "`{METHOD} {endpoint}`"
+
+      - rule_id: "API-002"
+        name: "Deprecation Warning"
+        description: "Include '(Deprecated)' label in deprecated API headings"
+        styling: "Gray text or strikethrough where supported"
+
+      - rule_id: "API-003"
+        name: "Parameters as Bullet List"
+        description: "List key parameters in bullet format"
+        example: |
+          **Parameters**: 
+          - `client_id` (required): OAuth2 client identifier
+          - `scope` (optional): Space-separated list of scopes
+
+# ================================
+# SECTION 9: TECHNICAL IMPROVEMENTS
+# ================================
+  technicalImprovements:
+    _meta: {prefix: IMP, description: Technical improvements — performance, reliability, infrastructure}
+    template: |
+      ## Technical Improvements
+      
+      {if content.technicalImprovements.performance}
+      ### Performance Enhancements
+      {renderPerformance(content.technicalImprovements.performance)}
+      {/if}
+      
+      {if content.technicalImprovements.reliability}
+      ### Reliability Improvements
+      {renderReliability(content.technicalImprovements.reliability)}
+      {/if}
+      
+      {if content.technicalImprovements.infrastructure}
+      ### Infrastructure Updates
+      {renderInfrastructure(content.technicalImprovements.infrastructure)}
+      {/if}
+    
+    performanceTemplate: |
+      #### {area}
+      
+      {improvement}
+      
+      **Impact**: {quantifiedImpact}  
+      **Affected Components**: {formatList(affectedComponents)}
+    
+    rules:
+      - rule_id: "IMP-001"
+        name: "Quantified Metrics Required"
+        description: "Always include measurable metrics (%, x, ms, GB, etc.)"
+        example: "✓ 40% faster processing (1.2s → 0.7s)"
+        example_bad: "✗ Much faster now"
+
+      - rule_id: "IMP-002"
+        name: "Component Impact List"
+        description: "List affected components for transparency"
+        reasoning: "Helps users understand scope of changes"
+
+# ================================
+# SECTION 10: KNOWN ISSUES
+# ================================
+  knownIssues:
+    _meta: {prefix: ISS, description: Known issues — workarounds, fix versions, tracker links}
+    template: |
+      ## ⚠️ Known Issues
+      
+      {if content.knownIssues}
+        {renderKnownIssues(content.knownIssues)}
+      {else}
+        No known issues reported.
+      {/if}
+    
+    issueTemplate: |
+      ### {title}
+      
+      {description}
+      
+      **Workaround**: {workaround}
+      
+      {if fixedIn}
+      **Fixed In**: {fixedIn}  
+      {/if}
+      **Issue Tracker**: [{issueTracker}]({issueTracker})
+    
+    rules:
+      - rule_id: "RENDER-023"
+        name: "Known Issues Section"
+        description: "⚠️ emoji prefix for visibility"
+        reasoning: "Users need to know what's broken despite being released"
+
+# ================================
+# SECTION 11: DEPRECATIONS
+# ================================
+  deprecations:
+    deprecationTemplate: |
+      ### {item}
+      
+      **Removal Planned**: {removalVersion}
+      
+      {reason}
+      
+      **What to Use Instead**: {replacement}
+      
+      **Migration Guide**: [{title}]({url})
+    
+    rules:
+      - rule_id: "RENDER-024"
+        name: "Deprecation Timeline"
+        description: "Make removal version prominent"
+        reasoning: "Users need to know deadline for updates"
+
+# ================================
+# SECTION 12: UPGRADE INSTRUCTIONS
+# ================================
+  upgradeInstructions:
+    template: |
+      ## Upgrade Instructions
+      
+      {if content.upgradeInstructions.estimatedDowntime}
+      > **⏱️ Estimated Downtime**: {estimatedDowntime}
+      {/if}
+      
+      {if content.upgradeInstructions.backupRequired}
+      > ⚠️ **Backup your data before upgrading** — see step 1
+      {/if}
+      
+      ### Steps
+      {numericList(upgradeSteps)}
+      
+      {if content.upgradeInstructions.rollbackProcedure}
+      ### Rollback Procedure
+      {rollbackProcedure}
+      {/if}
+    
+    stepTemplate: |
+      **Step {stepNumber}**: {action}
+      
+      {details}
+      
+      {if commands}
+      ```bash
+      {join(commands, "\n")}
+      ```
+      {/if}
+    
+    rules:
+      - rule_id: "RENDER-025"
+        name: "Downtime Callout"
+        description: "Blockquote with ⏱️ emoji for downtime info"
+        reasoning: "Critical planning info must be scannable"
+
+      - rule_id: "RENDER-026"
+        name: "Command Code Blocks"
+        description: "Use ```bash fenced code blocks for shell commands"
+        reasoning: "Allows users to copy-paste safely"
+
+      - rule_id: "RENDER-027"
+        name: "Step Numbering"
+        description: "Use markdown numbered list for sequential steps"
+        implementation: |
+          1. Step one
+          2. Step two
+          etc.
+
+# ================================
+# SECTION 13: KNOWN LIMITATIONS
+# ================================
+  knownLimitations:
+    template: |
+      ## Known Limitations
+      
+      {if content.knownLimitations}
+        {renderLimitations(content.knownLimitations)}
+      {/if}
+    
+    limitationTemplate: |
+      - **{limitation}** — Planned for {plannedFor} {if workaround} (Workaround: {workaround}) {/if}
+    
+    rules:
+      - rule_id: "RENDER-028"
+        name: "Limitations Bullet Format"
+        description: "Simple bullet list for quick scanning"
+
+# ================================
+# SECTION 14: SUPPORT & RESOURCES
+# ================================
+  support:
+    template: |
+      ## Support & Resources
+      
+      {if content.supportResources.documentation}
+      ### 📚 Documentation
+      - [Release Page]({documentation.releasePage})
+      - [Upgrade Guide]({documentation.upgradeGuide})
+      - [Troubleshooting]({documentation.troubleshootingGuide})
+      - [API Reference]({documentation.apiReference})
+      
+      {/if}
+      
+      {if content.supportResources.supportChannels}
+      ### 🤝 Support & Community
+      - **Short-Term Support**: {supportChannels.shortTermSupport}
+      - **Long-Term Support**: {supportChannels.longTermSupport}
+      - [Community Forum]({supportChannels.communityForum})
+      - [Issue Tracker]({supportChannels.issueTracker})
+      {/if}
+    
+    rules:
+      - rule_id: "RENDER-029"
+        name: "Resource Icons"
+        description: "Use relevant emojis (📚 docs, 🤝 support)"
+        reasoning: "Quick visual scanning"
+
+# ================================
+# GLOBAL FORMATTING RULES
+# ================================
+globalRules:
+  formatting:
+    - rule_id: "RENDER-030"
+      name: "Headings Hierarchy"
+      template: |
+        # Document Title (Release Notes)
+        ## Major Sections (What's New, Bug Fixes, etc.)
+        ### Subsections (Features, Enhancements, etc.)
+        #### Item Details (Feature names, API endpoints)
+      reasoning: "Consistent hierarchy enables automatic TOC generation"
+
+    - rule_id: "RENDER-031"
+      name: "Code Formatting"
+      description: "Use backticks for: API endpoints, version numbers, file paths"
+      examples:
+        - "API endpoint: `POST /api/v2/registrations`"
+        - "Version: `2.1.0`"
+        - "File: `config/settings.yaml`"
+
+    - rule_id: "RENDER-032"
+      name: "Bold for Emphasis"
+      description: "Bold labels and metadata keys"
+      pattern: "**Label**: value"
+      example: "**Released**: 16 February 2026"
+
+    - rule_id: "RENDER-033"
+      name: "Links Must Be Clickable"
+      description: "All URLs must be absolute and verified"
+      format: "[text](https://...)"
+      validation: "Run link checker before publication"
+
+    - rule_id: "RENDER-034"
+      name: "Blockquotes for Callouts"
+      description: "Use blockquotes for important metadata, warnings, tips"
+      template: "> **Icon Label**: content"
+      examples:
+        - "> 📋 **Quick Reference**: ..."
+        - "> ⚠️ **IMPORTANT**: ..."
+        - "> ⏱️ **Estimated Downtime**: ..."
+
+    - rule_id: "RENDER-035"
+      name: "Lists Must Be Consistent"
+      description: "Use markdown lists, not HTML lists"
+      valid: "- item or 1. item"
+      invalid: "<ul><li>item</li></ul>"
+
+    - rule_id: "RENDER-036"
+      name: "Table Formatting"
+      description: "Use markdown tables with proper alignment"
+      format: |
+        | Header 1 | Header 2 |
+        |----------|----------|
+        | Cell 1   | Cell 2   |
+
+  style:
+    - rule_id: "RENDER-037"
+      name: "Active Voice"
+      description: "Prefer active voice over passive"
+      example_good: "We reduced database queries by 60%"
+      example_bad: "Database queries were reduced by 60%"
+      reference: "Microsoft Style Guide — Voice"
+
+    - rule_id: "RENDER-038"
+      name: "Clarity Over Cleverness"
+      description: "Use simple words; avoid marketing jargon"
+      prohibited:
+        - "revolutionary"
+        - "groundbreaking"
+        - "synergy"
+        - "cutting-edge"
+      reference: "Microsoft Style Guide — Word Choice"
+
+    - rule_id: "RENDER-039"
+      name: "Benefit-Driven Language"
+      description: "Focus on 'why' and 'how it helps' not just 'what'"
+      example_good: "Self-Service OAuth2 Client Management reduces partner onboarding time by 40%"
+      example_bad: "OAuth2 Client Management Support Added"
+
+    - rule_id: "RENDER-040"
+      name: "Consistency in Terminology"
+      description: "Use same terms throughout (don't switch between 'registrations' and 'records')"
+      approach: "Create glossary in setup and stick to it"
+
+  validation:
+    - rule_id: "RENDER-041"
+      name: "Link Verification"
+      description: "All URLs must be absolute and return 200 OK"
+      timing: "Check before publication"
+
+    - rule_id: "RENDER-042"
+      name: "Emoji Consistency"
+      description: "Use consistent emojis for same concepts across document"
+      examples:
+        - "🔴 = Critical"
+        - "📋 = Info block"
+        - "⚠️ = Warning"
+        - "✨ = Benefit"
+
+    - rule_id: "RENDER-043"
+      name: "No Placeholders"
+      description: "Verify no TBD, TODO, FIXME, [UPDATE] remain"
+      timing: "Final check before publication"
+
+# ================================
+# AGENT WORKFLOW
+# ================================
+agentWorkflow: |
+  Step 1: Read release-notes-schema.yaml (YAML source)
+  Step 2: Validate against schema.validation.deterministic_checks
+  Step 3: For each rule in rendering.sections:
+    a) Extract data from YAML
+    b) Apply formatting rules (globalRules.formatting + globalRules.style)
+    c) Render markdown using template
+    d) Run checks (globalRules.validation)
+  Step 4: Generate complete Markdown document
+  Step 5: Output:
+    - YAML version (source: release-notes-schema.yaml)
+    - Markdown version (output: RELEASE_NOTES.md)
+    - Validation report (any warnings/errors)
+
+# ================================
+# EXAMPLE OUTPUT
+# ================================
+exampleOutput:
+  file: ".github/templates/release-notes/examples/sample-output.md"
+  description: "See this file for a complete example of how YAML renders to Markdown"

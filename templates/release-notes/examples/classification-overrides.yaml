@@ -1,0 +1,78 @@
+# Classification Overrides — Consumer Product Customization
+# ==========================================================
+# Product-specific overrides and extensions to the central classification rules.
+# Place in: .github/standards/classification-overrides.yaml (consumer repo)
+#
+# These are deep-merged on top of:
+#   https://raw.githubusercontent.com/{org}/{repo}/main/standards/classification-rules.yaml
+#
+# Merge behaviour:
+#   - additional_prefixes  → appended to central list (not replaced)
+#   - additional_keywords  → appended to central list (not replaced)
+#   - omit_from_output     → overrides central value
+#   - jira_project_key     → product-specific, used in CON-002 issue ref pattern
+#
+# Only define what differs from the central baseline.
+# Full category definitions live in classification-rules.yaml.
+
+# ─── PRODUCT IDENTITY ──────────────────────────────────────────────────────────
+
+product_name: "Inji Certify"
+jira_project_key: "INJICERT"
+issue_ref_pattern: "INJICERT-\\d+"        # Used by CON-002 validation rule
+
+# ─── CATEGORY OVERRIDES ────────────────────────────────────────────────────────
+
+categories:
+
+  newFeatures:
+    additional_prefixes: []               # Add product-specific commit prefixes
+    additional_keywords:
+      - "openid4vci"                      # OpenID for VC Issuance
+      - "mdoc"                            # mDoc/mDL credential format
+      - "mdl"
+      - "pre-auth"                        # Pre-Authorized Code Flow
+      - "presentation during issuance"
+      - "qr code"
+      - "sd-jwt"
+      - "claim 169"
+
+  enhancedFeatures:
+    additional_keywords:
+      - "error handling"
+      - "error message"
+      - "flow"
+      - "revamp"
+
+  bugFixes:
+    additional_keywords:
+      - "certificate path"
+      - "automation script"
+      - "test rig"
+
+  technicalImprovements:
+    additional_prefixes:
+      - "deps:"
+    additional_keywords:
+      - "pixelpass"
+      - "cbor"
+      - "iana"
+      - "mosip identity plugin"
+
+  internal:
+    additional_prefixes:
+      - "automation:"                     # Inji-specific automation commit prefix
+      - "test-rig:"                       # Test rig changes
+    additional_keywords:
+      - "smoke test"
+      - "qa report"
+      - "collab guide"
+    omit_from_output: true
+
+# ─── AMBIGUITY OVERRIDES ───────────────────────────────────────────────────────
+
+ambiguity_rules:
+  unmatched_commit:
+    fallback_category: "technicalImprovements"
+    # Captures Inji commits that don't follow conventional prefixes
+    # but are still worth documenting (e.g. integration library updates)

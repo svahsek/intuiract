@@ -1,0 +1,47 @@
+id: "release-notes"
+name: "Release Notes"
+status: "active"
+last_updated: "2026-04-14"
+description: >-
+  Public manifest for the release-notes content type. Consumer repositories can
+  fetch this file first, then resolve the schema, rendering rules, examples,
+  and agent guidance from the referenced paths.
+
+ownership:
+  maintained_by: "Documentation Team"
+  repository_scope: "public .github standards"
+
+entrypoints:
+  schema: ".github/templates/release-notes/release-notes-schema.yaml"
+  rendering: ".github/templates/release-notes/release-notes-rendering.yaml"
+  quick_reference: ".github/templates/release-notes/release-notes-quick-reference.md"
+  overview: ".github/templates/release-notes/readme.md"
+  skill: ".github/skills/release-notes/SKILL.md"
+  consumer_skill: ".github/skills/release-notes/consumer-release-notes.skill.md"
+  human_rules: ".github/rules/release-notes/release-notes-rule.yaml"
+  classification_rules: ".github/standards/classification-rules.yaml"
+
+examples:
+  minimal: ".github/templates/release-notes/examples/minimal-release-notes.yaml"
+  comprehensive: ".github/templates/release-notes/examples/comprehensive-release-notes.yaml"
+  release_inputs: ".github/templates/release-notes/examples/release-inputs.yaml"
+  classification_overrides: ".github/templates/release-notes/examples/classification-overrides.yaml"
+
+consumer_usage:
+  workflow:
+    - "Fetch this manifest file from the central repository."
+    - "Resolve the schema and rendering files from the entrypoints section."
+    - "Generate or collect release data in YAML that matches the schema."
+    - "Validate the YAML before rendering Markdown output."
+    - "Optionally use the skill file as the orchestration contract for an agent."
+  remote_reference_strategy:
+    recommended_now: "Use direct raw URLs to these files from main or a pinned commit SHA."
+    recommended_later: "Pin to a release tag such as v1 once multiple content types stabilize."
+  notes:
+    - "The schema is the source of truth for required fields and validation rules."
+    - "The rendering file defines deterministic YAML-to-Markdown behavior."
+    - "The quick reference is optimized for agent prompting and lightweight generation."
+    - "The consumer_skill is a full orchestration template for consumer repos — copy and adapt."
+    - "classification_rules defines the central baseline for commit-to-category mapping."
+    - "Copy release_inputs example to docs/releases/release-inputs.yaml in the consumer repo."
+    - "Copy classification_overrides example to .github/standards/ in the consumer repo and customize."

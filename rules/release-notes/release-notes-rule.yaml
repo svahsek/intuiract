@@ -1,0 +1,146 @@
+rules:
+
+  structure:
+    _meta: {prefix: STR, description: Structural and format rules}
+
+    header:
+      STR-001:
+        name: Required Sections
+        severity: error
+        checks: [release_header, min_one_content_section]
+        note: "release_header requires version + date; min_one_content_section requires at least one of newFeatures, bugFixes, enhancedFeatures"
+      STR-002:
+        name: Version Format
+        severity: error
+        pattern: "^v?\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?$"
+        field: metadata.version
+        note: "v-prefix is acceptable (e.g., v0.14.0). Pure X.Y.Z also valid."
+      STR-003:
+        name: Release Date Format
+        severity: error
+        pattern: "^\\d{1,2}(st|nd|rd|th)?\\s[A-Z][a-z]+,?\\s\\d{4}$"
+        field: metadata.releaseDate
+        note: "Accepts ordinal suffixes and optional comma: '25th March, 2026' and '4 March 2026' are both valid."
+
+  content:
+    _meta: {prefix: CON, description: Content completeness and quality}
+
+    overview:
+      CON-001:
+        name: Overview Paragraph Required
+        severity: error
+        rule: summary.paragraphs must contain at least one paragraph
+        note: "Every release must open with an overview paragraph before feature content."
+
+    references:
+      CON-002:
+        name: Issue Reference Pattern
+        severity: warning
+        applies_to: [content.bugFixes[*], content.knownIssues[*]]
+        pattern: "(#\\d+|GH-\\d+|issue\\s+#\\d+|[A-Z]+-\\d+)"
+        field: relatedIssues
+        note: "Accepts GitHub (#123, GH-123) and JIRA (INJICERT-123, INJIVER-123) issue references."
+
+    completeness:
+      CON-003:
+        name: Entry Description Length
+        severity: warning
+        applies_to: content.*[*]
+        min_words: 10
+        max_chars: 200
+      CON-004:
+        name: Section Not Empty
+        severity: warning
+        rule: if_section_present_then_min_one_entry
+
+    breaking_changes:
+      CON-005:
+        name: Breaking Change Flag Required
+        severity: error
+        applies_to: content.enhancedFeatures[*]
+        condition: migrationRequired == true
+        requires: [migrationNotes, affectedVersions]
+
+    compatibility:
+      CON-006:
+        name: Compatible Modules Table Required
+        severity: error
+        applies_to: all releaseTypes
+        rule: compatibleModules must be present with at least one module + version entry
+        note: "Present in every release including patches."
+      CON-007:
+        name: Repository Tags Required
+        severity: error
+        rule: repositories.released must be present with at least one repo + git tag pair
+        note: "Every release must list the repositories and tags released."
+
+    documentation:
+      CON-008:
+        name: Documentation Section Required
+        severity: error
+        rule: supportResources.documentation must include feature_docs and api_docs links
+        note: "Every release links to Feature Docs, API Docs at minimum."
+      CON-009:
+        name: Test Report Link for Non-Patch Releases
+        severity: warning
+        condition: releaseType in [Major, Minor]
+        rule: supportResources.documentation must include a test_report link
+
+    issue_tracking:
+      CON-010:
+        name: Known Issues Must Link to External Tracker
+        severity: warning
+        applies_to: content.knownIssues
+        rule: section must include external_tracker_url field
+        note: "Links to full JIRA filter or GitHub issues list, not just inline entries."
+
+    patch_scope:
+      CON-011:
+        name: Patch Release Must Not Contain New Features
+        severity: warning
+        condition: releaseType in [Patch, Hotfix]
+        rule: content.newFeatures must be absent or empty
+        note: "Patches scope to bug fixes and key updates only."
+
+    user_stories:
+      CON-012:
+        name: User Stories Required for Feature Releases
+        severity: warning
+        condition: releaseType in [Major, Minor]
+        rule: content.userStories must be present with at least one entry
+        note: "Feature releases include a user stories table (JIRA ID + description)."
+
+    placeholders:
+      CON-013:
+        name: No Placeholder Text in Field Values
+        severity: error
+        applies_to: all content fields
+        prohibited: [TBD, TODO, FIXME, WIP, "Coming Soon", TK, "[UPDATE THIS]"]
+        note: "Checks YAML field values before rendering. Complements PRO-003 which catches placeholder prose in rendered Markdown."
+
+  security:
+    _meta: {prefix: SEC, description: Security and access rules}
+
+    prohibited:
+      SEC-001:
+        name: No Internal Content (HIGH)
+        severity: error
+        prohibited: [internal team names, personal developer names, Jira URLs without context]
+      SEC-002:
+        name: No Comparative Marketing (MEDIUM)
+        severity: warning
+        prohibited: [better than, unlike competitors, industry-leading]
+      SEC-003:
+        name: Release Name Matches Product and Version
+        severity: error
+        rule: header release name must contain productName and version field values
+        note: "'Inji Verify v0.17.0' must match productName=Inji Verify and version=0.17.0."
+
+  prose:
+    _meta: {prefix: PRO, description: Applied via Vale styles on rendered Markdown}
+
+    tone:
+      PRO-001: {vale_style: ReleaseNotes/NoMarketing.yml}
+      PRO-002: {vale_style: ReleaseNotes/ConsistentTense.yml}
+    prohibited:
+      PRO-003: {vale_style: ReleaseNotes/ProhibitedTerms.yml}

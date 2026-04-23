@@ -1,0 +1,403 @@
+# EXAMPLE: Comprehensive Release Notes in YAML Schema Format
+# ===========================================================
+# This file demonstrates a fully valid release notes document
+# using the strict YAML schema from release-notes-schema.yaml
+#
+# How to use this:
+# 1. Agents should follow this structure exactly
+# 2. Replace example values with actual release data
+# 3. Remove sections that don't apply (e.g., if no known issues, omit that section)
+# 4. Validate against schema before converting to Markdown
+# 5. Use release-notes-rendering.yaml to convert YAML → Markdown
+
+# ==========================================
+# METADATA SECTION
+# ==========================================
+metadata:
+  version: "2.1.0"
+  releaseDate: "2026-02-16"
+  releaseType: "Minor"
+  productName: "CRVS Integration Platform"
+  productNameAbbr: "CRVS"
+  rolloutTimeline: "Staggered rollout over 2 weeks starting 2026-02-20"
+  targetAudience:
+    - "Integration Partners"
+    - "Platform Administrators"
+    - "API Consumers"
+    - "Birth Registration Operators"
+
+# ==========================================
+# SUMMARY SECTION
+# ==========================================
+summary:
+  headline: "Self-Service OAuth2 Client Management Reduces Partner Onboarding by 40%"
+  
+  paragraphs:
+    - text: "This release introduces OAuth2 client self-service capabilities for CRVS integrations, enabling partners to onboard independently without manual intervention from our team. Partners can now create, manage, and rotate OAuth2 credentials directly through the Admin Portal, eliminating the 5-7 day provisioning delay."
+      sectionLabel: "Purpose"
+    
+    - text: "The focus areas for this release include reducing integration time by 40%, improving security with automated certificate rotation, and providing partners with complete audit visibility into their client activity. These capabilities address feedback from our top 20 integration partners who manage 85% of daily CRVS transactions."
+      sectionLabel: "ThemesAndFocus"
+    
+    - text: "This release is recommended for all CRVS partners planning new deployments in Q1 2026. Partners can continue running on version 1.9.x, but we strongly recommend upgrading to take advantage of the improved onboarding experience and security enhancements."
+      sectionLabel: "Audience"
+    
+    - text: "The rollout will be gradual: US region (Feb 20), EU region (Feb 27), APAC region (Mar 6). We recommend testing in your staging environment after Feb 19 to plan your production upgrade."
+      sectionLabel: "DeploymentStrategy"
+  
+  keyBenefits:
+    - "40% reduction in partner onboarding time (from ~60 hours to ~36 hours)"
+    - "99.99% automated certificate rotation uptime (vs. manual 2-day process)"
+    - "Real-time audit logs for compliance and security reviews"
+    - "Self-service reduces support tickets by ~30%"
+
+# ==========================================
+# CONTENT SECTION
+# ==========================================
+content:
+  # --- NEW FEATURES ---
+  newFeatures:
+    - name: "Self-Service OAuth2 Client Management"
+      description: "Partners can now create, manage, and rotate OAuth2 clients directly through the Admin Portal without submitting manual requests to the support team."
+      useCase: "CRVS integrators can onboard new systems independently, reducing the 5-7 day manual provisioning delay to real-time, enabling faster time-to-market for partner deployments."
+      keyCapabilities:
+        - "Create OAuth2 clients with custom scopes (read, write, admin)"
+        - "Generate and rotate client secrets with single-click operations"
+        - "View complete audit logs of client creation, modification, and secret rotation events"
+        - "Set expiration dates and automatic rotation policies"
+        - "Revoke clients without affecting other integrations"
+      documentation:
+        title: "OAuth Client Management Guide"
+        url: "https://docs.crvs.example.com/guides/oauth-client-management"
+      relatedIssues:
+        - "#1234"
+        - "#1235"
+
+    - name: "Automated Certificate Rotation"
+      description: "System automatically rotates OAuth2 client certificates every 90 days without manual intervention, eliminating renewal deadlines and associated security risks."
+      useCase: "Compliance teams need continuous security without manual operational overhead. Zero-downtime rotation ensures production systems remain unaffected during certificate updates."
+      keyCapabilities:
+        - "Automatic 90-day certificate rotation policy"
+        - "Zero-downtime replacement (old cert remains valid for 7 days during transition)"
+        - "Email notifications 30 and 7 days before rotation"
+        - "Manual on-demand rotation available anytime"
+        - "Auditable rotation history per certificate"
+      documentation:
+        title: "Certificate Rotation Policy"
+        url: "https://docs.crvs.example.com/guides/certificate-rotation"
+      relatedIssues:
+        - "#1456"
+
+    - name: "Real-Time Activity Audit Logs"
+      description: "All OAuth client operations are logged in real-time with complete context: who performed the action, what was changed, when it happened, and from which IP address."
+      useCase: "Security and audit teams can monitor OAuth client changes, detect suspicious activity, and generate compliance reports without contacting support."
+      keyCapabilities:
+        - "Real-time logging of all client operations (create, update, delete, rotate)"
+        - "Metadata captured: user, timestamp, IP address, change details"
+        - "30-day retention with downloadable CSV exports"
+        - "Filterable views by date range, user, operation type"
+        - "Integration with SIEM systems via syslog or API"
+      documentation:
+        title: "Audit Logs API Reference"
+        url: "https://api-docs.crvs.example.com/audit-logs"
+      relatedIssues:
+        - "#1678"
+
+  # --- ENHANCED FEATURES ---
+  enhancedFeatures:
+    - name: "Admin Portal User Interface"
+      improvement: "Redesigned Admin Portal with modern UI, improved navigation, and contextual help system. Load times reduced by 60% through Vue.js optimization and API caching."
+      previousBehavior: "Angular-based portal from 2019 with legacy design patterns; average page load time ~2.8 seconds; confusing navigation requiring 3-4 clicks to common tasks."
+      newBehavior: "Modern Vue.js SPA with single-page navigation; average load time ~1.1 seconds; streamlined workflows reducing task clicks by 50%."
+      impactOnExistingUsers: "Portal sessions remain valid; no re-login required. Users will notice noticeably faster interface response and clearer navigation."
+      migrationRequired: false
+      documentation:
+        title: "Admin Portal User Guide"
+        url: "https://docs.crvs.example.com/admin-portal"
+
+    - name: "Birth Registration Workflow"
+      improvement: "Enhanced error handling with specific error codes and actionable guidance instead of generic failure messages. Error diagnosis time reduced from ~30 minutes to ~2 minutes."
+      previousBehavior: "Generic 'Packet rejected' error messages with no debugging information; required partners to contact support to understand failures."
+      newBehavior: |
+        Specific error codes (e.g., 'ERR_INVALID_BIRTH_DATE_FORMAT', 'ERR_MOTHER_AGE_INVALID') with:
+        - Description of what went wrong
+        - Reason why it's invalid per CRVS rules
+        - Example of correct format
+        - Link to relevant documentation
+      impactOnExistingUsers: "Debugging time reduced by ~60% for registration failures. Existing error handlers remain functional; new detailed errors enhance troubleshooting."
+      migrationRequired: false
+      documentation:
+        title: "Birth Registration Error Codes"
+        url: "https://error-docs.crvs.example.com/registration-errors"
+
+  # --- BUG FIXES ---
+  bugFixes:
+    - bugTitle: "Concurrent registration requests causing duplicate records"
+      description: "When two or more registration requests arrived simultaneously for the same birth record, the system would create duplicate entries instead of applying transaction locking."
+      severity: "Critical"
+      affectedVersions:
+        - "1.8.0"
+        - "1.8.1"
+        - "1.8.2"
+        - "1.9.0"
+        - "1.9.1"
+      workaround: "If duplicate records are detected, contact support with the record ID; they can manually merge duplicates."
+      relatedIssues:
+        - "#2341"
+
+    - bugTitle: "Session timeout not clearing stored OAuth tokens"
+      description: "When a user's Admin Portal session expired, their OAuth client credentials were not cleared from the browser's local storage, creating a minor security risk if another user accessed the same machine."
+      severity: "Medium"
+      affectedVersions:
+        - "1.9.0"
+        - "1.9.1"
+      workaround: "Manually clear browser cache after logout, or use incognito mode for Admin Portal access."
+      relatedIssues:
+        - "#2401"
+
+    - bugTitle: "API rate limiting header incorrect for responses over 10KB"
+      description: "Responses exceeding 10KB payload were not including the X-RateLimit-Remaining header, causing client rate limit tracking to fail."
+      severity: "Low"
+      affectedVersions:
+        - "1.9.0"
+        - "1.9.1"
+      workaround: "Reduce response size by using pagination and filtering parameters; or check rate limit status via HEAD request endpoint."
+      relatedIssues:
+        - "#2567"
+
+  # --- SECURITY UPDATES ---
+  securityUpdates:
+    - title: "SQL Injection Vulnerability in Partner Search API"
+      severity: "Critical"
+      description: "The `/api/v1/partners/search` endpoint was vulnerable to SQL injection through the `name` parameter. An attacker could craft malicious search queries to extract unauthorized data or modify database records. This has been fixed with parameterized queries and input validation."
+      cveid: "CVE-2026-0842"
+      cve_url: "https://nvd.nist.gov/vuln/detail/CVE-2026-0842"
+      affectedVersions:
+        - "< 2.1.0"
+      upgradeRecommended: true
+      workaround: "If upgrade is not immediately possible, disable the partner search API endpoint until patch can be deployed. Use alternative partner lookup via export files (slower but safe)."
+
+    - title: "JWT Token Expiration Not Enforced in Certain Scenarios"
+      severity: "High"
+      description: "Under specific conditions (time zone edge cases during daylight saving transitions), JWT token expiration checks would be bypassed, allowing expired tokens to remain valid for up to 1 hour past expiration."
+      cveid: "CVE-2026-0915"
+      cve_url: "https://nvd.nist.gov/vuln/detail/CVE-2026-0915"
+      affectedVersions:
+        - "< 2.1.0"
+      upgradeRecommended: true
+      workaround: "Ensure all servers are using NTP time synchronization; enable JWT token signing validation on API gateway layer as defense-in-depth."
+
+  # --- API CHANGES ---
+  apiChanges:
+    newApis:
+      - endpoint: "/api/v2/oauth/clients"
+        method: "POST"
+        purpose: "Create a new OAuth2 client for the authenticated user's organization"
+        keyParameters:
+          - "name (required): Human-readable client name"
+          - "scopes (required): Array of OAuth scopes (e.g., ['registrations:read', 'registrations:write'])"
+          - "redirect_uris (optional): Array of authorized redirect URIs for web apps"
+          - "rotation_policy (optional): Cert rotation frequency ('90days', '180days', 'manual')"
+        responseFormat: "JSON"
+        apiDocumentation:
+          format: "OpenAPI 3.0"
+          url: "https://api-docs.crvs.example.com/oauth/create-client"
+
+      - endpoint: "/api/v2/oauth/clients/{client_id}/rotate-secret"
+        method: "POST"
+        purpose: "Rotate OAuth2 client secret immediately (on-demand rotation)"
+        keyParameters:
+          - "client_id (required): ID of the client to rotate"
+        responseFormat: "JSON"
+        apiDocumentation:
+          format: "OpenAPI 3.0"
+          url: "https://api-docs.crvs.example.com/oauth/rotate-secret"
+
+      - endpoint: "/api/v2/audit/logs"
+        method: "GET"
+        purpose: "Retrieve audit logs for OAuth client operations"
+        keyParameters:
+          - "start_date (optional): ISO 8601 date filter"
+          - "end_date (optional): ISO 8601 date filter"
+          - "operation_type (optional): Filter by operation ('create', 'update', 'delete', 'rotate')"
+          - "limit (optional): Results per page (default 100, max 1000)"
+          - "offset (optional): Pagination offset"
+        responseFormat: "JSON"
+        apiDocumentation:
+          format: "OpenAPI 3.0"
+          url: "https://api-docs.crvs.example.com/audit-logs"
+
+    modifiedApis:
+      - endpoint: "/api/v1/registrations"
+        method: "POST"
+        changes: "Response now includes 'registration_id' field for tracking in batch operations; error response structure updated with specific error codes and remediation hints."
+        backwardCompatible: true
+        migrationRequired: false
+
+      - endpoint: "/api/v1/partners/search"
+        method: "GET"
+        changes: "Input validation and SQL injection protections added; functionally identical but now secure. Response structure unchanged."
+        backwardCompatible: true
+        migrationRequired: false
+
+    deprecatedApis:
+      - endpoint: "/api/v1/oauth/provision"
+        method: "POST"
+        deprecatedSince: "2.1.0"
+        removalVersion: "3.0.0"
+        replacement: "Use POST /api/v2/oauth/clients for self-service client creation"
+        migrationGuide:
+          title: "OAuth API v1 to v2 Migration Guide"
+          url: "https://docs.crvs.example.com/api-migration/oauth-v1-to-v2"
+
+  # --- TECHNICAL IMPROVEMENTS ---
+  technicalImprovements:
+    performance:
+      - area: "Birth registration processing"
+        improvement: "Reduced database queries by optimizing SQL queries and adding intelligent caching layer"
+        quantifiedImpact: "40% faster processing time (from 2.0s to 1.2s average response time for POST /registrations)"
+        affectedComponents:
+          - "Registration Service"
+          - "Database Layer"
+          - "Cache Layer"
+
+      - area: "Partner search functionality"
+        improvement: "Implemented full-text search indexing instead of LIKE queries"
+        quantifiedImpact: "60% faster search (from 800ms to 320ms for 100k partners)"
+        affectedComponents:
+          - "Search Service"
+          - "Elasticsearch Integration"
+
+      - area: "Admin Portal frontend"
+        improvement: "Migrated from Angular to Vue.js; optimized bundle size from 2.1MB to 680KB"
+        quantifiedImpact: "68% smaller bundle; 60% faster initial load (2.8s to 1.1s)"
+        affectedComponents:
+          - "Admin Portal UI"
+          - "Frontend Build Pipeline"
+
+    reliability:
+      - area: "API availability"
+        improvement: "Implemented circuit breaker pattern for downstream service failures; graceful degradation instead of cascading failures"
+        impact: "99.99% uptime target increased from 99.95%; incident response time reduced by 70%"
+
+      - area: "Data consistency"
+        improvement: "Added transaction-level locking for concurrent operations; eliminated race condition bugs"
+        impact: "Zero duplicate record creation; data integrity validated in all edge cases"
+
+    infrastructure:
+      - change: "Kubernetes cluster upgrade from 1.24 to 1.28"
+        description: "Security patches, performance improvements, and access to new cluster features"
+
+      - change: "Database migration from PostgreSQL 12 to 15"
+        description: "Enhanced performance, better vacuum management, native JSON support improvements"
+
+  # --- KNOWN ISSUES ---
+  knownIssues:
+    - title: "Admin Portal session timeout warning appears early"
+      description: "Users see session timeout warning 5 minutes before actual timeout. This is intentional for better UX, but some users find it confusing."
+      workaround: "Warning is informational; click 'Extend Session' to continue, or let session close and re-login. No data loss occurs."
+      fixedIn: "2.1.1"
+      issueTracker: "https://github.com/example/crvs/issues/3124"
+
+    - title: "Certificate rotation email sent twice in rare conditions"
+      description: "When cron jobs coincide with manual rotation request, duplicate notification emails may be sent."
+      workaround: "Duplicate emails are safe to ignore; only one certificate rotation actually occurs."
+      fixedIn: "2.1.2"
+      issueTracker: "https://github.com/example/crvs/issues/3156"
+
+  # --- DEPRECATIONS ---
+  deprecations:
+    - item: "OAuth 1.0 Support"
+      reason: "OAuth 1.0 is deprecated by the OAuth specification itself due to security limitations. OAuth 2.0 is the industry standard and provides better security, simpler implementation, and broader tool support."
+      removalVersion: "3.0.0"
+      replacement: "Use OAuth 2.0 client credentials flow"
+      migrationGuide:
+        title: "OAuth 1.0 to 2.0 Migration"
+        url: "https://docs.crvs.example.com/oauth-migration"
+
+    - item: "Admin Portal AngularJS Version"
+      reason: "Angular has been replaced with Vue.js for better performance and maintainability. AngularJS (v1.x) is no longer maintained by Google."
+      removalVersion: "3.0.0"
+      replacement: "Modern Vue.js portal (available now in 2.1.0)"
+      migrationGuide:
+        title: "Admin Portal Migration Guide"
+        url: "https://docs.crvs.example.com/admin-portal-migration"
+
+  # --- UPGRADE INSTRUCTIONS ---
+  upgradeInstructions:
+    estimatedDowntime: "3-5 minutes (rolling deployment, ~1-2 min per region)"
+    backupRequired: true
+    
+    upgradeSteps:
+      - stepNumber: 1
+        action: "Back up your database and current application state"
+        details: "See backup procedures in your infrastructure documentation. Estimated backup time: 10-30 minutes depending on data volume."
+        commands:
+          - "pg_dump crvs_production > crvs_backup_$(date +%Y%m%d_%H%M%S).sql"
+
+      - stepNumber: 2
+        action: "Update application code to version 2.1.0"
+        details: "Use your standard deployment pipeline. Recommend deploying to staging first to validate."
+        commands:
+          - "git fetch origin"
+          - "git checkout v2.1.0"
+
+      - stepNumber: 3
+        action: "Run database migrations"
+        details: "Migrations are backward compatible and can be rolled back if needed."
+        commands:
+          - "./bin/migrate --version 2.1.0"
+
+      - stepNumber: 4
+        action: "Restart application services"
+        details: "Services will briefly be unavailable; use rolling restart to minimize impact."
+        commands:
+          - "kubectl rollout restart deployment/crvs-api"
+
+    rollbackProcedure: "If critical issues occur, revert to v1.9.1 by running `kubectl rollout undo deployment/crvs-api` and restoring the database backup from Step 1."
+
+  # --- KNOWN LIMITATIONS ---
+  knownLimitations:
+    - limitation: "OAuth client quota per organization is 50 clients"
+      plannedFor: "2.2.0"
+      workaround: "Contact support to request higher quota; can be granted on case-by-case basis."
+
+    - limitation: "Audit logs retention is 30 days (not longer)"
+      plannedFor: "2.2.0"
+      workaround: "Export audit logs to your own storage system for longer-term retention; see export API."
+
+    - limitation: "Automatic certificate rotation not available for clients created before v2.1.0"
+      plannedFor: "2.1.1"
+      workaround: "Manually recreate OAuth clients in v2.1.0 to enable automatic rotation, or manually rotate certificates as before."
+
+  # --- SUPPORT & RESOURCES ---
+  supportResources:
+    documentation:
+      releasePage: "https://docs.crvs.example.com/releases/2.1.0"
+      upgradeGuide: "https://docs.crvs.example.com/upgrading/v1-to-v2"
+      troubleshootingGuide: "https://docs.crvs.example.com/troubleshooting"
+      apiReference: "https://api-docs.crvs.example.com"
+
+    supportChannels:
+      shortTermSupport: "Available for 12 months from release (active bug fixes and security patches)"
+      longTermSupport: "Available for 36 months from release (security patches only)"
+      communityForum: "https://community.crvs.example.com"
+      issueTracker: "https://github.com/example/crvs/issues"
+
+# ==========================================
+# VALIDATION CHECKLIST
+# ==========================================
+# Use this to validate before converting to Markdown:
+#
+# [ ] All required fields populated (version, releaseDate, releaseType)
+# [ ] No placeholder text (TBD, TODO, FIXME, [UPDATE])
+# [ ] All URLs are absolute and accessible (tested)
+# [ ] Version format is semantic (X.Y.Z)
+# [ ] Date format is YYYY-MM-DD
+# [ ] All quantified metrics included (no vague terms like "faster")
+# [ ] Breaking changes include migration steps
+# [ ] Security updates include workarounds
+# [ ] All deprecated items have replacement and migration guide
+# [ ] Issue tracker links are correct format
+# [ ] No internal email addresses or IP addresses exposed
+# [ ] Key benefits are specific and measurable

@@ -1,0 +1,935 @@
+# Release Notes Schema (YAML)
+# ========================================
+# Strict, agent-friendly schema for generating release notes
+# Reference: TGDP Release Notes Template + Microsoft Style Guide
+# Format: YAML → Markdown conversion for publishing
+# Agent Mode: Deterministic field validation before markdown generation
+
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://github.com/.github/templates/release-notes/schema/v1"
+title: "Release Notes"
+description: "Strict YAML schema for release notes content generation by agents"
+type: "object"
+required:
+  - metadata
+  - summary
+  - content
+
+# ========================================
+# METADATA SECTION (Required)
+# ========================================
+properties:
+  metadata:
+    type: "object"
+    description: "Release identification and metadata"
+    required:
+      - version
+      - releaseDate
+      - releaseType
+    properties:
+      version:
+        type: "string"
+        pattern: "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+        description: "Semantic version (X.Y.Z or vX.Y.Z) per https://semver.org"
+        example: "2.1.0"
+        validation:
+          - rule: "STR-002: Must follow semantic versioning; v-prefix is acceptable"
+            severity: "ERROR"
+
+      releaseDate:
+        type: "string"
+        format: "date"
+        pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+        description: "Release date in YYYY-MM-DD format"
+        example: "2026-02-16"
+        validation:
+          - rule: "STR-003: Date must be DD Month YYYY format in output"
+            severity: "ERROR"
+            hint: "Schema stores YYYY-MM-DD; converter renders as '16 February 2026' in markdown"
+
+      releaseType:
+        type: "string"
+        enum:
+          - "Major"
+          - "Minor"
+          - "Patch"
+          - "Hotfix"
+          - "LTS"
+        description: "Classification of release scope per semver"
+        example: "Minor"
+        validation:
+          - rule: "Helps agents categorize impact level"
+            severity: "INFO"
+
+      productName:
+        type: "string"
+        minLength: 1
+        maxLength: 100
+        description: "Name of product/service being released"
+        example: "CRVS Integration Platform"
+
+      productNameAbbr:
+        type: "string"
+        minLength: 1
+        maxLength: 10
+        description: "Short abbreviation for cross-references"
+        example: "CRVS"
+
+      rolloutTimeline:
+        type: "string"
+        description: "Target deployment window and strategy"
+        example: "Staggered rollout over 2 weeks starting 2026-02-20"
+
+      targetAudience:
+        type: "array"
+        items:
+          type: "string"
+        description: "Who should care about this release"
+        example:
+          - "Integration Partners"
+          - "Platform Administrators"
+          - "API Consumers"
+
+# ========================================
+# SUMMARY SECTION (Required)
+# ========================================
+  summary:
+    type: "object"
+    description: "High-level business context and goals"
+    required:
+      - headline
+      - paragraphs
+    properties:
+      headline:
+        type: "string"
+        minLength: 10
+        maxLength: 150
+        description: "One-liner summary of release purpose. Style: Active voice, benefit-driven"
+        example: "Self-Service OAuth2 Client Management Reduces Partner Onboarding by 40%"
+        validation:
+          - rule: "PRO-001: Must be clear, avoid marketing hype (TGDP clarity standards)"
+            severity: "ERROR"
+            reference: "https://github.com/thegooddocsproject/templates"
+
+      paragraphs:
+        type: "array"
+        minItems: 2
+        maxItems: 4
+        items:
+          type: "object"
+          required:
+            - text
+          properties:
+            text:
+              type: "string"
+              minLength: 50
+              maxLength: 500
+              description: "Paragraph content explaining release purpose, themes, and impact"
+              validation:
+                - rule: "PRO-001: No superlatives, focus on factual impact"
+                  reference: "https://docs.microsoft.com/style-guide/word-choice/use-simple-words"
+
+            sectionLabel:
+              type: "string"
+              enum:
+                - "Purpose"
+                - "ThemesAndFocus"
+                - "Audience"
+                - "DeploymentStrategy"
+              description: "Logical section this paragraph addresses"
+
+      keyBenefits:
+        type: "array"
+        items:
+          type: "string"
+        minItems: 1
+        maxItems: 5
+        description: "Quantified business benefits (e.g., '40% faster', '50% cost reduction')"
+        example:
+          - "40% reduction in partner onboarding time"
+          - "Automated certificate rotation reduces security incidents"
+        validation:
+          - rule: "Benefits must be quantified where possible"
+            severity: "WARNING"
+
+# ========================================
+# CONTENT SECTION (Required - Sections)
+# ========================================
+  content:
+    type: "object"
+    description: "Detailed release content organized by category"
+    properties:
+      # --- New Features ---
+      newFeatures:
+        type: "array"
+        description: "New capabilities added in this release"
+        items:
+          type: "object"
+          required:
+            - name
+            - description
+          properties:
+            name:
+              type: "string"
+              minLength: 5
+              maxLength: 100
+              description: "Feature name (Title Case)"
+              example: "Self-Service OAuth2 Client Management"
+
+            description:
+              type: "string"
+              minLength: 20
+              maxLength: 300
+              description: "1-2 sentence benefit-focused description"
+              example: "Partners can now create and manage OAuth2 clients directly through the Admin Portal without manual intervention"
+              validation:
+                - rule: "PRO-001: Use clear language, no jargon without definition"
+                  severity: "ERROR"
+                  reference: "Microsoft Style Guide - Plain Language"
+
+            useCase:
+              type: "string"
+              minLength: 10
+              maxLength: 200
+              description: "When/why users would use this feature"
+              example: "CRVS integrators can onboard independently without waiting for manual client provisioning"
+
+            keyCapabilities:
+              type: "array"
+              items:
+                type: "string"
+              minItems: 1
+              maxItems: 5
+              description: "Specific capabilities provided by this feature"
+              example:
+                - "Create OAuth2 clients with custom scopes"
+                - "Generate and rotate client secrets automatically"
+                - "View audit logs of client activity"
+
+            documentation:
+              type: "object"
+              properties:
+                title:
+                  type: "string"
+                  description: "Documentation page title"
+                url:
+                  type: "string"
+                  format: "uri"
+                  description: "URL to feature documentation"
+              validation:
+                - rule: "CON-008: All features must have documentation links"
+                  severity: "ERROR"
+
+            relatedIssues:
+              type: "array"
+              items:
+                type: "string"
+              description: "GitHub issue numbers or JIRA tickets (#1234, JIRA-567)"
+              example:
+                - "#1234"
+                - "#1235"
+
+      # --- Enhanced Features ---
+      enhancedFeatures:
+        type: "array"
+        description: "Improvements to existing features"
+        items:
+          type: "object"
+          required:
+            - name
+            - improvement
+          properties:
+            name:
+              type: "string"
+              minLength: 5
+              maxLength: 100
+              description: "Name of feature being enhanced"
+              example: "Birth Registration Workflow"
+
+            improvement:
+              type: "string"
+              minLength: 20
+              maxLength: 300
+              description: "What was improved and why it matters"
+              example: "Enhanced error handling with specific error codes and actionable guidance instead of generic failures"
+              validation:
+                - rule: "Focus on impact, not technical details"
+                  severity: "WARNING"
+
+            previousBehavior:
+              type: "string"
+              minLength: 10
+              maxLength: 200
+              description: "How it worked before this release"
+              example: "Generic 'Packet rejected' error messages with no debugging information"
+
+            newBehavior:
+              type: "string"
+              minLength: 10
+              maxLength: 200
+              description: "How it works now after this release"
+              example: "Specific error codes with structured failure reasons and recommended actions"
+
+            impactOnExistingUsers:
+              type: "string"
+              minLength: 10
+              maxLength: 200
+              description: "What users will notice when using this improved feature"
+              example: "Debugging time for failed registrations reduced by ~60%"
+
+            migrationRequired:
+              type: "boolean"
+              description: "Does this require action from users?"
+
+            migrationNotes:
+              type: "string"
+              description: "If migration is required, explain what users need to do"
+              example: "Update error handling logic to parse new error structure; see migration guide"
+              validation:
+                - rule: "CON-005: Breaking changes must include migration steps"
+                  severity: "ERROR"
+
+            documentation:
+              type: "object"
+              properties:
+                title:
+                  type: "string"
+                url:
+                  type: "string"
+                  format: "uri"
+
+      # --- Bug Fixes ---
+      bugFixes:
+        type: "array"
+        description: "Issues resolved in this release"
+        items:
+          type: "object"
+          required:
+            - bugTitle
+            - impact
+          properties:
+            bugTitle:
+              type: "string"
+              minLength: 5
+              maxLength: 100
+              description: "Clear title of the bug fixed"
+              example: "Concurrent registration requests causing duplicate records"
+
+            description:
+              type: "string"
+              minLength: 20
+              maxLength: 300
+              description: "Explanation of the issue and solution"
+
+            severity:
+              type: "string"
+              enum:
+                - "Critical"
+                - "High"
+                - "Medium"
+                - "Low"
+              description: "Severity of the bug that was fixed"
+
+            affectedVersions:
+              type: "array"
+              items:
+                type: "string"
+              description: "Versions affected by this bug"
+              example:
+                - "1.8.0"
+                - "1.8.1"
+                - "1.9.0"
+
+            workaround:
+              type: "string"
+              description: "Workaround for users still on affected versions"
+
+            relatedIssues:
+              type: "array"
+              items:
+                type: "string"
+              example:
+                - "#2341"
+
+      # --- Security Updates ---
+      securityUpdates:
+        type: "array"
+        description: "Security fixes and vulnerability patches"
+        items:
+          type: "object"
+          required:
+            - title
+            - severity
+          properties:
+            title:
+              type: "string"
+              minLength: 5
+              maxLength: 100
+              description: "Security issue title (no sensitive details)"
+              example: "SQL Injection Vulnerability in Search API"
+
+            severity:
+              type: "string"
+              enum:
+                - "Critical"
+                - "High"
+                - "Medium"
+              description: "CVSS severity classification"
+
+            description:
+              type: "string"
+              minLength: 10
+              maxLength: 300
+              description: "Non-technical explanation of impact"
+              example: "Authentication bypass in session invalidation could allow unauthorized access"
+
+            cveid:
+              type: "string"
+              description: "CVE identifier if applicable"
+              example: "CVE-2026-0001"
+
+            cve_url:
+              type: "string"
+              format: "uri"
+              description: "Link to CVE details"
+
+            affectedVersions:
+              type: "array"
+              items:
+                type: "string"
+              example:
+                - "< 2.0.5"
+
+            upgradeRecommended:
+              type: "boolean"
+              description: "Is upgrading immediately recommended?"
+
+            workaround:
+              type: "string"
+              description: "Temporary mitigation if upgrade not immediately possible"
+
+      # --- API Changes ---
+      apiChanges:
+        type: "object"
+        description: "New, modified, or deprecated API endpoints"
+        properties:
+          newApis:
+            type: "array"
+            description: "New API endpoints available in this release"
+            items:
+              type: "object"
+              required:
+                - endpoint
+                - method
+              properties:
+                endpoint:
+                  type: "string"
+                  pattern: "^/[a-z/]*$"
+                  description: "API path (e.g., /api/v2/oauth/clients)"
+                  example: "/api/v2/oauth/clients"
+
+                method:
+                  type: "string"
+                  enum:
+                    - "GET"
+                    - "POST"
+                    - "PUT"
+                    - "PATCH"
+                    - "DELETE"
+
+                purpose:
+                  type: "string"
+                  minLength: 10
+                  maxLength: 200
+                  description: "What this API does"
+
+                keyParameters:
+                  type: "array"
+                  items:
+                    type: "string"
+                  description: "Important request parameters"
+
+                responseFormat:
+                  type: "string"
+                  enum:
+                    - "JSON"
+                    - "XML"
+                    - "CSV"
+                  default: "JSON"
+
+                apiDocumentation:
+                  type: "object"
+                  properties:
+                    format:
+                      type: "string"
+                      enum:
+                        - "OpenAPI"
+                        - "Swagger"
+                        - "GraphQL"
+                      example: "OpenAPI"
+                    url:
+                      type: "string"
+                      format: "uri"
+                      description: "Link to spec documentation"
+
+          modifiedApis:
+            type: "array"
+            description: "Changes to existing endpoints"
+            items:
+              type: "object"
+              required:
+                - endpoint
+                - changes
+              properties:
+                endpoint:
+                  type: "string"
+                  example: "/api/v1/registrations"
+
+                changes:
+                  type: "string"
+                  minLength: 20
+                  maxLength: 300
+                  description: "What changed in request/response"
+                  example: "Response now includes 'registration_id' field for batch tracking"
+
+                backwardCompatible:
+                  type: "boolean"
+                  description: "Does this break existing integrations?"
+
+                migrationRequired:
+                  type: "boolean"
+
+                migrationGuide:
+                  type: "object"
+                  properties:
+                    title:
+                      type: "string"
+                    url:
+                      type: "string"
+                      format: "uri"
+                  validation:
+                    - rule: "CON-005: Breaking changes require migration guide"
+                      severity: "ERROR"
+
+          deprecatedApis:
+            type: "array"
+            description: "Endpoints being phased out"
+            items:
+              type: "object"
+              required:
+                - endpoint
+                - removalVersion
+              properties:
+                endpoint:
+                  type: "string"
+                  example: "/api/v1/legacy/register"
+
+                deprecatedSince:
+                  type: "string"
+                  pattern: "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+                  description: "Version when deprecated"
+
+                removalVersion:
+                  type: "string"
+                  pattern: "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+                  description: "Target version for removal"
+
+                replacement:
+                  type: "string"
+                  description: "API endpoint to use instead"
+                  example: "Use /api/v2/registrations"
+
+                migrationGuide:
+                  type: "object"
+                  properties:
+                    title:
+                      type: "string"
+                    url:
+                      type: "string"
+                      format: "uri"
+
+      # --- Performance & Infrastructure ---
+      technicalImprovements:
+        type: "object"
+        description: "Performance, reliability, and infrastructure changes"
+        properties:
+          performance:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                area:
+                  type: "string"
+                  description: "Component or process improved"
+                  example: "Birth registration processing"
+
+                improvement:
+                  type: "string"
+                  description: "What was optimized"
+                  example: "Reduced database queries by 60%"
+
+                quantifiedImpact:
+                  type: "string"
+                  pattern: "^(\\d+%|\\d+x|\\d+ms|\\d+GB|\\d+requests/sec).*"
+                  description: "Measurable improvement (must include metric)"
+                  example: "40% faster processing time (from 2s to 1.2s average)"
+                  validation:
+                    - rule: "IMP-001: Use concrete metrics, not vague terms like 'faster'"
+                      severity: "ERROR"
+
+                affectedComponents:
+                  type: "array"
+                  items:
+                    type: "string"
+
+          reliability:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                area:
+                  type: "string"
+                improvement:
+                  type: "string"
+                impact:
+                  type: "string"
+
+          infrastructure:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                change:
+                  type: "string"
+                description:
+                  type: "string"
+
+      # --- Known Issues ---
+      knownIssues:
+        type: "array"
+        description: "Issues discovered after release that don't block use"
+        items:
+          type: "object"
+          required:
+            - title
+            - workaround
+          properties:
+            title:
+              type: "string"
+              description: "Issue title"
+
+            description:
+              type: "string"
+              description: "What's broken and impact scope"
+
+            workaround:
+              type: "string"
+              description: "How users can work around it"
+
+            fixedIn:
+              type: "string"
+              pattern: "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+              description: "Planned version for fix"
+
+            issueTracker:
+              type: "string"
+              format: "uri"
+              description: "GitHub issue or JIRA ticket link"
+
+      # --- Deprecations ---
+      deprecations:
+        type: "array"
+        description: "Features, libraries, or approaches being deprecated"
+        items:
+          type: "object"
+          required:
+            - item
+            - removalVersion
+          properties:
+            item:
+              type: "string"
+              description: "What's being deprecated"
+              example: "OAuth1.0 support"
+
+            reason:
+              type: "string"
+              description: "Why it's being removed"
+              example: "Superseded by OAuth2.0 which provides better security"
+
+            removalVersion:
+              type: "string"
+              pattern: "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+              description: "When it will be removed"
+
+            replacement:
+              type: "string"
+              description: "What to use instead"
+
+            migrationGuide:
+              type: "object"
+              properties:
+                title:
+                  type: "string"
+                url:
+                  type: "string"
+                  format: "uri"
+              validation:
+                - rule: "CON-005: Must include migration guide for deprecations"
+                  severity: "ERROR"
+
+      # --- Upgrade Instructions ---
+      upgradeInstructions:
+        type: "object"
+        description: "How to upgrade to this release"
+        properties:
+          upgradeSteps:
+            type: "array"
+            items:
+              type: "object"
+              required:
+                - stepNumber
+                - action
+              properties:
+                stepNumber:
+                  type: "integer"
+                  minimum: 1
+
+                action:
+                  type: "string"
+                  description: "Specific action to take"
+
+                details:
+                  type: "string"
+                  description: "Additional details or warnings"
+
+                commands:
+                  type: "array"
+                  items:
+                    type: "string"
+                  description: "Shell commands if applicable"
+
+          rollbackProcedure:
+            type: "string"
+            description: "How to rollback if upgrade fails"
+
+          estimatedDowntime:
+            type: "string"
+            description: "Expected impact on service availability"
+            example: "3-5 minutes maintenance window required"
+
+          backupRequired:
+            type: "boolean"
+            description: "Should data be backed up before upgrade?"
+
+      # --- Known Limitations ---
+      knownLimitations:
+        type: "array"
+        description: "Features not included or constraints of this release"
+        items:
+          type: "object"
+          required:
+            - limitation
+          properties:
+            limitation:
+              type: "string"
+              description: "What's not supported in this release"
+              example: "Multi-tenancy support not available in this release"
+
+            plannedFor:
+              type: "string"
+              pattern: "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+              description: "Target version for this feature"
+
+            workaround:
+              type: "string"
+              description: "Temporary solution if needed now"
+
+      # --- Support & Resources ---
+      supportResources:
+        type: "object"
+        description: "Links to help and documentation"
+        properties:
+          documentation:
+            type: "object"
+            properties:
+              releasePage:
+                type: "string"
+                format: "uri"
+              upgradeGuide:
+                type: "string"
+                format: "uri"
+              troubleshootingGuide:
+                type: "string"
+                format: "uri"
+              apiReference:
+                type: "string"
+                format: "uri"
+
+          supportChannels:
+            type: "object"
+            properties:
+              shortTermSupport:
+                type: "string"
+                example: "Available for 12 months from release"
+              longTermSupport:
+                type: "string"
+                example: "Available for 36 months from release"
+              communityForum:
+                type: "string"
+                format: "uri"
+              issueTracker:
+                type: "string"
+                format: "uri"
+
+# ========================================
+# VALIDATION & REFERENCES
+# ========================================
+validation:
+  externalReferences:
+    - id: "TGDP-Release-Notes"
+      title: "The Good Docs Project - Release Notes Template"
+      url: "https://github.com/thegooddocsproject/templates/tree/main/templates/release-notes"
+      description: "Industry-standard template for release notes structure"
+      appliesTo:
+        - "content.newFeatures"
+        - "content.enhancedFeatures"
+        - "summary"
+      usage: "Use TGDP structure for organizing content sections"
+
+    - id: "Microsoft-Style-Guide"
+      title: "Microsoft Style Guide"
+      url: "https://docs.microsoft.com/style-guide/"
+      description: "Plain language, clarity, tone principles"
+      appliesTo:
+        - "summary.paragraphs[].text"
+        - "content.newFeatures[].description"
+      rules:
+        - "Use active voice"
+        - "Prefer simple words over complex ones"
+        - "Write for scanability"
+      usage: "Apply Microsoft's principles for all descriptive text"
+
+    - id: "Semantic-Versioning"
+      title: "Semantic Versioning 2.0.0"
+      url: "https://semver.org/"
+      description: "Standard for version numbering (MAJOR.MINOR.PATCH)"
+      appliesTo:
+        - "metadata.version"
+      usage: "All version values must comply with semver spec"
+
+  deterministic_checks:
+    - rule_id: "STR-001"
+      name: "Required Sections"
+      check_type: "presence"
+      validation: "All required sections must be present with at least one entry"
+      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+
+    - rule_id: "STR-002"
+      name: "Version Format"
+      check_type: "pattern"
+      validation: "Version must match semantic versioning (X.Y.Z or vX.Y.Z)"
+      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+
+    - rule_id: "STR-003"
+      name: "Date Format"
+      check_type: "pattern"
+      validation: "Release date must be in YYYY-MM-DD format internally; rendered as '25th March, 2026'"
+      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+
+    - rule_id: "CON-013"
+      name: "No Placeholder Text"
+      check_type: "content"
+      prohibited_patterns:
+        - "TBD"
+        - "TODO"
+        - "FIXME"
+        - "WIP"
+        - "[UPDATE THIS]"
+        - "Coming Soon"
+      validation: "All placeholder text must be replaced with actual content"
+      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+
+    - rule_id: "CON-005"
+      name: "Migration Guide for Breaking Changes"
+      check_type: "conditional"
+      condition: "If migrationRequired == true"
+      requirement: "migrationNotes must not be empty"
+      validation: "Breaking changes must include migration instructions"
+      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+
+    - rule_id: "PRO-001"
+      name: "Language & Clarity"
+      check_type: "content"
+      prohibited:
+        - "revolutionary"
+        - "groundbreaking"
+        - "best-in-class"
+        - "cutting-edge"
+      validation: "Avoid marketing superlatives; use factual language"
+      note: "PRO-001 also enforces this via Vale on rendered Markdown"
+      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+
+    - rule_id: "CON-008"
+      name: "Documentation Links"
+      check_type: "presence"
+      validation: "All new features must have documentation links"
+      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+
+    - rule_id: "SEC-001"
+      name: "Prohibited Content"
+      check_type: "content"
+      prohibited:
+        - "internal email addresses"
+        - "private IP addresses"
+        - "confidential code names"
+        - "personal names of individual employees"
+      validation: "Remove any internal-only or sensitive information"
+      rules_file: ".github/rules/release-notes/release-notes-rule.yaml"
+
+  agent_instructions:
+    - |
+      Step 1: Parse this YAML schema
+      Step 2: Verify all 'required' fields are populated with non-empty values
+      Step 3: Check field types match schema constraints
+      Step 4: Run all deterministic checks from validation.deterministic_checks
+             (Full rule definitions: .github/rules/release-notes/release-notes-rule.yaml)
+      Step 5: If violations found, report by rule ID (STR-*, CON-*, SEC-*, PRO-*) with fix suggestions
+      Step 6: Convert YAML to Markdown using the rendering rules in release-notes-rendering.yaml
+             (Rendering rule IDs: HDR-*, ROL-*, SUM-*, FEA-*, ENH-*, BUG-*, RSEC-*, API-*, IMP-*, ISS-*)
+      Step 7: Apply Microsoft Style Guide principles during conversion
+      Step 8: Return both YAML (source of truth) and Markdown (rendered output)
+
+# ========================================
+# EXAMPLE DATA (Agent Reference)
+# ========================================
+examples:
+  minimal:
+    description: "Minimal valid release notes (patch release with single bug fix)"
+    minimalContent: |
+      metadata:
+        version: "2.1.1"
+        releaseDate: "2026-02-16"
+        releaseType: "Patch"
+        productName: "CRVS Platform"
+      summary:
+        headline: "Security Patch: SQL Injection Vulnerability Fixed"
+        paragraphs:
+          - text: "This patch addresses a critical security vulnerability discovered in the search API that could allow unauthorized data access. All users should upgrade immediately."
+            sectionLabel: "Purpose"
+      content:
+        bugFixes:
+          - bugTitle: "SQL Injection in search API"
+            impact: "Critical security vulnerability"
+            severity: "Critical"
+            affectedVersions: ["2.0.0", "2.1.0"]
+
+  comprehensive:
+    description: "Full release notes with multiple categories"
+    url: ".github/templates/release-notes/examples/comprehensive-release-notes.yaml"
+
+# ========================================
+# RENDERING RULES
+# ========================================
+rendering:
+  description: "How to convert this YAML structure to Markdown for publishing"
+  file: ".github/templates/release-notes/release-notes-rendering.yaml"

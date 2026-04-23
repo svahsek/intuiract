@@ -1,0 +1,66 @@
+# Release Inputs — Per-Release Configuration
+# ===========================================
+# Fill this file before generating release notes for a new release.
+# Place in: docs/releases/release-inputs.yaml (consumer repo)
+#
+# The release notes skill reads this file first.
+# If this file is absent, the skill falls back to auto-detection and prompts.
+#
+# Required fields: version, base_tag, release_branch, release_type, product_name
+
+# ─── REQUIRED ──────────────────────────────────────────────────────────────────
+
+version: "0.14.0"                          # Semantic version: X.Y.Z or vX.Y.Z
+base_tag: "v0.13.1"                        # Git tag of the previous release
+release_branch: "release/0.14.0"          # Branch containing this release's commits
+release_type: "Minor"                      # Major | Minor | Patch | Hotfix | LTS
+product_name: "Inji Certify"              # Full product name (used in header + SEC-003)
+
+# ─── RECOMMENDED ───────────────────────────────────────────────────────────────
+
+product_name_abbr: "INJICERT"             # Short abbreviation (max 10 chars)
+jira_project_key: "INJICERT"             # JIRA project key for issue reference pattern (CON-002)
+                                          # Leave blank if not using JIRA
+
+release_date: ""                          # YYYY-MM-DD — leave blank to use today's date
+
+target_audience:
+  - "Developers"
+  - "Implementers"
+  - "System Integrators"
+
+rollout_timeline: ""                      # Optional: e.g. "Staggered rollout over 2 weeks"
+
+# ─── OUTPUT ────────────────────────────────────────────────────────────────────
+
+output_dir: "docs/releases/"             # Directory where output files will be saved
+                                          # Outputs: {version}-release-notes.yaml
+                                          #          {version}-release-notes.md
+                                          #          {version}-validation-report.txt
+
+# ─── DOCUMENTATION LINKS (CON-008 / CON-009) ───────────────────────────────────
+# Required for validation to pass. Fill before running the skill.
+
+documentation:
+  feature_docs: ""                        # CON-008 REQUIRED: URL to feature documentation
+  api_docs: ""                            # CON-008 REQUIRED: URL to API documentation
+  test_report: ""                         # CON-009 REQUIRED for Major/Minor releases
+  collab_guide: ""                        # Optional: collaboration/onboarding guide URL
+
+# ─── OPTIONAL CONTEXT ──────────────────────────────────────────────────────────
+# Provide additional context to help the agent write better summaries.
+# These are not validated — they improve the quality of generated prose.
+
+release_highlights: ""                   # Free text: key themes or focus of this release
+                                          # e.g. "Focus on OpenID4VCI compliance and mDoc support"
+
+known_issues_tracker: ""                 # CON-010: URL to full known issues filter
+                                          # e.g. "https://mosip.atlassian.net/issues/?filter=16603"
+
+compatible_modules:                       # CON-006 REQUIRED: tested module versions
+  - module: ""                            # e.g. "Inji Wallet"
+    version: ""                           # e.g. "0.12.0"
+
+repositories_released:                   # CON-007 REQUIRED: repos and git tags released
+  - repo: ""                              # e.g. "inji-certify"
+    tag: ""                               # e.g. "v0.14.0"
