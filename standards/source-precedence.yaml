@@ -1,0 +1,262 @@
+# Source Precedence Rules (Machine-Readable)
+
+## Purpose
+
+Define field-level source precedence for release evidence reconciliation. This is the automation authority — not embedded in skill prose, but machine-readable and deterministic.
+
+## Version
+
+- Version: 1.0.0
+- Last Updated: 2026-04-23
+- Authority: Standards maintainers
+
+## Format
+
+- **YAML structure**: Precedence is defined as ordered lists (primary, fallback_1, fallback_2, ...).
+- **Conflict resolution**: First non-empty source wins.
+- **Special rules**: Documented per field where applicable.
+
+## Field-Level Precedence
+
+```yaml
+version: "1.0.0"
+last_updated: "2026-04-23"
+description: "Field-level source precedence for release evidence reconciliation"
+
+field_precedence:
+
+  # === Item Classification ===
+  
+  change_type:
+    description: "Classification of the change: feature, enhancement, bug, security, deprecation"
+    primary: "github_issue_type_or_labels"
+    fallback:
+      - "github_pr_labels"
+      - "github_pr_title_prefix"
+      - "commit_message_prefix"
+    resolution_rule: |
+      1. Check GitHub issue 'type' field or 'type:*' labels → extract type
+      2. If not found, check PR labels for 'type:feature', 'type:bug', etc.
+      3. If not found, check PR title for conventional prefixes (feat:, fix:, etc.)
+      4. If not found, analyze commit messages in PR for conventional prefixes
+      5. Default: mark as 'unresolved' and flag for manual review
+    example: |
+      - Issue has 'type:feature' label → change_type = "feature"
+      - Issue unlabeled, but PR has 'type:enhancement' → change_type = "enhancement"
+      - Neither issue nor PR labeled, but commit says "fix: bug description" → change_type = "bug"
+
+  # === User/Business Impact ===
+  
+  user_impact:
+    description: "One-sentence statement of what the user or business gets from this change"
+    primary: "github_issue_description"
+    fallback:
+      - "github_pr_description"
+      - "commit_message_body"
+      - "generated_from_code_diff"
+    resolution_rule: |
+      1. Extract first substantive paragraph from GitHub issue description
+      2. If issue description empty, extract from PR description
+      3. If PR description empty, extract from commit message body (second+ lines)
+      4. If nothing found, generate from code diff analysis (files touched, functions modified)
+      5. If generated, tag with confidence = "generated" for manual review
+    example: |
+      Issue description: "Partners need automated way to create clients"
+      → user_impact = "Partners can now self-provision OAuth2 clients"
+
+  # === Technical Scope ===
+  
+  technical_scope_modules:
+    description: "Which modules/components are affected"
+    primary: "github_pr_files_changed"
+    fallback:
+      - "github_pr_diff_analysis"
+      - "commit_diff_analysis"
+      - "issue_technical_comments"
+    resolution_rule: |
+      1. Parse PR files changed → extract module prefixes (src/api/, src/ui/, etc.)
+      2. If PR not available, analyze commit diffs
+      3. If no git evidence, search issue comments for technical references
+      4. Deduplicate module list
+    example: |
+      PR files: src/api/oauth/*, src/ui/admin/* 
+      → technical_scope.modules = ["api", "ui", "auth"]
+
+  # === Shipped Status ===
+  
+  shipped_included_in_release:
+    description: "Whether this change is actually included in the release (not just planned)"
+    primary: "release_tag_boundary"
+    fallback:
+      - "release_branch_merge_commit"
+      - "issue_milestone_membership"
+    resolution_rule: |
+      1. Check if PR merge commit is reachable from release tag
+      2. If tag not cut yet, check if PR is merged into release branch
+      3. If neither, check issue milestone (advisory only; lower confidence)
+      4. Inclusion truth: tag always wins
+    special_case: |
+      If issue says "Done" but tag says "Not included" → trust tag.
+      Tag is the source of truth for shipped status.
+    example: |
+      - Tag v1.2.3 contains commit abc123 from PR #100 → shipped = true
+      - PR #101 merged but not in tag v1.2.3 → shipped = false (even if issue marked Done)
+
+  # === QA Validation Status ===
+  
+  qa_status:
+    description: "Result of QA testing: pass, fail, partial, not_tested"
+    primary: "qa_test_execution_results"
+    fallback:
+      - "github_pr_checks_status"
+      - "github_pr_review_status"
+      - "manual_qa_notes_from_issue"
+    resolution_rule: |
+      1. Check QA system for linked test results (test_case_ids, pass/fail)
+      2. If no QA evidence, check PR status checks (all green = pass, any red = fail)
+      3. If no automated checks, look for manual QA approval in PR reviews
+      4. If none, mark as "not_tested"
+    special_case: |
+      If PR checks pass but QA tests fail → trust QA (more comprehensive)
+      If QA tests pass but PR reviews have blockers → flag for human review
+    example: |
+      - QA system shows QA-TC-2341 passed → qa_status = "pass"
+      - QA system silent, but PR has all green checks → qa_status = "pass"
+      - PR green, but issue has comment "QA found regression" → flag for review
+
+  # === Migration/Breaking Change ===
+  
+  migration_required:
+    description: "Does this change require action from users/integrators?"
+    primary: "github_issue_or_pr_label_migration_required"
+    fallback:
+      - "github_pr_body_migration_notes"
+      - "commit_message_breaking_change_flag"
+      - "api_breaking_change_detection"
+    resolution_rule: |
+      1. Check for explicit label: 'breaking-change', 'migration:required'
+      2. If not labeled, search PR body for explicit "BREAKING CHANGE:" or "Migration:" sections
+      3. If not found, check commit messages for "BREAKING CHANGE:" footer
+      4. If none explicit, analyze code for API signature changes, schema changes
+      5. If detected, flag with confidence = "detected" for human review
+    example: |
+      - PR labeled 'breaking-change' → migration_required = true
+      - PR body includes "Migration required: See guide at..." → migration_required = true
+      - API endpoint signature changed (detected) → flag for human review
+
+  # === Documentation Links ===
+  
+  documentation_links:
+    description: "Links to relevant documentation (feature docs, API docs, migration guide)"
+    primary: "github_pr_body_documentation_links"
+    fallback:
+      - "github_issue_comments_documentation_links"
+      - "generated_docs_urls_from_site_structure"
+    resolution_rule: |
+      1. Extract markdown links from PR body [text](url) format
+      2. If not found, search issue comments for links
+      3. If none found, attempt to generate URLs based on repository docs structure convention
+      4. Generated URLs tagged as "generated" and require human verification
+    example: |
+      PR body: "See [OAuth Setup Guide](https://docs.example.com/oauth)" 
+      → documentation_links.feature_docs = "https://docs.example.com/oauth"
+
+  # === Issue & PR Linkage ===
+  
+  github_issue_number:
+    description: "Which GitHub issue does this PR/commit address?"
+    primary: "github_pr_linked_issues"
+    fallback:
+      - "github_pr_title_issue_reference"
+      - "github_commit_message_issue_reference"
+      - "github_branch_name_issue_reference"
+    resolution_rule: |
+      1. Check GitHub PR 'Linked Issues' field
+      2. If not linked, check PR title for #1234 pattern
+      3. If not found, check commit messages for #1234 or "Fixes #1234" patterns
+      4. If not found, check branch name for issue number
+      5. If none found, mark as "unlinked" and flag confidence down
+    example: |
+      - PR links issue #1234 → github_issue_number = 1234
+      - PR title "feat: oauth setup (closes #1234)" → github_issue_number = 1234
+      - No link found → flag for manual review
+
+## Conflict Resolution Examples
+
+### Scenario 1: Type Conflict
+```
+Issue says: type:feature
+PR labels: type:enhancement
+Commit prefix: "fix:"
+
+Resolution order:
+1. Issue type wins (primary) → change_type = "feature"
+2. PR label ignored (primary already resolved)
+3. Commit prefix ignored
+```
+
+### Scenario 2: Shipped Conflict
+```
+Issue milestone: v1.2.3 (issue marked "Done")
+PR merged: ✓
+Tag v1.2.3 contains PR: ✗
+
+Resolution:
+→ shipped_included_in_release = false
+→ Tag is source of truth; issue milestone is advisory only
+```
+
+### Scenario 3: QA Conflict
+```
+PR status checks: ✓ All green
+QA test QA-TC-2341: ✗ Failed
+
+Resolution:
+→ qa_status = "fail"
+→ QA test results are more comprehensive; trust QA over PR checks
+```
+
+## Confidence Scoring Integration
+
+Each field gets a confidence indicator based on source quality:
+
+```yaml
+confidence_by_source:
+  github_issue_official_field: 95
+  github_issue_label: 90
+  github_pr_official_field: 90
+  github_pr_body_explicit_section: 85
+  github_pr_title_prefix: 75
+  commit_message_prefix: 60
+  generated_from_diff: 40
+  manual_notes: 50
+```
+
+Fields with low-confidence sources should be flagged for manual review if critical.
+
+## Consumer Repository Extensions
+
+Consumer repos can extend or override these rules via `standards/source-precedence-overrides.yaml`:
+
+```yaml
+# Example override: Consumer uses JIRA instead of GitHub issues
+field_precedence_overrides:
+  change_type:
+    primary: "jira_issue_type"  # Override to JIRA
+    fallback:
+      - "github_pr_labels"
+      - "commit_message_prefix"
+```
+
+Rules: Overrides deep-merge on top of central rules. Consumer overrides always win.
+
+## Implementation Notes
+
+1. **Automation Tool**: Reconciliation engine reads this YAML and applies field-level precedence deterministically.
+2. **No Hardcoding**: Extraction/reconciliation logic should NOT embed precedence rules. All logic reads from this file.
+3. **Testability**: Each rule is testable: given input sources, predict output deterministically.
+4. **Auditability**: Every field in evidence output should have a provenance tag showing which source provided it.
+
+## Version History
+
+- **v1.0.0** (2026-04-23): Initial field-level precedence model aligned to release-notes pilot.

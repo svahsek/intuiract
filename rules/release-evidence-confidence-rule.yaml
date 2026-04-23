@@ -1,0 +1,378 @@
+# release-evidence-confidence-rule.yaml
+
+version: "1.0"
+description: "Confidence scoring rules for release evidence items. Used by reconciliation layer to assign 0-100 confidence scores that determine publication eligibility."
+last_updated: "2026-04-23"
+
+# Confidence scoring components with point allocations
+# Total possible score = 100 points
+scoring_components:
+  
+  # Linkage: Is this item connected to planning and decision trail?
+  # Primary source: GitHub issue
+  # Indicates: we know why this was done
+  linkage:
+    component_name: "Intent Linkage"
+    max_points: 20
+    
+    rules:
+      - name: "issue_explicitly_linked"
+        description: "PR has explicit issue reference (Fixes #1234 or linked_issues field)"
+        points: 20
+        
+      - name: "issue_implicit_link"
+        description: "Issue number in commit message or PR title"
+        points: 15
+        
+      - name: "issue_mentioned_in_comments"
+        description: "Issue discussed in PR comments but not explicitly linked"
+        points: 10
+        
+      - name: "no_issue_linkage"
+        description: "PR with no issue reference; orphan change"
+        points: 0
+    
+    # Penalty
+    penalty_for_gap: 20  # if no linkage, deduct 20 points
+
+  # Change Documentation: Is the implementation well-described?
+  # Primary source: PR description, commit messages
+  # Indicates: we understand what changed and why
+  change_documentation:
+    component_name: "Change Documentation Quality"
+    max_points: 20
+    
+    rules:
+      - name: "comprehensive_pr_description"
+        description: "PR includes what, why, breaking changes, migration guide if applicable"
+        points: 20
+        
+      - name: "good_pr_description"
+        description: "PR includes what and why, but missing migration notes (if applicable)"
+        points: 15
+        
+      - name: "minimal_pr_description"
+        description: "PR has only what, no why; commit messages lack context"
+        points: 10
+        
+      - name: "no_description"
+        description: "Auto-generated or empty PR description"
+        points: 0
+    
+    penalty_for_gap: 15
+
+  # Semantic Labeling: Is the change categorized correctly?
+  # Primary source: GitHub labels, commit prefix
+  # Indicates: we know the type of change (feature vs bug vs security)
+  semantic_labeling:
+    component_name: "Semantic Labeling"
+    max_points: 15
+    
+    rules:
+      - name: "explicit_type_label"
+        description: "Type label set explicitly (type:feature, type:bug, type:security, etc.)"
+        points: 15
+        
+      - name: "inferred_from_pr_title"
+        description: "Type inferred from PR title convention (feat:, fix:, security:, etc.)"
+        points: 12
+        
+      - name: "inferred_from_commit"
+        description: "Type inferred from commit prefix convention"
+        points: 10
+        
+      - name: "unlabeled"
+        description: "No semantic label or convention; ambiguous type"
+        points: 0
+    
+    penalty_for_gap: 10
+
+  # Tag Boundary: Is the item included in the release tag?
+  # Primary source: git log base_tag..target_tag
+  # Indicates: this is actually included in the release (not just merged)
+  tag_boundary:
+    component_name: "Release Tag Inclusion"
+    max_points: 25
+    
+    rules:
+      - name: "commit_in_tag_range"
+        description: "Commit is between base_tag and target_tag (on main branch)"
+        points: 25
+        
+      - name: "pr_merged_before_tag"
+        description: "PR merged before tag created, but not verified in tag range"
+        points: 15
+        
+      - name: "pr_merged_after_tag"
+        description: "PR merged after tag created; not in this release"
+        points: 0
+        
+      - name: "tag_not_yet_created"
+        description: "Release tag does not yet exist (pre-release)"
+        points: 0
+    
+    penalty_for_gap: 25  # Critical: if not in tag, auto-exclude
+
+  # QA Evidence: Has this been tested?
+  # Primary source: Linked QA tests, build/CI results
+  # Indicates: we have proof it works
+  qa_evidence:
+    component_name: "QA & Testing Evidence"
+    max_points: 20
+    
+    rules:
+      - name: "comprehensive_qa"
+        description: "Functional tests PASS + Regression tests PASS + Security tests PASS (if applicable)"
+        points: 20
+        
+      - name: "good_qa"
+        description: "Functional tests PASS + Regression tests PASS"
+        points: 18
+        
+      - name: "minimal_qa"
+        description: "At least one test type PASS (functional OR regression)"
+        points: 12
+        
+      - name: "basic_verification"
+        description: "PR build/linter passes; basic smoke verified; no formal QA tests linked"
+        points: 8
+        
+      - name: "no_qa_evidence"
+        description: "No test results, build failures, or verification recorded"
+        points: 0
+    
+    penalty_for_gap: 20  # Major impact if missing
+
+# Confidence Score Tiers (after totaling components)
+
+auto_publish_threshold: 85
+  description: "Score >= 85: Auto-include in release notes. No operator intervention needed."
+  approval_required: false
+  rendering_blocked: false
+
+include_with_warning_threshold: 60
+  description: "Score 60-84: Include in release notes but flag with confidence indicator."
+  approval_required: false  # Can proceed with warning
+  rendering_blocked: false
+  warning_text: "⚠ Lower confidence (source gaps detected)"
+
+manual_review_threshold: 0
+  description: "Score < 60: Block from auto-publication. Requires manual operator review."
+  approval_required: true
+  rendering_blocked: true
+  action: "Move to unresolved[] array; operator reviews and approves manually"
+
+# Confidence Score Calculation Algorithm
+
+calculation_algorithm: |
+  For each release item:
+    1. Score linkage (0-20): Does item have issue reference?
+    2. Score documentation (0-20): Is change well-described?
+    3. Score semantic_labeling (0-15): Is type clear?
+    4. Score tag_boundary (0-25): Is it in the release?
+    5. Score qa_evidence (0-20): Has it been tested?
+    
+    Total Score = Sum of all components
+    
+    Confidence = Total Score / 100 * 100
+    
+    Clamp to 0-100 range
+    
+    Assign Tier:
+      if Confidence >= 85: "auto_include"
+      elif Confidence >= 60: "include_with_warning"
+      else: "manual_review"
+
+# Field-Specific Adjustments
+
+# Some fields have hard overrides that adjust confidence after scoring
+field_overrides:
+  
+  - field: "shipped_status"
+    condition: "if shipped_status == false"
+    action: "confidence capped at 70"
+    reason: "Item not yet in production; incomplete cycle"
+    
+  - field: "breaking_change"
+    condition: "if breaking_change == true AND migration_guide == null"
+    action: "confidence penalty -20"
+    reason: "Breaking change without migration guide is risky"
+    
+  - field: "security_fix"
+    condition: "if change_type == security AND cve_fixed == null"
+    action: "confidence penalty -10"
+    reason: "Security fix without CVE reference is unclear"
+    
+  - field: "deprecation"
+    condition: "if change_type == deprecation AND deprecation_timeline == null"
+    action: "confidence penalty -15"
+    reason: "Deprecation without timeline creates confusion"
+
+# Release-Type Specific Confidence Adjustments
+
+# Different release types have different confidence requirements
+release_type_gates:
+  
+  Major:
+    minimum_confidence_for_features: 80
+    minimum_confidence_for_bugs: 70
+    minimum_confidence_for_enhancements: 70
+    allow_manual_review_items: false
+    description: "Major releases require high confidence; all features must have comprehensive QA"
+    
+  Minor:
+    minimum_confidence_for_features: 75
+    minimum_confidence_for_bugs: 65
+    minimum_confidence_for_enhancements: 65
+    allow_manual_review_items: true  # can include 60-70 with warning
+    description: "Minor releases require good confidence; partial QA acceptable with warning"
+    
+  Patch:
+    minimum_confidence_for_features: 60
+    minimum_confidence_for_bugs: 60
+    minimum_confidence_for_enhancements: 60
+    allow_manual_review_items: true
+    description: "Patches can proceed with lower confidence; reduced scope"
+    
+  Hotfix:
+    minimum_confidence_for_bugs: 50
+    allow_manual_review_items: true
+    allow_unverified: true  # Can accept developer verification only
+    description: "Hotfixes expedited; risk documented"
+
+# Confidence Adjustment Examples
+
+examples:
+  
+  example_1:
+    item: "Self-service OAuth2 feature (REL-001)"
+    scenario: "Feature with full QA, well-linked, tagged, production deployed"
+    scoring:
+      linkage: 20  # Explicit issue #1234 link
+      documentation: 20  # Comprehensive PR description
+      semantic_labeling: 15  # type:feature label
+      tag_boundary: 25  # In v1.2.3 tag range
+      qa_evidence: 20  # 5 functional tests PASS, 3 regression tests PASS
+    total: 100
+    confidence_score: 100
+    confidence_tier: "auto_include"
+    operator_action: "Include in release notes automatically"
+    
+  example_2:
+    item: "Bug fix for race condition (REL-002)"
+    scenario: "Bug fix with basic QA, good link, tagged but warning in security scan"
+    scoring:
+      linkage: 20  # Issue #5678 explicitly linked
+      documentation: 15  # PR description explains what, why, but no regression notes
+      semantic_labeling: 15  # type:bug label
+      tag_boundary: 25  # In v1.2.3 tag
+      qa_evidence: 12  # Reproduction test PASS, 1 regression test PASS, but security scan has warning
+    total: 87
+    field_override: 0  # None apply
+    confidence_score: 87
+    confidence_tier: "auto_include"
+    operator_action: "Include in release notes; monitor post-deployment for security warning"
+    
+  example_3:
+    item: "Enhancement - API pagination (REL-004)"
+    scenario: "Enhancement merged but QA incomplete, no issue linkage"
+    scoring:
+      linkage: 0  # No issue reference
+      documentation: 10  # Minimal PR description
+      semantic_labeling: 12  # Inferred from PR title "enhance: pagination"
+      tag_boundary: 25  # In tag range
+      qa_evidence: 8  # Build passes, no formal tests
+    total: 55
+    confidence_score: 55
+    confidence_tier: "manual_review"
+    operator_action: "Move to unresolved[]; operator must review and approve or request QA tests"
+    
+  example_4:
+    item: "Security fix - SQL injection (REL-003)"
+    scenario: "Security fix, fully tested, but not yet deployed"
+    scoring:
+      linkage: 20  # Security issue #9012 linked
+      documentation: 20  # Clear PR description with exploit scenario
+      semantic_labeling: 15  # type:security label
+      tag_boundary: 15  # PR merged before tag, but tag not yet created
+      qa_evidence: 20  # Security scan PASS, 4 security tests PASS
+    total: 90
+    field_override: -20  # shipped_status == false → capped at 70
+    confidence_score: 70
+    confidence_tier: "include_with_warning"
+    operator_action: "Include with warning; scheduled deployment needed before release publication"
+
+# Confidence Monitoring & Reporting
+
+reporting:
+  
+  per_release_summary:
+    format: "YAML"
+    includes:
+      - total_items_scored: "integer"
+      - auto_include_count: "items with confidence >= 85"
+      - include_with_warning_count: "items with confidence 60-84"
+      - manual_review_count: "items with confidence < 60"
+      - average_confidence: "mean across all items"
+      - lowest_confidence_item: "item and score"
+      - confidence_distribution_chart: "histogram 0-100"
+    
+  per_item_detail:
+    format: "table"
+    columns:
+      - item_id
+      - change_type
+      - confidence_score
+      - confidence_tier
+      - scoring_breakdown: "linkage|documentation|labeling|tag|qa"
+      - operator_action: "auto_include|include_with_warning|manual_review"
+
+# Confidence Debugging
+
+debugging:
+  
+  low_confidence_diagnostic: |
+    If confidence score is unexpectedly low:
+    
+    1. Check linkage (0-20):
+       - Is issue #XXXX explicitly linked in PR?
+       - Does commit message reference the issue?
+       - If 0 points: Create/link issue before re-scoring
+    
+    2. Check documentation (0-20):
+       - Does PR description explain "what" and "why"?
+       - Are breaking changes documented?
+       - If < 15 points: Update PR description
+    
+    3. Check semantic_labeling (0-15):
+       - Is type:feature/bug/security label set?
+       - Does PR title follow convention (feat:, fix:)?
+       - If 0 points: Add semantic label
+    
+    4. Check tag_boundary (0-25):
+       - Run: git log base_tag..target_tag --oneline | grep <commit_sha>
+       - If not in range: PR not merged yet OR tag not created yet
+       - If merged but not tagged: Create tag
+    
+    5. Check qa_evidence (0-20):
+       - Are test case IDs documented?
+       - Do tests PASS in CI/build?
+       - If 0 points: Link tests to PR or run tests
+
+# Version & Change Log
+
+metadata:
+  version: "1.0.0"
+  created_date: "2026-04-23"
+  created_by: "Technical Writer"
+  status: "Draft"
+  next_review: "2026-05-23"
+  
+change_log:
+  - version: "1.0.0"
+    date: "2026-04-23"
+    changes:
+      - "Initial confidence scoring model with 5 components (linkage, documentation, labeling, tag, qa)"
+      - "Defined auto-publish (85+), include-with-warning (60-84), manual-review (<60) tiers"
+      - "Added release-type-specific adjustments (Major/Minor/Patch/Hotfix)"
+      - "Included field override rules and examples"

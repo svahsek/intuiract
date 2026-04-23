@@ -1,0 +1,420 @@
+# Evidence to Release Notes Mapping
+
+## Purpose
+
+Define how fields from normalized release evidence (`release-evidence.yaml`) map to release-notes schema fields (`release-notes-schema.yaml`).
+
+This file is the bridge between:
+- **Source**: Canonical evidence model (organization-agnostic)
+- **Target**: Release-notes schema (TGDP/Microsoft style)
+
+## Format
+
+- **YAML mapping**: Evidence fields → Schema fields
+- **Transformation rules**: Optional functions (extract, concatenate, etc.)
+- **Cardinality**: 1:1 (most), 1:many (arrays), many:1 (aggregation)
+- **Filtering**: Which evidence items include in which release-notes sections
+
+## Mapping Rules
+
+```yaml
+version: "1.0.0"
+last_updated: "2026-04-23"
+description: "Map release-evidence items to release-notes schema sections"
+
+# ====================================
+# METADATA SECTION
+# ====================================
+
+metadata_mapping:
+
+  # Release version
+  release_notes.metadata.version:
+    source: "release.version"
+    transformation: "trim_v_prefix"  # Remove leading 'v' if present
+    example: "v1.2.3" → "1.2.3"
+
+  # Release date
+  release_notes.metadata.releaseDate:
+    source: "release.release_date"
+    transformation: "identity"  # Use as-is (YYYY-MM-DD)
+    example: "2026-04-23"
+
+  # Release type
+  release_notes.metadata.releaseType:
+    source: "release.release_type"
+    transformation: "identity"
+    example: "Minor"
+
+  # Product name
+  release_notes.metadata.productName:
+    source: "manual_input"  # Not in evidence; must be provided by operator
+    cardinality: "1"
+    example: "CRVS Integration Platform"
+
+  # Product abbreviation
+  release_notes.metadata.productNameAbbr:
+    source: "manual_input"
+    cardinality: "1"
+    example: "CRVS"
+
+  # Rollout timeline
+  release_notes.metadata.rolloutTimeline:
+    source: "manual_input"  # Determined at release time
+    cardinality: "optional"
+    example: "Staggered rollout over 2 weeks starting 2026-04-23"
+
+  # Target audience
+  release_notes.metadata.targetAudience:
+    source: "manual_input"  # Determined at release time
+    cardinality: "optional"
+    transformation: "array_of_strings"
+    example: ["Integration Partners", "Platform Administrators"]
+
+# ====================================
+# SUMMARY SECTION
+# ====================================
+
+summary_mapping:
+
+  # Release headline
+  release_notes.summary.headline:
+    source: "manual_input"  # Operator writes headline based on top 3-5 features
+    cardinality: "1"
+    length_constraint: "10-150 chars"
+    style_note: "Benefit-driven, action-oriented, no marketing hype"
+    example: "Self-Service Client Management Accelerates Integrator Onboarding"
+
+  # Summary paragraphs
+  release_notes.summary.paragraphs:
+    source: "manual_input + evidence"  # Operator writes, evidence provides context
+    cardinality: "2-4"
+    each_paragraph:
+      text: "manual_input"
+      section_label: "manual_input"
+    example: |
+      - text: "This release focuses on partner self-service capabilities and operational stability."
+        sectionLabel: "ThemesAndFocus"
+
+  # Key benefits
+  release_notes.summary.keyBenefits:
+    source: "item.normalized_for_release_notes.feature_key_capabilities"
+    transformation: "aggregate_quantified_impacts"
+    cardinality: "1-5"
+    rule: |
+      1. Collect feature_key_capabilities from all new features (confidence >= 85)
+      2. Extract quantified benefits (%, time reduction, etc.)
+      3. Format as bullet points with emoji
+    example:
+      - "✨ 40% reduction in integrator onboarding time"
+      - "✨ Automated security credential rotation reduces key exposure"
+
+# ====================================
+# NEW FEATURES SECTION
+# ====================================
+
+new_features_mapping:
+
+  # Filter: Only items with change_type == "feature" and confidence >= 85
+  filtering:
+    change_type: "feature"
+    confidence_threshold: 85
+    shipped_status: true  # Only shipped features
+
+  # Item structure
+  items:
+    - source_field: "item.normalized_for_release_notes.feature_name"
+      target_field: "content.newFeatures[*].name"
+      cardinality: "1:1"
+      example: "Self-Service OAuth2 Client Management"
+
+    - source_field: "item.normalized_for_release_notes.feature_description"
+      target_field: "content.newFeatures[*].description"
+      cardinality: "1:1"
+      example: "Partners can now create and manage OAuth2 clients directly through the Admin Portal"
+
+    - source_field: "item.normalized_for_release_notes.feature_use_case"
+      target_field: "content.newFeatures[*].useCase"
+      cardinality: "1:1"
+      example: "Reduce integrator onboarding time..."
+
+    - source_field: "item.normalized_for_release_notes.feature_key_capabilities"
+      target_field: "content.newFeatures[*].keyCapabilities"
+      cardinality: "1:1"
+      transformation: "identity"  # Array remains array
+      example: ["Create clients", "Generate secrets", "View audit logs"]
+
+    - source_field: "item.normalized_for_release_notes.feature_documentation_link"
+      target_field: "content.newFeatures[*].documentation.url"
+      cardinality: "1:1"
+      example: "https://docs.opencrvs.org/features/oauth-client-provisioning"
+
+    - source_field: "item.normalized_for_release_notes.feature_related_issues"
+      target_field: "content.newFeatures[*].relatedIssues"
+      cardinality: "1:1"
+      transformation: "identity"
+      example: ["#1234", "#1235"]
+
+# ====================================
+# ENHANCED FEATURES SECTION
+# ====================================
+
+enhanced_features_mapping:
+
+  # Filter: Only items with change_type == "enhancement" and confidence >= 60
+  filtering:
+    change_type: "enhancement"
+    confidence_threshold: 60
+    shipped_status: true
+
+  # Structure similar to newFeatures, but includes before/after fields
+  items:
+    - source_field: "item.normalized_for_release_notes.enhancement_name"
+      target_field: "content.enhancedFeatures[*].name"
+
+    - source_field: "item.normalized_for_release_notes.enhancement_improvement"
+      target_field: "content.enhancedFeatures[*].improvement"
+
+    - source_field: "item.normalized_for_release_notes.enhancement_previous"
+      target_field: "content.enhancedFeatures[*].previousBehavior"
+
+    - source_field: "item.normalized_for_release_notes.enhancement_new"
+      target_field: "content.enhancedFeatures[*].newBehavior"
+
+    - source_field: "item.normalized_for_release_notes.enhancement_impact"
+      target_field: "content.enhancedFeatures[*].impactOnExistingUsers"
+
+    - source_field: "item.normalized_for_release_notes.migration_required"
+      target_field: "content.enhancedFeatures[*].migrationRequired"
+
+# ====================================
+# BUG FIXES SECTION
+# ====================================
+
+bug_fixes_mapping:
+
+  # Filter: Only items with change_type == "bug" and confidence >= 60
+  filtering:
+    change_type: "bug"
+    confidence_threshold: 60
+    shipped_status: true
+
+  items:
+    - source_field: "item.normalized_for_release_notes.bug_title"
+      target_field: "content.bugFixes[*].bugTitle"
+
+    - source_field: "item.normalized_for_release_notes.bug_description"
+      target_field: "content.bugFixes[*].description"
+
+    - source_field: "item.normalized_for_release_notes.bug_severity"
+      target_field: "content.bugFixes[*].severity"
+      transformation: "map_severity"
+      mapping:
+        "Critical": "Critical"
+        "High": "High"
+        "Medium": "Medium"
+        "Low": "Low"
+
+    - source_field: "item.normalized_for_release_notes.bug_affected_versions"
+      target_field: "content.bugFixes[*].affectedVersions"
+      cardinality: "1:1"
+      transformation: "identity"
+
+    - source_field: "item.normalized_for_release_notes.bug_workaround"
+      target_field: "content.bugFixes[*].workaround"
+      cardinality: "optional"
+
+    - source_field: "item.normalized_for_release_notes.bug_related_issues"
+      target_field: "content.bugFixes[*].relatedIssues"
+
+# ====================================
+# SECURITY UPDATES SECTION
+# ====================================
+
+security_updates_mapping:
+
+  # Filter: Only items with change_type == "security"
+  filtering:
+    change_type: "security"
+    confidence_threshold: 60  # All security items, even partial evidence
+    shipped_status: true
+
+  items:
+    - source_field: "item.normalized_for_release_notes.security_title"
+      target_field: "content.securityUpdates[*].title"
+
+    - source_field: "item.normalized_for_release_notes.security_severity"
+      target_field: "content.securityUpdates[*].severity"
+      transformation: "map_cvss_to_severity"
+      mapping:
+        "Critical": "Critical"
+        "High": "High"
+        "Medium": "Medium"
+
+    - source_field: "item.normalized_for_release_notes.security_description"
+      target_field: "content.securityUpdates[*].description"
+
+    - source_field: "item.normalized_for_release_notes.security_cve_id"
+      target_field: "content.securityUpdates[*].cveid"
+      cardinality: "optional"
+
+    - source_field: "item.normalized_for_release_notes.security_cve_url"
+      target_field: "content.securityUpdates[*].cve_url"
+      cardinality: "optional"
+
+    - source_field: "item.normalized_for_release_notes.security_affected_versions"
+      target_field: "content.securityUpdates[*].affectedVersions"
+
+    - source_field: "item.normalized_for_release_notes.security_upgrade_recommended"
+      target_field: "content.securityUpdates[*].upgradeRecommended"
+
+# ====================================
+# KNOWN ISSUES SECTION
+# ====================================
+
+known_issues_mapping:
+
+  # Filter: Unresolved items with severity == "warning" (errors skip release)
+  filtering:
+    source: "unresolved[]"
+    severity: "warning"
+
+  items:
+    - source_field: "unresolved.reason"
+      target_field: "content.knownIssues[*].description"
+      transformation: "extract_user_facing_issue"
+      rule: |
+        Map internal reconciliation issues to user-facing known issues.
+        Example: "Missing linked issue for PR #240" → "PR #240 not fully validated; may have incomplete documentation"
+
+# ====================================
+# VALIDATION GATE
+# ====================================
+
+validation_before_mapping:
+  - rule: "All items in new_features must have confidence >= 85"
+    failure_action: "exclude from release notes"
+    severity: "warning"
+
+  - rule: "All items must have shipped_status == true"
+    failure_action: "exclude from release notes"
+    severity: "error"
+
+  - rule: "No placeholder text in any mapped field"
+    failure_action: "block release notes generation"
+    severity: "error"
+
+  - rule: "Documentation links must be valid URIs"
+    failure_action: "flag with warning"
+    severity: "warning"
+
+# ====================================
+# EXAMPLE TRANSFORMATION PIPELINE
+# ====================================
+
+transformation_example: |
+
+  INPUT: release-evidence.yaml
+  ↓
+  Filter items:
+    - change_type == "feature" AND confidence >= 85 AND shipped == true
+    - change_type == "bug" AND confidence >= 60 AND shipped == true
+    - change_type == "security" AND shipped == true
+    - unresolved items with severity == "warning"
+  ↓
+  For each filtered item:
+    1. Extract normalized_for_release_notes section
+    2. Map each field per mapping rules above
+    3. Apply transformations (trim_v_prefix, map_severity, etc.)
+    4. Validate mapped fields against release-notes schema
+  ↓
+  OUTPUT: release-notes.yaml (ready for rendering)
+  ↓
+  If validation passes:
+    Render release-notes.yaml → release-notes.md
+  Else:
+    Report validation failures; block rendering
+
+# ====================================
+# IMPLEMENTATION NOTES
+# ====================================
+
+implementation:
+
+  1. Mapping is a YAML file that agents/tools read.
+  2. No hardcoding of evidence field names in generation logic.
+  3. Transformations are named (trim_v_prefix, map_severity) and documented.
+  4. Custom transformations can be added without changing this file.
+  5. Filtering logic must be transparent (which evidence items → which release notes sections).
+  6. Validation happens AFTER mapping, BEFORE rendering.
+
+  Process pseudocode:
+
+  ```
+  def generate_release_notes(evidence_file, mapping_file):
+      evidence = load_yaml(evidence_file)
+      mapping = load_yaml(mapping_file)
+      
+      # 1. Filter evidence items
+      features = [item for item in evidence.items 
+                  if item.change_type == "feature" and item.confidence.score >= 85]
+      bugs = [item for item in evidence.items 
+              if item.change_type == "bug" and item.confidence.score >= 60]
+      security = [item for item in evidence.items 
+                  if item.change_type == "security"]
+      
+      # 2. Map fields
+      release_notes = {
+          metadata: map_metadata(evidence.release, mapping),
+          summary: map_summary(evidence, mapping),
+          content: {
+              newFeatures: [map_item(f, mapping) for f in features],
+              bugFixes: [map_item(b, mapping) for b in bugs],
+              securityUpdates: [map_item(s, mapping) for s in security],
+          }
+      }
+      
+      # 3. Validate
+      if not validate(release_notes, schema):
+          raise ValidationError("Release notes failed schema validation")
+      
+      # 4. Render
+      markdown = render_markdown(release_notes, rendering_rules)
+      return markdown
+  ```
+
+# ====================================
+# VERSION HISTORY
+# ====================================
+
+version_history:
+  - version: "1.0.0"
+    date: "2026-04-23"
+    changes: "Initial mapping for release-notes automation pilot"
+```
+
+## Integration with Skill Workflow
+
+This mapping file is used during the **Generation Phase** of the release-notes skill:
+
+```
+Reconciliation Output: release-evidence.yaml
+                    ↓
+              [This Mapping]
+                    ↓
+         Generated release-notes.yaml
+                    ↓
+       Schema Validation (release-notes-schema.yaml)
+                    ↓
+         Policy Rules Validation (release-notes-rule.yaml)
+                    ↓
+       Vale/Doc Detective Quality Checks
+                    ↓
+        Confidence Gate (auto-include if >= 85)
+                    ↓
+         Render to Markdown
+                    ↓
+         Publish Release Notes
+```
+
+See [../../skills/release-notes/SKILL.md](../../skills/release-notes/SKILL.md) for full workflow.

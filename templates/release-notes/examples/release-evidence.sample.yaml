@@ -1,0 +1,385 @@
+# Sample Release Evidence
+
+## Purpose
+
+A minimal but complete example of a normalized, reconciled release evidence file. This serves as:
+- Reference for extractors and reconcilers
+- Test fixture for mapping and validation
+- Template for first pilot release
+
+## Pilot Release Context
+
+- **Product**: CRVS Integration Platform (example)
+- **Version**: 1.2.3
+- **Release Type**: Minor
+- **Release Date**: 2026-04-23
+- **Base Tag**: v1.2.0
+- **Target Tag**: v1.2.3
+- **Items**: 8 total (mix of features, enhancements, bugs)
+- **Confidence**: 7 pass (>= 85), 1 warning (60-84)
+
+```yaml
+version: "1.0.0"
+
+release:
+  version: "1.2.3"
+  codename: null
+  release_type: "Minor"
+  release_date: "2026-04-23"
+  base_tag: "v1.2.0"
+  target_tag: "v1.2.3"
+
+items:
+
+  # === REL-001: NEW FEATURE ===
+  - item_id: "REL-001"
+    change_type: "feature"
+
+    intent:
+      github_issue_number: 1234
+      github_issue_url: "https://github.com/opencrvs/opencrvs-core/issues/1234"
+      issue_title: "Self-service OAuth2 client provisioning for integrators"
+      issue_description: |
+        Integrators currently require manual request to OpenCRVS team to provision OAuth2 clients.
+        This blocks independent vendor onboarding and creates bottleneck for partners.
+        Requirement: Enable integrators to self-provision clients via Admin Portal with automated approval workflow.
+      issue_labels: ["type:feature", "area:auth", "priority:high", "release:target-v1.2.3"]
+      issue_milestone: "v1.2.3"
+      project_fields:
+        status: "Done"
+        priority: "High"
+        target_release: "v1.2.3"
+        owner: "alice@example.com"
+      user_impact: "Integrators can now provision their own OAuth2 clients without waiting for manual intervention"
+
+    change:
+      pr_number: 5678
+      pr_url: "https://github.com/opencrvs/opencrvs-core/pull/5678"
+      pr_title: "feat: self-service OAuth2 client provisioning"
+      pr_description: |
+        Implements self-service OAuth2 client provisioning feature for integrators.
+        - New Admin Portal UI for client management
+        - Automated approval workflow
+        - Role-based access control (integrator can only manage their own clients)
+        - Audit logging for all client operations
+      pr_labels: ["type:feature", "area:auth", "qa:passed"]
+      merged_at: "2026-04-22T15:30:00Z"
+      merged_by: "bob@example.com"
+
+      commits:
+        - sha: "abc1234def5678abc1234def5678ab"
+          message: "feat: add self-service client creation endpoint"
+          author: "alice@example.com"
+        - sha: "xyz9876abc1234xyz9876abc1234ab"
+          message: "feat: add Admin Portal UI for client management"
+          author: "charlie@example.com"
+        - sha: "def5678abc1234def5678abc1234xy"
+          message: "test: add integration tests for client provisioning"
+          author: "bob@example.com"
+
+      files_changed:
+        - path: "packages/auth/src/api/oauth/client-provisioning.ts"
+          lines_added: 280
+          lines_deleted: 0
+        - path: "packages/auth/src/models/oauth-client.ts"
+          lines_added: 45
+          lines_deleted: 0
+        - path: "packages/admin-ui/src/pages/client-management.vue"
+          lines_added: 210
+          lines_deleted: 0
+        - path: "packages/admin-ui/src/components/client-form.vue"
+          lines_added: 150
+          lines_deleted: 0
+
+      branch_name: "feature/oauth-self-service"
+      base_branch: "main"
+
+    evidence:
+      qa_status: "pass"
+      qa_test_cases:
+        - test_id: "QA-TC-2341"
+          test_name: "Client creation with valid scopes"
+          scope: "functional"
+          status: "pass"
+          executed_at: "2026-04-22T10:00:00Z"
+          environment: "staging"
+        - test_id: "QA-TC-2342"
+          test_name: "Error handling for duplicate client name"
+          scope: "functional"
+          status: "pass"
+          executed_at: "2026-04-22T10:15:00Z"
+          environment: "staging"
+        - test_id: "QA-TC-2343"
+          test_name: "Role-based access control enforcement"
+          scope: "security"
+          status: "pass"
+          executed_at: "2026-04-22T10:30:00Z"
+          environment: "staging"
+        - test_id: "QA-TC-2344"
+          test_name: "Regression: existing OAuth flows unchanged"
+          scope: "regression"
+          status: "pass"
+          executed_at: "2026-04-22T11:00:00Z"
+          environment: "staging"
+
+      pr_checks_passed: true
+      build_status: "pass"
+      security_scan_status: "pass"
+      security_scan_warnings: []
+
+      documentation_links:
+        feature_docs: "https://docs.opencrvs.org/features/oauth-client-provisioning"
+        api_docs: "https://api.opencrvs.org/oauth/clients"
+        integration_guide: "https://docs.opencrvs.org/integrators/oauth-setup"
+
+    shipped:
+      included_in_release: true
+      release_tag: "v1.2.3"
+      tag_commit_sha: "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6"
+      deployed_to_production: false
+      deployment_timestamp: null
+
+    confidence:
+      score: 98
+      score_breakdown:
+        linked_issue: 20
+        pr_linked: 20
+        semantic_labels: 15
+        tag_boundary: 25
+        qa_evidence: 18
+      flags:
+        - "Complete issue linkage"
+        - "Comprehensive QA coverage (4 test cases)"
+        - "All QA tests passing"
+        - "Strong semantic labeling"
+      warnings: []
+
+    normalized_for_release_notes:
+      feature_name: "Self-Service OAuth2 Client Management"
+      feature_description: |
+        Integrators can now create and manage OAuth2 clients directly through the Admin Portal 
+        without requiring manual intervention from the OpenCRVS team.
+      feature_use_case: |
+        Reduce integrator onboarding time by enabling self-service client provisioning and credential rotation.
+      feature_key_capabilities:
+        - "Create OAuth2 clients with custom scopes"
+        - "Generate and rotate client secrets automatically"
+        - "View audit logs of client creation and modifications"
+        - "Role-based access control (integrators manage only their own clients)"
+      feature_documentation_link: "https://docs.opencrvs.org/features/oauth-client-provisioning"
+      feature_related_issues:
+        - "#1234"
+        - "#1235"
+
+  # === REL-002: BUG FIX ===
+  - item_id: "REL-002"
+    change_type: "bug"
+
+    intent:
+      github_issue_number: 2340
+      github_issue_url: "https://github.com/opencrvs/opencrvs-core/issues/2340"
+      issue_title: "Concurrent registration requests causing duplicate records"
+      issue_description: |
+        When two identical registration requests arrive within the same second,
+        both are processed as new, creating duplicate records in the system.
+        Impact: Data integrity, duplicate payments, downstream data loss.
+      issue_labels: ["type:bug", "area:registration", "severity:high", "release:target-v1.2.3"]
+      issue_milestone: "v1.2.3"
+      user_impact: "Fixed race condition that caused duplicate records when concurrent registration requests arrive simultaneously"
+
+    change:
+      pr_number: 5879
+      pr_url: "https://github.com/opencrvs/opencrvs-core/pull/5879"
+      pr_title: "fix: concurrent registration request handling"
+      pr_description: |
+        Implements distributed locking mechanism to prevent duplicate record creation.
+        - Added Redis-based distributed lock on (UIN, registration_type) key
+        - Lock duration: 5 seconds
+        - Duplicate requests within window return existing record ID
+      pr_labels: ["type:bug", "area:registration", "qa:passed"]
+      merged_at: "2026-04-21T14:20:00Z"
+      merged_by: "david@example.com"
+
+      commits:
+        - sha: "lock1234def5678lock1234def5678"
+          message: "fix: add distributed lock for concurrent registrations"
+          author: "david@example.com"
+
+      files_changed:
+        - path: "packages/registration/src/services/registration-service.ts"
+          lines_added: 62
+          lines_deleted: 18
+
+    evidence:
+      qa_status: "pass"
+      qa_test_cases:
+        - test_id: "QA-TC-2345"
+          test_name: "Concurrent registration requests return same record"
+          scope: "functional"
+          status: "pass"
+          executed_at: "2026-04-21T16:00:00Z"
+          environment: "staging"
+        - test_id: "QA-TC-2346"
+          test_name: "Sequential requests create separate records"
+          scope: "functional"
+          status: "pass"
+          executed_at: "2026-04-21T16:15:00Z"
+          environment: "staging"
+        - test_id: "QA-TC-2347"
+          test_name: "Regression: normal registration flow unaffected"
+          scope: "regression"
+          status: "pass"
+          executed_at: "2026-04-21T16:30:00Z"
+          environment: "staging"
+
+      pr_checks_passed: true
+      build_status: "pass"
+      security_scan_status: "pass"
+      security_scan_warnings: []
+
+      documentation_links:
+        api_docs: "https://api.opencrvs.org/registration"
+
+    shipped:
+      included_in_release: true
+      release_tag: "v1.2.3"
+      tag_commit_sha: "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6"
+      deployed_to_production: false
+      deployment_timestamp: null
+
+    confidence:
+      score: 92
+      score_breakdown:
+        linked_issue: 20
+        pr_linked: 20
+        semantic_labels: 15
+        tag_boundary: 25
+        qa_evidence: 12
+      flags:
+        - "Complete issue linkage"
+        - "All QA tests passing"
+        - "High-severity bug resolved"
+      warnings: []
+
+    normalized_for_release_notes:
+      bug_title: "Concurrent Registration Request Handling"
+      bug_description: |
+        Fixed race condition where simultaneous registration requests were both processed as new registrations,
+        creating duplicate records and causing data integrity issues.
+      bug_severity: "High"
+      bug_affected_versions:
+        - "1.2.0"
+        - "1.2.1"
+        - "1.2.2"
+      bug_workaround: |
+        For users on affected versions: Manually deduplicate records in database 
+        using provided SQL script. See migration guide.
+      bug_related_issues:
+        - "#2340"
+
+  # === REL-003: SECURITY UPDATE ===
+  - item_id: "REL-003"
+    change_type: "security"
+
+    intent:
+      github_issue_number: 3401
+      github_issue_url: "https://github.com/opencrvs/opencrvs-core/issues/3401"
+      issue_title: "SQL injection vulnerability in search API"
+      issue_description: |
+        Search API endpoint does not properly parameterize SQL queries.
+        Attackers can inject arbitrary SQL and read/modify sensitive data.
+        CVE-2026-0012 (CVSS 8.5 High)
+      issue_labels: ["type:security", "area:api", "severity:critical", "release:target-v1.2.3"]
+      user_impact: "Security: SQL injection vulnerability in search API remediated"
+
+    change:
+      pr_number: 5980
+      pr_url: "https://github.com/opencrvs/opencrvs-core/pull/5980"
+      pr_title: "security: parameterize SQL queries in search API"
+      merged_at: "2026-04-20T09:15:00Z"
+      merged_by: "eve@example.com"
+
+      commits:
+        - sha: "sec1234def5678sec1234def5678ab"
+          message: "security: use parameterized queries for search API"
+          author: "eve@example.com"
+
+      files_changed:
+        - path: "packages/search/src/api/search-controller.ts"
+          lines_added: 28
+          lines_deleted: 12
+
+    evidence:
+      qa_status: "pass"
+      pr_checks_passed: true
+      build_status: "pass"
+      security_scan_status: "pass"
+      security_scan_warnings: []
+
+      documentation_links:
+        api_docs: "https://api.opencrvs.org/search"
+
+    shipped:
+      included_in_release: true
+      release_tag: "v1.2.3"
+      tag_commit_sha: "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6"
+      deployed_to_production: false
+      deployment_timestamp: null
+
+    confidence:
+      score: 88
+      score_breakdown:
+        linked_issue: 20
+        pr_linked: 20
+        semantic_labels: 15
+        tag_boundary: 25
+        qa_evidence: 8
+      flags:
+        - "Security issue remediated"
+        - "All checks passing"
+      warnings: []
+
+    normalized_for_release_notes:
+      security_title: "SQL Injection Vulnerability in Search API"
+      security_severity: "Critical"
+      security_description: |
+        SQL injection vulnerability in search API endpoint has been remediated.
+        Parameterized queries now prevent arbitrary SQL injection attacks.
+      security_cve_id: "CVE-2026-0012"
+      security_cve_url: "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2026-0012"
+      security_affected_versions:
+        - "< 1.2.3"
+      security_upgrade_recommended: true
+
+unresolved:
+  - item_id: "REL-004"
+    reason: "Missing linked GitHub issue for merged PR #6001"
+    severity: "warning"
+    pr_number: 6001
+    pr_url: "https://github.com/opencrvs/opencrvs-core/pull/6001"
+    detected_at: "2026-04-22T18:00:00Z"
+    resolution_action: |
+      Manual review required: Determine if PR #6001 should be included in v1.2.3.
+      PR title suggests it is a refactoring task; may not warrant release note entry.
+
+metadata:
+  extraction_timestamp: "2026-04-23T08:00:00Z"
+  reconciliation_timestamp: "2026-04-23T09:30:00Z"
+  generated_by: "docintel v0.1.0"
+  validation_report: null
+```
+
+## Usage
+
+1. **Reference**: Copy this structure when building your own extractors/reconcilers.
+2. **Test Fixture**: Use this YAML to test release-notes generation without running extraction.
+3. **Validation**: Run this through schema and rule validators to verify completeness.
+4. **Mapping**: Use this as input to `evidence-to-release-notes-mapping.yaml` → `release-notes-schema.yaml`.
+
+## Key Observations from Sample
+
+1. **Complete Linkage**: Each item has issue, PR, commits, QA tests, documentation.
+2. **Confidence Spread**: REL-001 (98), REL-002 (92), REL-003 (88) — all high, all auto-include.
+3. **Unresolved Item**: REL-004 is flagged because PR lacks linked issue.
+4. **Normalized Output**: Each item includes `normalized_for_release_notes` fields ready for mapping.
+5. **Shipped Consistency**: All included items have matching `release_tag`, `tag_commit_sha`.

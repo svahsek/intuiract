@@ -1,0 +1,478 @@
+# Release Evidence Fields Glossary
+
+## Purpose
+
+Define all fields used in the release evidence contract with clear semantics, cardinality, and validation rules. This ensures consistency across extractors and reconcilers.
+
+## Format
+
+- **YAML structure**: Fields organized by section (Intent, Change, Evidence, Shipped, Confidence).
+- **Cardinality**: required|optional|conditional
+- **Type**: string|number|boolean|array|object|date-time|uri
+- **Validation**: Pattern, length constraints, enum values.
+
+## Global Fields
+
+```yaml
+version:
+  description: "Schema version of this evidence file"
+  cardinality: "required"
+  type: "string"
+  pattern: "^\\d+\\.\\d+\\.\\d+$"
+  example: "1.0.0"
+
+release.version:
+  description: "Release semantic version"
+  cardinality: "required"
+  type: "string"
+  pattern: "^v?(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$"
+  example: "1.2.3"
+  note: "Semantic versioning per https://semver.org. v-prefix acceptable."
+
+release.release_type:
+  description: "Scope of release"
+  cardinality: "required"
+  type: "string"
+  enum: ["Major", "Minor", "Patch", "Hotfix", "LTS"]
+  example: "Minor"
+  note: "Determines QA coverage requirements and communication scope."
+
+release.release_date:
+  description: "Date release was shipped to production"
+  cardinality: "required"
+  type: "date-time"
+  format: "ISO 8601 (YYYY-MM-DD)"
+  example: "2026-04-23"
+  note: "Set during shipped phase, not during planning."
+
+release.base_tag:
+  description: "Previous release tag (start of commit range)"
+  cardinality: "required"
+  type: "string"
+  pattern: "^v?[0-9]+"
+  example: "v1.2.0"
+
+release.target_tag:
+  description: "Current release tag (end of commit range)"
+  cardinality: "required"
+  type: "string"
+  pattern: "^v?[0-9]+"
+  example: "v1.2.3"
+
+release.codename:
+  description: "Optional marketing codename for the release"
+  cardinality: "optional"
+  type: "string"
+  max_length: 50
+  example: "Lightning Strike"
+```
+
+## Item Fields
+
+### Core Identity
+
+```yaml
+item.item_id:
+  description: "Unique identifier for this release item"
+  cardinality: "required"
+  type: "string"
+  pattern: "^REL-\\d+$"
+  example: "REL-001"
+  note: "Format: REL-[sequence number]. Sequential per release."
+
+item.change_type:
+  description: "Classification of the change"
+  cardinality: "required"
+  type: "string"
+  enum: ["feature", "enhancement", "bug", "security", "deprecation", "technical_improvement"]
+  example: "feature"
+  precedence_source: "see source-precedence.yaml"
+```
+
+### Intent Layer (GitHub Issues, Projects)
+
+```yaml
+item.intent.github_issue_number:
+  description: "GitHub issue number addressing this change"
+  cardinality: "required"
+  type: "integer"
+  example: 1234
+  validation: "> 0"
+  note: "Required for full traceability. Unlinked items dropped to unresolved[]."
+
+item.intent.github_issue_url:
+  description: "Full URL to GitHub issue"
+  cardinality: "required"
+  type: "uri"
+  example: "https://github.com/org/repo/issues/1234"
+
+item.intent.issue_title:
+  description: "Title of the GitHub issue"
+  cardinality: "required"
+  type: "string"
+  min_length: 5
+  max_length: 200
+  example: "Self-service OAuth2 client provisioning"
+
+item.intent.issue_description:
+  description: "Full description from issue body"
+  cardinality: "required"
+  type: "string"
+  min_length: 20
+  max_length: 5000
+  validation: "No placeholder text (TBD, TODO, FIXME)"
+  note: "Primary source for user_impact field."
+
+item.intent.issue_labels:
+  description: "All labels on the GitHub issue"
+  cardinality: "optional"
+  type: "array of strings"
+  example: ["type:feature", "area:auth", "priority:high"]
+  note: "Source for change_type precedence."
+
+item.intent.issue_milestone:
+  description: "GitHub milestone this issue is assigned to"
+  cardinality: "optional"
+  type: "string"
+  example: "v1.2.3"
+  note: "Advisory only; shipped status determined by tag, not milestone."
+
+item.intent.project_fields:
+  description: "Custom project field values (status, priority, owner, target_release)"
+  cardinality: "optional"
+  type: "object"
+  properties:
+    status: { type: "string", example: "Done" }
+    priority: { type: "string", enum: ["Low", "Medium", "High"] }
+    target_release: { type: "string", example: "v1.2.3" }
+    owner: { type: "string", example: "alice@example.com" }
+
+item.intent.user_impact:
+  description: "One-sentence statement of business/user value"
+  cardinality: "required"
+  type: "string"
+  min_length: 10
+  max_length: 300
+  example: "Users can now self-provision OAuth2 clients without manual intervention"
+  validation: "No placeholder text; no marketing hype"
+  precedence_source: "Issue description (primary) → PR description (fallback)"
+```
+
+### Change Layer (GitHub PRs, Commits)
+
+```yaml
+item.change.pr_number:
+  description: "GitHub PR number that implements this item"
+  cardinality: "required"
+  type: "integer"
+  example: 5678
+  validation: "> 0"
+
+item.change.pr_url:
+  description: "Full URL to GitHub PR"
+  cardinality: "required"
+  type: "uri"
+  example: "https://github.com/org/repo/pull/5678"
+
+item.change.pr_title:
+  description: "Title of the PR"
+  cardinality: "required"
+  type: "string"
+  min_length: 5
+  max_length: 200
+  example: "feat: self-service OAuth2 client provisioning"
+
+item.change.pr_description:
+  description: "Full description from PR body"
+  cardinality: "optional"
+  type: "string"
+  max_length: 5000
+
+item.change.pr_labels:
+  description: "All labels on the GitHub PR"
+  cardinality: "optional"
+  type: "array of strings"
+  example: ["type:feature", "area:auth", "qa:passed"]
+  note: "Fallback source for change_type if issue labels unavailable."
+
+item.change.merged_at:
+  description: "Timestamp when PR was merged"
+  cardinality: "required"
+  type: "date-time"
+  format: "ISO 8601 (YYYY-MM-DDTHH:MM:SSZ)"
+  example: "2026-04-22T15:30:00Z"
+
+item.change.merged_by:
+  description: "GitHub user who merged the PR"
+  cardinality: "required"
+  type: "string"
+  example: "bob@example.com"
+
+item.change.commits:
+  description: "Array of commits in this PR"
+  cardinality: "required"
+  type: "array of objects"
+  properties:
+    sha: { type: "string", length: 40, example: "abc1234def5678..." }
+    message: { type: "string", example: "feat: add self-service client creation endpoint" }
+    author: { type: "string", example: "alice@example.com" }
+
+item.change.files_changed:
+  description: "Array of files modified in this PR"
+  cardinality: "required"
+  type: "array of objects"
+  properties:
+    path: { type: "string", example: "src/api/oauth/client-provisioning.ts" }
+    lines_added: { type: "integer", example: 250 }
+    lines_deleted: { type: "integer", example: 0 }
+  note: "Source for technical_scope.modules field."
+
+item.change.branch_name:
+  description: "Feature branch name"
+  cardinality: "optional"
+  type: "string"
+  example: "feature/oauth-self-service"
+
+item.change.base_branch:
+  description: "Target branch (usually 'main' or 'develop')"
+  cardinality: "required"
+  type: "string"
+  example: "main"
+```
+
+### Evidence Layer (QA, Tests, Validation)
+
+```yaml
+item.evidence.qa_status:
+  description: "Overall QA validation result"
+  cardinality: "required"
+  type: "string"
+  enum: ["pass", "fail", "partial", "not_tested"]
+  example: "pass"
+  note: "Pass = all required tests passed; Fail = any required test failed; Partial = some tests passed, some skipped"
+
+item.evidence.qa_test_cases:
+  description: "Array of QA test results linked to this item"
+  cardinality: "conditional"
+  type: "array of objects"
+  properties:
+    test_id: { type: "string", example: "QA-TC-2341" }
+    test_name: { type: "string", example: "Client creation with valid scopes" }
+    scope: { type: "string", enum: ["functional", "regression", "integration", "security", "performance"] }
+    status: { type: "string", enum: ["pass", "fail", "blocked", "not_run"] }
+    executed_at: { type: "date-time", format: "ISO 8601" }
+    environment: { type: "string", enum: ["dev", "staging", "preprod", "production"] }
+  cardinality_rule: "For Major/Minor releases: required. For Patch: optional."
+  note: "Primary source for qa_status field."
+
+item.evidence.pr_checks_passed:
+  description: "Did all GitHub PR status checks pass?"
+  cardinality: "required"
+  type: "boolean"
+  example: true
+  note: "CI/CD pipeline results (builds, linters, security scans)."
+
+item.evidence.build_status:
+  description: "Build pipeline result"
+  cardinality: "required"
+  type: "string"
+  enum: ["pass", "fail", "skipped"]
+  example: "pass"
+
+item.evidence.security_scan_status:
+  description: "Security scanning result (SAST, dependency scan, etc.)"
+  cardinality: "required"
+  type: "string"
+  enum: ["pass", "warning", "fail", "skipped"]
+  example: "pass"
+
+item.evidence.security_scan_warnings:
+  description: "List of security warnings or CVEs found"
+  cardinality: "optional"
+  type: "array of strings"
+  example: ["CVE-2026-1234 (Medium severity, remediated)"]
+
+item.evidence.documentation_links:
+  description: "Links to relevant documentation"
+  cardinality: "conditional"
+  type: "object"
+  properties:
+    feature_docs: { type: "uri" }
+    api_docs: { type: "uri" }
+    integration_guide: { type: "uri" }
+    migration_guide: { type: "uri" }
+  cardinality_rule: "feature_docs and api_docs required for features; others optional"
+```
+
+### Shipped Layer (Release Tags, Deployment)
+
+```yaml
+item.shipped.included_in_release:
+  description: "Is this item actually included in the released version?"
+  cardinality: "required"
+  type: "boolean"
+  example: true
+  note: "Determined by tag boundary, not by issue milestone or PR status."
+
+item.shipped.release_tag:
+  description: "Release tag this item is shipped in"
+  cardinality: "conditional"
+  type: "string"
+  example: "v1.2.3"
+  cardinality_rule: "Required if included_in_release == true"
+
+item.shipped.tag_commit_sha:
+  description: "Commit SHA that the release tag points to"
+  cardinality: "conditional"
+  type: "string"
+  length: 40
+  example: "main-abc1234def5678"
+  cardinality_rule: "Required if release_tag is set"
+
+item.shipped.deployed_to_production:
+  description: "Has this been deployed to production?"
+  cardinality: "required"
+  type: "boolean"
+  example: false
+  note: "Updated after deployment verification."
+
+item.shipped.deployment_timestamp:
+  description: "When was this deployed to production?"
+  cardinality: "conditional"
+  type: "date-time"
+  format: "ISO 8601"
+  cardinality_rule: "Required if deployed_to_production == true"
+```
+
+### Confidence & Metadata
+
+```yaml
+item.confidence.score:
+  description: "Overall confidence score (0-100)"
+  cardinality: "required"
+  type: "integer"
+  min: 0
+  max: 100
+  example: 95
+  scoring_rule: |
+    85-100: Auto-include in release notes
+    60-84: Include with warning
+    <60: Manual review required
+
+item.confidence.score_breakdown:
+  description: "Contribution of each score component"
+  cardinality: "required"
+  type: "object"
+  properties:
+    linked_issue: { type: "integer", example: 20 }
+    pr_linked: { type: "integer", example: 20 }
+    semantic_labels: { type: "integer", example: 15 }
+    tag_boundary: { type: "integer", example: 25 }
+    qa_evidence: { type: "integer", example: 15 }
+
+item.confidence.flags:
+  description: "Quality flags (positive attributes)"
+  cardinality: "optional"
+  type: "array of strings"
+  example: ["Complete issue linkage", "All QA tests passing"]
+
+item.confidence.warnings:
+  description: "Issues requiring attention"
+  cardinality: "optional"
+  type: "array of strings"
+  example: ["QA tests for regression scope incomplete"]
+```
+
+### Normalization Output
+
+```yaml
+item.normalized_for_release_notes:
+  description: "Pre-mapped fields for release-notes schema (avoids mapping at render time)"
+  cardinality: "required"
+  type: "object"
+  properties:
+    feature_name: { type: "string" }
+    feature_description: { type: "string" }
+    feature_use_case: { type: "string" }
+    feature_key_capabilities: { type: "array of strings" }
+    feature_documentation_link: { type: "uri" }
+    feature_related_issues: { type: "array of strings (GitHub issue numbers)" }
+  note: "Populated during reconciliation phase; used verbatim during rendering."
+```
+
+## Unresolved Item Fields
+
+```yaml
+unresolved.item_id:
+  description: "Reference to item that could not be fully resolved"
+  cardinality: "required"
+  type: "string"
+  example: "REL-009"
+
+unresolved.reason:
+  description: "Why was this item marked unresolved?"
+  cardinality: "required"
+  type: "string"
+  example: "Missing linked issue for merged PR #240"
+
+unresolved.severity:
+  description: "Impact level of the unresolved issue"
+  cardinality: "required"
+  type: "string"
+  enum: ["warning", "error"]
+  note: "Error blocks release; Warning allows publication but flags for human review."
+
+unresolved.detected_at:
+  description: "When was this detected?"
+  cardinality: "required"
+  type: "date-time"
+  format: "ISO 8601"
+
+unresolved.resolution_action:
+  description: "What should be done to resolve?"
+  cardinality: "required"
+  type: "string"
+  example: "Manual review: Does PR #240 belong in v1.2.3?"
+```
+
+## Metadata Fields
+
+```yaml
+metadata.extraction_timestamp:
+  description: "When extraction from GitHub began"
+  cardinality: "required"
+  type: "date-time"
+  format: "ISO 8601"
+
+metadata.reconciliation_timestamp:
+  description: "When reconciliation completed"
+  cardinality: "required"
+  type: "date-time"
+  format: "ISO 8601"
+
+metadata.generated_by:
+  description: "Tool or agent that generated this evidence"
+  cardinality: "required"
+  type: "string"
+  example: "docintel v0.1.0 or agent workflow v1"
+
+metadata.validation_report:
+  description: "Link to validation report (if validation run)"
+  cardinality: "optional"
+  type: "uri"
+```
+
+## Validation Rules
+
+1. **Required fields**: All `cardinality: required` fields must be populated.
+2. **Conditional fields**: Must be populated if condition is met.
+3. **Cardinality by release type**:
+   - **Major/Minor**: QA test cases required for all features/enhancements.
+   - **Patch**: QA test cases required only for touched areas.
+   - **Hotfix**: Minimal QA; emergency-only.
+4. **No placeholder text**: No field may contain TBD, TODO, FIXME, [UPDATE THIS], Coming Soon, etc.
+5. **URL validity**: All URIs must be well-formed and accessible.
+
+## Version History
+
+- **v1.0.0** (2026-04-23): Initial field glossary for release-evidence-contract v1.

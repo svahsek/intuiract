@@ -6,15 +6,42 @@
 # The release notes skill reads this file first.
 # If this file is absent, the skill falls back to auto-detection and prompts.
 #
-# Required fields: version, base_tag, release_branch, release_type, product_name
+# Required fields: version, base_tag, release_ref, release_type, product_name
 
 # ─── REQUIRED ──────────────────────────────────────────────────────────────────
 
 version: "0.14.0"                          # Semantic version: X.Y.Z or vX.Y.Z
 base_tag: "v0.13.1"                        # Git tag of the previous release
-release_branch: "release/0.14.0"          # Branch containing this release's commits
+release_ref: "release/0.14.0"             # Target ref for diff scope (branch OR tag)
+release_branch: ""                         # Legacy fallback: use if release_ref is not provided
 release_type: "Minor"                      # Major | Minor | Patch | Hotfix | LTS
 product_name: "Inji Certify"              # Full product name (used in header + SEC-003)
+
+# ─── EVIDENCE SOURCE CONTEXT (RECOMMENDED FOR EVIDENCE-DRIVEN RUNS) ───────────
+# Tag/range alone gives only code-diff scope. Add these selectors to improve
+# traceability and confidence scoring in reconciliation.
+
+evidence_source:
+  # Release scope selectors
+  release_ref: "release/0.14.0"            # Optional override for extraction target scope
+  milestone: "v0.14.0"                     # GitHub milestone title (if used)
+
+  # Issue and PR discovery filters
+  include_issue_labels:
+    - "type:feature"
+    - "type:bug"
+  include_pr_labels:
+    - "ready-for-release"
+
+  # Optional explicit queries for API/CLI extraction tools
+  issue_query: "milestone:v0.14.0 is:closed"
+  pr_query: "is:pr is:merged base:main merged:>=2026-04-01"
+
+  # Additional evidence toggles
+  include_discussions: false
+  include_projects: false
+  include_qa_evidence: true
+  include_security_scans: true
 
 # ─── RECOMMENDED ───────────────────────────────────────────────────────────────
 

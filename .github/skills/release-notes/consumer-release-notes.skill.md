@@ -29,6 +29,7 @@ Look for `docs/releases/release-inputs.yaml` in the repository root.
 **If the file exists:**
 - Read all fields from it
 - Validate that required fields are present (see required fields below)
+- If `evidence_source` is present, use it to drive issue/PR/milestone discovery
 - Log which fields were loaded: `"Input file found: docs/releases/release-inputs.yaml"`
 - Skip Step 0b entirely
 
@@ -61,7 +62,7 @@ After auto-detection, resolve remaining fields:
 |---|---|---|
 | `version` | ✅ from branch name | "What is the release version? (e.g. 0.14.0)" |
 | `base_tag` | ✅ from `git describe` | "What is the base tag to compare from? (e.g. v0.13.1)" |
-| `release_branch` | ✅ from `git branch` | "What is the release branch? (e.g. release/0.14.0)" |
+| `release_ref` | ✅ from `git branch` or tag ref | "What is the release ref? (branch or tag, e.g. release/0.14.0 or v0.14.0)" |
 | `release_type` | ✅ infer from semver diff | "Is this a Major, Minor, Patch, or Hotfix?" |
 | `release_date` | ✅ today's date | rarely needed |
 | `product_name` | ❌ | "What is the product name? (e.g. Inji Certify)" |
@@ -75,7 +76,7 @@ After auto-detection, resolve remaining fields:
 ### Required fields summary
 
 ```
-version, base_tag, release_branch, release_type, product_name
+version, base_tag, release_ref, release_type, product_name
 ```
 
 If any required field cannot be resolved after auto-detection and prompting, stop and report:
@@ -143,85 +144,98 @@ Log: `"Classification rules loaded. Consumer overrides: [found/not found]"`
 
 ## Step 3 — Collect Git Data
 
-Run all commands against `base_tag..release_branch`.
+Resolve target ref in this order:
+1. `release_ref`
+2. `release_branch` (legacy fallback)
+
+Run all commands against `base_tag..target_ref`.
+
+If `evidence_source` exists in inputs:
+- Use `evidence_source.release_ref` as the target ref when provided (highest priority override)
+- Use `evidence_source.milestone` for issue/PR filtering
+- Apply `evidence_source.issue_query` and `evidence_source.pr_query` if provided
+- Restrict results by `include_issue_labels` and `include_pr_labels` when present
+- Include QA/security evidence based on `include_qa_evidence` and `include_security_scans`
 
 ```bash
 # 1. Commit log — primary classification input
-git log {base_tag}..{release_branch} \
+git log {base_tag}..{target_ref} \
   --pretty=format:"COMMIT|%H|%s|%an|%ad" \
   --date=short \
   --no-merges
 
 # 2. File change summary
-git diff --stat {base_tag}..{release_branch}
+git diff --stat {base_tag}..{target_ref}
 
 # 3. Full diff — for deep analysis
-git diff {base_tag}..{release_branch}
+git diff {base_tag}..{target_ref}
 ```
 
 > ⚠️ If the full diff exceeds ~4000 lines, switch to file-by-file analysis:
 > ```bash
 > # Get changed files
-> git diff --name-only {base_tag}..{release_branch}
+> git diff --name-only {base_tag}..{target_ref}
 >
 > # Diff each file in priority order:
 > # 1. Source files (src/, lib/, app/)
 > # 2. Config files (*.yaml, *.json, *.toml)
 > # 3. API specs (openapi.yaml, swagger.yaml)
 > # Skip: test/, docs/, *.md, generated files
-> git diff {base_tag}..{release_branch} -- {file}
+> git diff {base_tag}..{target_ref} -- {file}
 > ```
 
 Additionally, if GitHub/JIRA access is available:
 
 ```bash
 # Linked issues from commit messages — extract issue references
-git log {base_tag}..{release_branch} --no-merges \
+git log {base_tag}..{target_ref} --no-merges \
   --pretty=format:"%s %b" | grep -oE "(#[0-9]+|[A-Z]+-[0-9]+)"
 ```
 
 ---
 
-## Step 4 — Classify Changes
+## Step 4 — Reconcile Evidence (Canonical Model)
 
-Using the merged classification rules from Step 2, process every commit from Step 3:
+Transform raw extracted signals into canonical release evidence.
 
-**For each commit:**
-1. Check commit prefix against `commit_prefixes` in each category (exact match, case-sensitive)
-2. If no prefix match, check commit message against `keywords` (case-insensitive, substring match)
-3. Apply `excludes` — if the commit matches an exclusion pattern, downgrade to `internal`
-4. Apply ambiguity resolution if multiple categories match (use `priority_order` from rules)
-5. Skip commits matching `merge_commits` patterns
-6. If no category matches, classify as `internal`
+Use these authorities:
+1. `source-precedence.yaml` for field-level source selection
+2. `release-evidence-fields.yaml` for field semantics
+3. `classification-rules.yaml` for change typing
+4. `release-evidence-confidence-rule.yaml` for confidence scoring
 
-**For breaking changes:**
-- If classified as `breakingChanges`, set `migrationRequired: true` in the output
-- Flag for CON-005 validation — `migrationNotes` must be populated before validation passes
+Reconciliation tasks:
+1. Merge issue, PR, commit, QA, and build/security signals by linkage keys
+2. Apply field precedence deterministically (primary then fallback sources)
+3. Resolve conflicts and collect unresolved items
+4. Classify change type from labels/prefix/keywords
+5. Score confidence and assign publication tier
+6. Populate `normalized_for_release_notes` mapping fields
 
-**Output of this step — classified change log:**
-
-```yaml
-classified:
-  newFeatures:
-    - commit: "abc1234"
-      message: "feat: add Pre-Auth Code Flow support"
-      files_changed: ["src/issuance/pre-auth.ts"]
-  bugFixes:
-    - commit: "def5678"
-      message: "fix: correct certificate path in automation scripts"
-      issue_refs: ["INJICERT-892"]
-  internal:
-    - commit: "ghi9012"
-      message: "chore: bump dependencies"
-      omitted: true
-```
+**Output of this step**:
+- `docs/releases/{version}-release-evidence.yaml`
+- `unresolved[]` entries for ambiguous/conflicting items
 
 ---
 
-## Step 5 — Structure as YAML
+## Step 5 — Validate Canonical Evidence (Gate)
 
-Using the schema from Step 1 and the classified changes from Step 4, fill the release YAML.
-Use the quick-reference as the fill-in template.
+Validate `release-evidence.yaml` before generating any release-notes content.
+
+Evidence gate checks:
+1. Contract shape matches release evidence contract
+2. Required lifecycle fields exist (intent/change/evidence/shipped)
+3. Precedence/provenance fields are present where required
+4. Confidence tiers are assigned and unresolved items are separated
+
+Blocking rule:
+- If evidence validation fails, stop here.
+- Do not generate `release-notes.yaml`.
+
+## Step 6 — Generate Structured Release Notes YAML
+
+Using the schema from Step 1 and reconciled evidence from Step 4, fill the release YAML.
+Use the mapping file and quick-reference as the fill-in template.
 
 ```yaml
 metadata:
@@ -239,15 +253,15 @@ summary:
       sectionLabel: "Purpose"
     - text: ""          # Agent writes: ThemesAndFocus — key themes across the changes
       sectionLabel: "ThemesAndFocus"
-  keyBenefits: []       # Agent writes: 1-5 quantified benefits derived from classified changes
+  keyBenefits: []       # Agent writes: 1-5 quantified benefits derived from evidence
 
 content:
-  newFeatures:          # Populated from classified.newFeatures
-  enhancedFeatures:     # Populated from classified.enhancedFeatures + breakingChanges
-  bugFixes:             # Populated from classified.bugFixes
-  securityUpdates:      # Populated from classified.securityUpdates
-  technicalImprovements: # Populated from classified.technicalImprovements
-  deprecations:         # Populated from classified.deprecations
+  newFeatures:          # Populated from release-evidence.yaml (filtered by mapping and confidence)
+  enhancedFeatures:     # Populated from release-evidence.yaml
+  bugFixes:             # Populated from release-evidence.yaml
+  securityUpdates:      # Populated from release-evidence.yaml
+  technicalImprovements: # Populated from release-evidence.yaml
+  deprecations:         # Populated from release-evidence.yaml
   knownIssues:          # Populated from linked issues marked as known issues
   compatibleModules: [] # CON-006: must be filled — agent prompts if not in inputs
   repositories:         # CON-007: must be filled — agent extracts from git tags
@@ -268,7 +282,7 @@ content:
 
 ---
 
-## Step 6 — Validate
+## Step 7 — Validate Structured Content
 
 Run all deterministic checks from the human_rules file loaded in Step 1.
 Process rules in this order:
@@ -316,7 +330,7 @@ Process rules in this order:
 
 ---
 
-## Step 7 — Render Markdown
+## Step 8 — Render Markdown
 
 Using the rendering rules loaded in Step 1, convert the validated YAML to Markdown.
 
@@ -340,6 +354,7 @@ Save both files to `{inputs.output_dir}` (default: `docs/releases/`).
 
 | File | Name pattern | Purpose |
 |---|---|---|
+| Canonical evidence | `{version}-release-evidence.yaml` | Normalized, reconciled, scored evidence source |
 | YAML source | `{version}-release-notes.yaml` | Source of truth for automation |
 | Markdown output | `{version}-release-notes.md` | Publishable release notes |
 | Validation report | `{version}-validation-report.txt` | Warnings and rule check results |
@@ -347,6 +362,7 @@ Save both files to `{inputs.output_dir}` (default: `docs/releases/`).
 Example for version `0.14.0`:
 ```
 docs/releases/
+  0.14.0-release-evidence.yaml
   0.14.0-release-notes.yaml
   0.14.0-release-notes.md
   0.14.0-validation-report.txt
@@ -355,6 +371,7 @@ docs/releases/
 If validation produced ERRORs, output only:
 ```
 docs/releases/
+  0.14.0-release-evidence.yaml  ← canonical evidence (required)
   0.14.0-release-notes.yaml      ← with error annotations inline
   0.14.0-validation-report.txt   ← full error list
 ```
@@ -392,7 +409,7 @@ jobs:
           cat > docs/releases/release-inputs.yaml << EOF
           version: "${{ github.ref_name }}"
           base_tag: "$(git describe --tags --abbrev=0 HEAD^)"
-          release_branch: "${{ github.ref_name }}"
+          release_ref: "${{ github.ref_name }}"
           release_type: "Minor"
           product_name: "Inji Certify"
           product_name_abbr: "INJICERT"
@@ -417,7 +434,8 @@ jobs:
 |---|---|
 | Manifest URL unreachable | Use local `.github/standards/` cache if present; log WARNING; skip validation if no cache |
 | Classification rules URL unreachable | Use local `classification-overrides.yaml` only; log WARNING |
-| `git log` returns zero commits | Stop with ERROR: "No commits found between {base_tag} and {release_branch}. Verify tags exist." |
+| `git log` returns zero commits | Stop with ERROR: "No commits found between {base_tag} and {target_ref}. Verify refs exist." |
+| Evidence validation fails | Stop before generation. Output `release-evidence.yaml` + validation report only. |
 | Required input field unresolvable | Stop with ERROR listing unresolved fields |
 | All commits classify as internal | Warn: "All changes classified as internal. Verify base_tag is correct." Produce minimal release notes with only metadata and summary. |
 | Validation ERRORs present | Stop before rendering. Output YAML + validation report only. |
