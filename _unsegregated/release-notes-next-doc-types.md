@@ -1,12 +1,10 @@
-## Approach: Use release evidence to drive a separate documentation-impact artifact
+## Approach: Recommend next document types from release notes
 
-Release notes should remain release notes. For documentation coordination, create a separate artifact that records which document types should be updated based on the same release evidence.
+The right way to do this is to treat release notes as both:
+- a publication artifact, and
+- a decision hub for downstream documentation updates.
 
-The workflow is:
-- extract and reconcile release evidence
-- generate release notes separately
-- generate a companion documentation-impact file separately
-- keep the companion file as the coordination artifact for downstream docs
+That means adding explicit “next content type” signals to the release evidence + generation pipeline, not trying to infer them only from prose after the fact.
 
 ---
 
@@ -38,7 +36,7 @@ Your existing evidence model already has great hooks:
 - `normalized_for_release_notes`
 - source precedence for `migration_required`
 
-Extend the reconciled evidence model with explicit impact fields for a separate artifact:
+Extend that model with explicit impact fields:
 - `documentation_impacts`
 - `recommended_documentation_types`
 - `documentation_references`
@@ -55,10 +53,10 @@ item:
       evidence_source: "commit_footer"
     - type: deployment-guides
       reason: "New rollout step for cluster upgrade"
-      evidence_source: "pr_template_section"
+      evidence_source: "release_notes_section"
 ```
 
-Populate these during reconciliation so the downstream recommendation is authoritative and separated from the release note payload.
+Populate these during reconciliation so the downstream recommendation is as authoritative as the release note content.
 
 ---
 
@@ -85,38 +83,27 @@ If the repo already uses labels / PR template sections, derive it from there:
 
 ---
 
-## 4. Create a separate documentation-impact file
+## 4. Extend release-notes output with an impact summary
 
-Generate a companion artifact such as `release-documentation-impact.yaml` or `documentation-impact.yaml`.
+Add a structured section to `release-notes.yaml` and `release-notes.md` such as:
+- `documentationImpact`
+- `recommendedDocumentationUpdates`
+- `nextDocumentationTypes`
 
-That artifact should include:
-- overall summary
-- recommended documentation types
-- reason for each recommendation
-- source of each recommendation
-- confidence level
-- optional links or doc owners
-
-Example:
+For example:
 ```yaml
 documentationImpact:
-  summary: "Next documentation work should focus on API docs, migration guides, and deployment guides."
+  summary: "This release requires updates to API docs and migration guides."
   recommendations:
     - type: api-docs
       description: "New /users endpoint and expanded webhook schema."
-      source: "github_pr_label"
-      confidence: 90
     - type: migration-guides
       description: "Database schema change requires a migration script."
-      source: "commit_footer"
-      confidence: 95
     - type: deployment-guides
       description: "New cluster rollout order for zero-downtime upgrade."
-      source: "release_evidence"
-      confidence: 80
 ```
 
-Keep this artifact separate from `release-notes.yaml` and `release-notes.md`.
+Then render that section into the generated release notes.
 
 ---
 
@@ -127,25 +114,18 @@ Because your framework already uses:
 - `standards/content-types/release-notes.yaml`
 - `templates/release-notes/*`
 
-you can add a companion content type or a companion manifest entry for documentation impact.
+you should extend it by adding:
+- a new schema element in `templates/release-notes/release-notes-schema.yaml`
+- a rendering rule in `templates/release-notes/release-notes-rendering.yaml`
+- a validation rule in `rules/release-notes/release-notes-rule.yaml`
 
-Options:
-- add a new content type `documentation-impact`
-- or extend `release-notes` to reference a companion `documentation-impact` artifact
-
-For a separate artifact, define:
-- `templates/documentation-impact/documentation-impact-schema.yaml`
-- `templates/documentation-impact/documentation-impact-rendering.yaml`
-- `rules/documentation-impact/documentation-impact-rule.yaml`
-- `.github/skills/documentation-impact/SKILL.md`
-
-This keeps the new behavior aligned with your architecture.
+This keeps the new behavior consistent with your existing architecture.
 
 ---
 
 ## 6. Add a content-type dependency graph
 
-Maintain a small map of documentation dependencies separately from release notes:
+For the next step beyond release-notes, maintain a small map of content-type dependencies:
 ```yaml
 release-notes:
   related_documentation:
@@ -157,15 +137,15 @@ release-notes:
 
 Store that in a central place:
 - `standards/content-type-dependencies.yaml`
-- or a new `standards/documentation-impact-dependencies.yaml`
+- or inside `standards/content-types/release-notes.yaml`
 
-The companion artifact can reference those dependencies without changing the release note itself.
+This makes your release notes aware of the broader documentation landscape.
 
 ---
 
 ## 7. Use the release evidence confidence model
 
-Your current confidence score is a powerful mechanism. Apply it to the companion recommendations too:
+Your current confidence score is a powerful mechanism. Apply it to recommendations too:
 - high confidence → automatically recommend
 - medium confidence → recommend with review
 - low confidence → flag as “needs validation before doc work”
@@ -176,7 +156,7 @@ That avoids noisy or speculative doc suggestions.
 
 ## 8. Make the recommendation actionable
 
-A companion documentation-impact artifact should include:
+A final recommended output structure should include:
 - `type`
 - `reason`
 - `source`
@@ -184,7 +164,7 @@ A companion documentation-impact artifact should include:
 - optional `link` to the actual doc or template
 - optional `owner` / `team`
 
-That makes the output a launch point for actual documentation work rather than just a note inside release notes.
+That makes the release notes not just informative, but a launch point for actual documentation work.
 
 ---
 
@@ -193,10 +173,10 @@ That makes the output a launch point for actual documentation work rather than j
 1. Add `documentation_impacts` to `release-evidence-fields.yaml`
 2. Add precedence rules for those fields in `standards/source-precedence.yaml`
 3. Update `standards/classification-rules.yaml` with doc-impact triggers
-4. Create a separate `documentation-impact` schema and artifact
-5. Add rendering rules for the companion artifact in `templates/documentation-impact/*`
-6. Add validation rules to `rules/documentation-impact/*`
-7. Document the new feature in a companion `.github/skills/documentation-impact/SKILL.md`
+4. Add a `documentationImpact` section to `templates/release-notes/release-notes-schema.yaml`
+5. Add rendering rules for it in `templates/release-notes/release-notes-rendering.yaml`
+6. Add validation rules to `rules/release-notes/release-notes-rule.yaml`
+7. Document the new feature in `.github/skills/release-notes/SKILL.md`
 
 ---
 
@@ -209,6 +189,6 @@ This approach preserves the framework’s core principles:
 - manifest-based discovery
 - validation before publishing
 
-It also keeps release notes focused while making downstream documentation coordination explicit and actionable.
+It also turns release notes into a practical coordination artifact, not just a summary document.
 
-If you want, I can also sketch the exact YAML schema extension and sample `documentation-impact` artifact for this model.
+If you want, I can also sketch the exact YAML schema extension and sample `documentationImpact` section for your current release-notes model.
