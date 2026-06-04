@@ -394,30 +394,36 @@ sections:
     _meta: {prefix: ISS, description: Known issues — workarounds, fix versions, tracker links}
     template: |
       ## ⚠️ Known Issues
-      
+
       {if content.knownIssues}
+        | Issue | Description | Workaround | Fixed In | Tracker |
+        |-------|-------------|------------|----------|---------|
         {renderKnownIssues(content.knownIssues)}
       {else}
         No known issues reported.
       {/if}
-    
+
     issueTemplate: |
-      ### {title}
-      
-      {description}
-      
-      **Workaround**: {workaround}
-      
-      {if fixedIn}
-      **Fixed In**: {fixedIn}  
-      {/if}
-      **Issue Tracker**: [{issueTracker}]({issueTracker})
-    
+      | {title} | {description} | {workaround} | {fixedIn or "—"} | [Link]({issueTracker}) |
+
     rules:
-      - rule_id: "RENDER-023"
-        name: "Known Issues Section"
-        description: "⚠️ emoji prefix for visibility"
-        reasoning: "Users need to know what's broken despite being released"
+      - rule_id: "ISS-001"
+        name: "Known Issues Table"
+        description: "Render all known issues as a single markdown table"
+        reasoning: "Table format lets readers scan all issues at a glance without scrolling through heading blocks"
+        columns: "Issue | Description | Workaround | Fixed In | Tracker"
+        note: "If descriptions exceed 1-2 sentences in practice, consider dropping the Description column from the table and rendering it as a sub-row or separate block below"
+
+      - rule_id: "ISS-002"
+        name: "Fixed In Fallback"
+        description: "Render '—' when fixedIn is absent"
+        implementation: "{fixedIn or '—'}"
+        reasoning: "Empty cells imply the issue is still open; explicit '—' is unambiguous"
+
+      - rule_id: "ISS-003"
+        name: "Tracker Link"
+        description: "Render issueTracker URL as [Link](url) for clickability"
+        format: "[Link]({issueTracker})"
 
 # ================================
 # SECTION 11: DEPRECATIONS
