@@ -176,7 +176,7 @@ That makes the release notes not just informative, but a launch point for actual
 4. Add a `documentationImpact` section to `templates/release-notes/release-notes-schema.yaml`
 5. Add rendering rules for it in `templates/release-notes/release-notes-rendering.yaml`
 6. Add validation rules to `rules/release-notes/release-notes-rule.yaml`
-7. Document the new feature in `.github/skills/release-notes/SKILL.md`
+7. Document the new feature in `skills/release-notes/SKILL.md`
 
 ---
 

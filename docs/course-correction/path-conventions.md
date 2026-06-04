@@ -5,8 +5,8 @@
 Define a single, stable path policy for this repository so standards, manifests, docs, and consumer guidance stay consistent.
 
 This document prevents path drift between:
-- repository-local canonical paths (`standards/`, `templates/`, `rules/`)
-- in-repo GitHub assets (`.github/skills/`, `.github/prompts/`)
+- repository-local canonical paths (`standards/`, `templates/`, `rules/`, `skills/`)
+- in-repo GitHub assets (`.github/prompts/`)
 - consumer examples (`consumer-repo/.github/...`)
 
 ## Scope
@@ -23,9 +23,9 @@ Applies to:
    - `standards/`
    - `templates/`
    - `rules/`
+   - `skills/`
 
 2. Use `.github/` paths only when the referenced target exists in this repository:
-   - `.github/skills/`
    - `.github/prompts/`
 
 3. In conceptual docs and consumer examples, use:
@@ -35,13 +35,14 @@ Applies to:
    - `.github/templates/...` (for this repository's templates)
    - `.github/standards/...` (for this repository's standards)
    - `.github/rules/...` (for this repository's rules)
+   - `.github/skills/...` (for this repository's skills — use `skills/` instead)
 
 ## Manifest Authoring Rules
 
 When writing or updating `standards/content-types/*.yaml` manifests:
 
 1. `schema`, `rendering`, `quick_reference`, `overview`, `human_rules`, `classification_rules`, and `examples` must use repository-local canonical paths.
-2. `skill` and `consumer_skill` may use `.github/skills/...` because those files physically live there in this repo.
+2. `skill` and `consumer_skill` use `skills/...` paths — skills live at the repository root, not under `.github/`.
 3. Keep paths repository-relative (no absolute paths).
 4. Prefer stable, real files over aspirational placeholders.
 
@@ -55,7 +56,7 @@ entrypoints:
   rendering: "templates/release-notes/release-notes-rendering.yaml"
   human_rules: "rules/release-notes/release-notes-rule.yaml"
   classification_rules: "standards/classification-rules.yaml"
-  skill: ".github/skills/release-notes/SKILL.md"
+  skill: "skills/release-notes/SKILL.md"
 ```
 
 ### Correct (consumer example)
@@ -78,15 +79,15 @@ human_rules: ".github/rules/release-notes/release-notes-rule.yaml"
 Before merging docs or standards changes:
 
 - [ ] Manifest paths resolve to existing files.
-- [ ] No stale internal mirror paths (`.github/templates`, `.github/standards`, `.github/rules`) remain.
+- [ ] No stale internal mirror paths (`.github/templates`, `.github/standards`, `.github/rules`, `.github/skills`) remain.
 - [ ] Consumer examples use `consumer-repo/.github/...`.
-- [ ] `.github/...` paths in docs point only to files that exist in this repo.
+- [ ] `.github/...` paths in docs point only to files that exist in this repo (only `.github/prompts/` is valid).
 - [ ] Registry and manifest references are consistent.
 
 ## Quick Validation Command
 
 ```bash
-rg -n "\.github/templates|\.github/standards|\.github/rules" docs templates standards rules
+rg -n "\.github/templates|\.github/standards|\.github/rules|\.github/skills" docs templates standards rules skills
 ```
 
 Expected result: no matches, except intentionally documented historical context.

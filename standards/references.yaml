@@ -170,7 +170,7 @@ documentation_standards:
       description: "Consumer-facing manifest for release notes schema, rendering rules, and examples"
     
     skills:
-      path: ".github/skills/"
+      path: "skills/"
       description: "Reusable skills and functions for agents"
       
     prompts:

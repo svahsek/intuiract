@@ -69,7 +69,7 @@ The 30-day course correction successfully transformed the agentic documentation 
    - Filtering rules (confidence thresholds, change-type logic)
    - Transformation examples and validation gates
 
-3. [Updated Release-Notes Skill](\.github/skills/release-notes/SKILL.md) (200+ lines, refactored from 50)
+3. [Updated Release-Notes Skill](\skills/release-notes/SKILL.md) (200+ lines, refactored from 50)
    - Phase 1: Extraction (2 options: GitHub API or pre-extracted)
    - Phase 2: Reconciliation (precedence authority, conflict resolution, scoring)
    - Phase 3: Generation (filtering, mapping, manual input)
@@ -235,7 +235,7 @@ The 30-day course correction successfully transformed the agentic documentation 
 
 ### Workspace Instructions
 - `AGENTS.md` (150 lines, updated)
-- `.github/skills/release-notes/SKILL.md` (200 lines, refactored from 50)
+- `skills/release-notes/SKILL.md` (200 lines, refactored from 50)
 
 ---
 
@@ -390,7 +390,7 @@ To stay within 30-day scope:
 ### Week 2 Deliverables
 - [x] `templates/release-notes/examples/release-evidence.sample.yaml`
 - [x] `templates/release-notes/evidence-to-release-notes-mapping.yaml`
-- [x] `.github/skills/release-notes/SKILL.md` (refactored)
+- [x] `skills/release-notes/SKILL.md` (refactored)
 
 ### Week 3 Deliverables
 - [x] `docs/course-correction/release-evidence-coverage-checklist.md`

@@ -237,7 +237,7 @@ This is why the `features.template.md` in `unsegregated/` matters — a structur
 |---|---|
 | `standards/classification-rules.yaml` | Central baseline for commit → category mapping |
 | `templates/release-notes/examples/classification-overrides.yaml` | Consumer-specific keyword/prefix overrides |
-| `.github/skills/release-notes/consumer-release-notes.skill.md` | Full orchestration skill (steps 4–8) |
+| `skills/release-notes/consumer-release-notes.skill.md` | Full orchestration skill (steps 4–8) |
 | `templates/release-notes/examples/release-inputs.yaml` | Human judgment layer (business context) |
 | `templates/release-notes/release-notes-schema.yaml` | YAML payload structure |
 | `unsegregated/features.template.md` | PR body template (enables step 3 enrichment) |

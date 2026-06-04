@@ -14,8 +14,8 @@ content_types:
       rendering rules, agent guidance, and example payloads.
     manifest: "standards/content-types/release-notes.yaml"
     templates_root: "templates/release-notes"
-    skill: ".github/skills/release-notes/SKILL.md"
-    consumer_skill: ".github/skills/release-notes/consumer-release-notes.skill.md"
+    skill: "skills/release-notes/SKILL.md"
+    consumer_skill: "skills/release-notes/consumer-release-notes.skill.md"
     classification_rules: "standards/classification-rules.yaml"
     source_files:
       schema: "templates/release-notes/release-notes-schema.yaml"

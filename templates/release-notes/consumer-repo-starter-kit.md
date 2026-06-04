@@ -54,7 +54,7 @@ Use this template:
 - [examples/consumer-release-notes.skill.template.md](examples/consumer-release-notes.skill.template.md)
 
 Or use the fuller version in this repo:
-- [../../.github/skills/release-notes/consumer-release-notes.skill.md](../../.github/skills/release-notes/consumer-release-notes.skill.md)
+- [../../skills/release-notes/consumer-release-notes.skill.md](../../skills/release-notes/consumer-release-notes.skill.md)
 
 ### 2. Release Inputs
 

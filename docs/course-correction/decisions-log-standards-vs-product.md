@@ -109,7 +109,7 @@ Confidence scoring logic (`release-evidence-confidence-rule.yaml`) is a standard
 **Category**: Governance
 
 **Decision**:
-Keep `.github/skills/release-notes/SKILL.md` in standards repo, but it must **orchestrate** (call external tools/functions) rather than **implement** extraction, reconciliation, or rendering.
+Keep `skills/release-notes/SKILL.md` in standards repo, but it must **orchestrate** (call external tools/functions) rather than **implement** extraction, reconciliation, or rendering.
 
 The skill describes:
 - Phase 1: Call extraction tool

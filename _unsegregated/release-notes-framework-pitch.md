@@ -54,7 +54,7 @@ This is a management-ready narrative: we delivered a real documentation automati
   - schema: `templates/release-notes/release-notes-schema.yaml`
   - rendering: `templates/release-notes/release-notes-rendering.yaml`
   - rules: `rules/release-notes/release-notes-rule.yaml`
-  - skill: `.github/skills/release-notes/SKILL.md`
+  - skill: `skills/release-notes/SKILL.md`
 
 ### Slide 6: Evidence Workflow
 - Phase 1: Extraction
@@ -102,7 +102,7 @@ This is a management-ready narrative: we delivered a real documentation automati
 
 ## Recommended Demo Narrative
 
-1. Show the `release-notes` skill and its process from `.github/skills/release-notes/SKILL.md`
+1. Show the `release-notes` skill and its process from `skills/release-notes/SKILL.md`
 2. Explain how the manifest architecture keeps content paths stable
 3. Show the evidence reconciliation logic and confidence scoring
 4. Show that validation is required before rendering

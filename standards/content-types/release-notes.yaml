@@ -16,8 +16,8 @@ entrypoints:
   rendering: "templates/release-notes/release-notes-rendering.yaml"
   quick_reference: "templates/release-notes/release-notes-quick-reference.md"
   overview: "templates/release-notes/readme.md"
-  skill: ".github/skills/release-notes/SKILL.md"
-  consumer_skill: ".github/skills/release-notes/consumer-release-notes.skill.md"
+  skill: "skills/release-notes/SKILL.md"
+  consumer_skill: "skills/release-notes/consumer-release-notes.skill.md"
   human_rules: "rules/release-notes/release-notes-rule.yaml"
   classification_rules: "standards/classification-rules.yaml"
 
