@@ -1,0 +1,1796 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1400"
+   height="760"
+   viewBox="0 0 1400 760"
+   font-family="'Segoe UI',Arial,Helvetica,sans-serif"
+   version="1.1"
+   id="svg142"
+   sodipodi:docname="diagram-nexus-ai.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   inkscape:export-filename="diagram-nexus-ai.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview142"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.90509668"
+     inkscape:cx="691.08639"
+     inkscape:cy="427.0262"
+     inkscape:window-width="1710"
+     inkscape:window-height="990"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg142" />
+  <defs
+     id="defs31">
+    <filter
+       id="shadow"
+       x="-0.025531915"
+       y="-0.16"
+       width="1.0510638"
+       height="1.37">
+      <feGaussianBlur
+         in="SourceAlpha"
+         stdDeviation="4"
+         result="sblur"
+         id="feGaussianBlur1" />
+      <feOffset
+         dx="0"
+         dy="3"
+         in="sblur"
+         result="soffset"
+         id="feOffset1" />
+      <feFlood
+         flood-color="#000000"
+         flood-opacity="0.14"
+         result="sflood"
+         id="feFlood1" />
+      <feComposite
+         in="sflood"
+         in2="soffset"
+         operator="in"
+         result="sshadow"
+         id="feComposite1" />
+      <feMerge
+         id="feMerge2">
+        <feMergeNode
+           in="sshadow"
+           id="feMergeNode1" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode2" />
+      </feMerge>
+    </filter>
+    <filter
+       id="shadow-lg"
+       x="-0.042105263"
+       y="-0.029387755"
+       width="1.0842105"
+       height="1.0669388">
+      <feGaussianBlur
+         in="SourceAlpha"
+         stdDeviation="6"
+         result="sblur"
+         id="feGaussianBlur2" />
+      <feOffset
+         dx="0"
+         dy="4"
+         in="sblur"
+         result="soffset"
+         id="feOffset2" />
+      <feFlood
+         flood-color="#000000"
+         flood-opacity="0.18"
+         result="sflood"
+         id="feFlood2" />
+      <feComposite
+         in="sflood"
+         in2="soffset"
+         operator="in"
+         result="sshadow"
+         id="feComposite2" />
+      <feMerge
+         id="feMerge4">
+        <feMergeNode
+           in="sshadow"
+           id="feMergeNode3" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode4" />
+      </feMerge>
+    </filter>
+    <linearGradient
+       id="bg"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#EEF2F8"
+         id="stop4" />
+      <stop
+         offset="100%"
+         stop-color="#D5E0EF"
+         id="stop5" />
+    </linearGradient>
+    <linearGradient
+       id="g-left"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#FAFBFE"
+         id="stop6" />
+      <stop
+         offset="100%"
+         stop-color="#EEF2FA"
+         id="stop7" />
+    </linearGradient>
+    <linearGradient
+       id="g-center"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#4527A0"
+         id="stop8" />
+      <stop
+         offset="100%"
+         stop-color="#1A0072"
+         id="stop9" />
+    </linearGradient>
+    <linearGradient
+       id="g-right"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#FAFBFE"
+         id="stop10" />
+      <stop
+         offset="100%"
+         stop-color="#EEF2FA"
+         id="stop11" />
+    </linearGradient>
+    <linearGradient
+       id="g-docs"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#1E88E5"
+         id="stop12" />
+      <stop
+         offset="100%"
+         stop-color="#0D47A1"
+         id="stop13" />
+    </linearGradient>
+    <linearGradient
+       id="g-community"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#9C27B0"
+         id="stop14" />
+      <stop
+         offset="100%"
+         stop-color="#4A148C"
+         id="stop15" />
+    </linearGradient>
+    <linearGradient
+       id="g-github"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#546E7A"
+         id="stop16" />
+      <stop
+         offset="100%"
+         stop-color="#263238"
+         id="stop17" />
+    </linearGradient>
+    <linearGradient
+       id="g-confluence"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#00897B"
+         id="stop18" />
+      <stop
+         offset="100%"
+         stop-color="#004D40"
+         id="stop19" />
+    </linearGradient>
+    <linearGradient
+       id="g-code"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#F4511E"
+         id="stop20" />
+      <stop
+         offset="100%"
+         stop-color="#BF360C"
+         id="stop21" />
+    </linearGradient>
+    <linearGradient
+       id="g-answer"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#2E7D32"
+         id="stop22" />
+      <stop
+         offset="100%"
+         stop-color="#1B5E20"
+         id="stop23" />
+    </linearGradient>
+    <linearGradient
+       id="g-p1"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#EF5350"
+         id="stop24" />
+      <stop
+         offset="100%"
+         stop-color="#B71C1C"
+         id="stop25" />
+    </linearGradient>
+    <linearGradient
+       id="g-p2"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#42A5F5"
+         id="stop26" />
+      <stop
+         offset="100%"
+         stop-color="#1565C0"
+         id="stop27" />
+    </linearGradient>
+    <linearGradient
+       id="g-p3"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#66BB6A"
+         id="stop28" />
+      <stop
+         offset="100%"
+         stop-color="#1B5E20"
+         id="stop29" />
+    </linearGradient>
+    <marker
+       id="arr-dn"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#ffffff"
+         fill-opacity="0.55"
+         id="polygon29" />
+    </marker>
+    <marker
+       id="arr-purple"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#4527A0"
+         id="polygon30" />
+    </marker>
+    <marker
+       id="arr-green"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#2E7D32"
+         id="polygon31" />
+    </marker>
+  </defs>
+  <!-- Background -->
+  <rect
+     width="1400"
+     height="760"
+     fill="url(#bg)"
+     id="rect31" />
+  <!-- ===== TITLE BAR ===== -->
+  <rect
+     x="0"
+     y="0"
+     width="1400"
+     height="72"
+     fill="#1A237E"
+     id="rect32" />
+  <text
+     x="700"
+     y="31"
+     text-anchor="middle"
+     font-size="23"
+     font-weight="700"
+     fill="#ffffff"
+     letter-spacing="0.5"
+     id="text32">MOSIP Nexus AI — Knowledge Assistant</text>
+  <text
+     x="700"
+     y="55"
+     text-anchor="middle"
+     font-size="12"
+     fill="#ffffff"
+     fill-opacity="0.72"
+     id="text33">In-house tool built by our QA and Engineering team — 5 sources, 1 grounded answer, built for MOSIP</text>
+  <!-- ===== LEFT PANEL: KNOWLEDGE SOURCES ===== -->
+  <g
+     filter="url(#shadow-lg)"
+     id="g33">
+    <rect
+       x="14"
+       y="80"
+       width="400"
+       height="490"
+       rx="12"
+       fill="url(#g-left)"
+       id="rect33" />
+  </g>
+  <!-- Left panel header -->
+  <rect
+     x="14"
+     y="80"
+     width="400"
+     height="46"
+     rx="12"
+     fill="#1A237E"
+     id="rect34" />
+  <rect
+     x="14"
+     y="108"
+     width="400"
+     height="18"
+     fill="#1A237E"
+     id="rect35" />
+  <text
+     x="214"
+     y="107"
+     text-anchor="middle"
+     font-size="12"
+     font-weight="700"
+     fill="#ffffff"
+     letter-spacing="1"
+     id="text35">KNOWLEDGE SOURCES</text>
+  <text
+     x="214"
+     y="122"
+     text-anchor="middle"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.72"
+     id="text36">All 5 searched simultaneously on every query</text>
+  <!-- Source 1: MOSIP Docs -->
+  <g
+     filter="url(#shadow)"
+     id="g42">
+    <rect
+       x="26"
+       y="140"
+       width="376"
+       height="60"
+       rx="8"
+       fill="url(#g-docs)"
+       id="rect36" />
+    <rect
+       x="26"
+       y="140"
+       width="50"
+       height="60"
+       rx="8"
+       fill="#000000"
+       fill-opacity="0.18"
+       id="rect37" />
+    <text
+       x="51"
+       y="165"
+       text-anchor="middle"
+       font-size="17"
+       font-weight="700"
+       fill="#ffffff"
+       id="text37">D</text>
+    <text
+       x="51"
+       y="182"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.75"
+       id="text38">Docs</text>
+    <text
+       x="88"
+       y="160"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text39">MOSIP Docs</text>
+    <text
+       x="88"
+       y="176"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text40">docs.mosip.io/1.2.0</text>
+    <text
+       x="392"
+       y="160"
+       text-anchor="end"
+       font-size="19"
+       font-weight="700"
+       fill="#ffffff"
+       id="text41">6,094</text>
+    <text
+       x="392"
+       y="177"
+       text-anchor="end"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.72"
+       id="text42">chunks / 449 pages</text>
+  </g>
+  <!-- Source 2: Community -->
+  <g
+     filter="url(#shadow)"
+     id="g48">
+    <rect
+       x="26"
+       y="210"
+       width="376"
+       height="60"
+       rx="8"
+       fill="url(#g-community)"
+       id="rect42" />
+    <rect
+       x="26"
+       y="210"
+       width="50"
+       height="60"
+       rx="8"
+       fill="#000000"
+       fill-opacity="0.18"
+       id="rect43" />
+    <text
+       x="51"
+       y="235"
+       text-anchor="middle"
+       font-size="17"
+       font-weight="700"
+       fill="#ffffff"
+       id="text43">C</text>
+    <text
+       x="51"
+       y="252"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.75"
+       id="text44">Forum</text>
+    <text
+       x="88"
+       y="230"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text45">Community Forum</text>
+    <text
+       x="88"
+       y="246"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text46">community.mosip.io</text>
+    <text
+       x="392"
+       y="230"
+       text-anchor="end"
+       font-size="19"
+       font-weight="700"
+       fill="#ffffff"
+       id="text47">11,236</text>
+    <text
+       x="392"
+       y="247"
+       text-anchor="end"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.72"
+       id="text48">chunks</text>
+  </g>
+  <!-- Source 3: GitHub -->
+  <g
+     filter="url(#shadow)"
+     id="g54">
+    <rect
+       x="26"
+       y="280"
+       width="376"
+       height="60"
+       rx="8"
+       fill="url(#g-github)"
+       id="rect48" />
+    <rect
+       x="26"
+       y="280"
+       width="50"
+       height="60"
+       rx="8"
+       fill="#000000"
+       fill-opacity="0.18"
+       id="rect49" />
+    <text
+       x="51"
+       y="305"
+       text-anchor="middle"
+       font-size="17"
+       font-weight="700"
+       fill="#ffffff"
+       id="text49">G</text>
+    <text
+       x="51"
+       y="322"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.75"
+       id="text50">GitHub</text>
+    <text
+       x="88"
+       y="300"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text51">GitHub Issues</text>
+    <text
+       x="88"
+       y="316"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text52">86 MOSIP repositories</text>
+    <text
+       x="392"
+       y="300"
+       text-anchor="end"
+       font-size="19"
+       font-weight="700"
+       fill="#ffffff"
+       id="text53">2,513</text>
+    <text
+       x="392"
+       y="317"
+       text-anchor="end"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.72"
+       id="text54">chunks</text>
+  </g>
+  <!-- Source 4: Confluence -->
+  <g
+     filter="url(#shadow)"
+     id="g60">
+    <rect
+       x="26"
+       y="350"
+       width="376"
+       height="60"
+       rx="8"
+       fill="url(#g-confluence)"
+       id="rect54" />
+    <rect
+       x="26"
+       y="350"
+       width="50"
+       height="60"
+       rx="8"
+       fill="#000000"
+       fill-opacity="0.18"
+       id="rect55" />
+    <text
+       x="51"
+       y="374"
+       text-anchor="middle"
+       font-size="14"
+       font-weight="700"
+       fill="#ffffff"
+       id="text55">Cf</text>
+    <text
+       x="51"
+       y="392"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.75"
+       id="text56">Wiki</text>
+    <text
+       x="88"
+       y="370"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text57">Confluence</text>
+    <text
+       x="88"
+       y="386"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text58">QT, ENGG, and PMS spaces</text>
+    <text
+       x="392"
+       y="370"
+       text-anchor="end"
+       font-size="19"
+       font-weight="700"
+       fill="#ffffff"
+       id="text59">12,264</text>
+    <text
+       x="392"
+       y="387"
+       text-anchor="end"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.72"
+       id="text60">chunks</text>
+  </g>
+  <!-- Source 5: Source Code -->
+  <g
+     filter="url(#shadow)"
+     id="g66">
+    <rect
+       x="26"
+       y="420"
+       width="376"
+       height="60"
+       rx="8"
+       fill="url(#g-code)"
+       id="rect60" />
+    <rect
+       x="26"
+       y="420"
+       width="50"
+       height="60"
+       rx="8"
+       fill="#000000"
+       fill-opacity="0.18"
+       id="rect61" />
+    <text
+       x="51"
+       y="444"
+       text-anchor="middle"
+       font-size="14"
+       font-weight="700"
+       fill="#ffffff"
+       id="text61">Sc</text>
+    <text
+       x="51"
+       y="462"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.75"
+       id="text62">Code</text>
+    <text
+       x="88"
+       y="440"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text63">Source Code</text>
+    <text
+       x="88"
+       y="456"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text64">Java / YAML / properties — 86 repos</text>
+    <text
+       x="392"
+       y="440"
+       text-anchor="end"
+       font-size="19"
+       font-weight="700"
+       fill="#ffffff"
+       id="text65">~38,000</text>
+    <text
+       x="392"
+       y="457"
+       text-anchor="end"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.72"
+       id="text66">chunks</text>
+  </g>
+  <!-- Total stat -->
+  <rect
+     x="26"
+     y="496"
+     width="376"
+     height="62"
+     rx="8"
+     fill="#1A237E"
+     id="rect66" />
+  <text
+     x="214"
+     y="519"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     letter-spacing="0.5"
+     id="text67">TOTAL KNOWLEDGE BASE</text>
+  <text
+     x="214"
+     y="547"
+     text-anchor="middle"
+     font-size="24"
+     font-weight="700"
+     fill="#FFD54F"
+     id="text68">~70,000 chunks</text>
+  <!-- Arrow: Left panel to Center panel -->
+  <line
+     x1="416"
+     y1="325"
+     x2="438"
+     y2="325"
+     stroke="#4527A0"
+     stroke-width="3"
+     marker-end="url(#arr-purple)"
+     id="line68" />
+  <!-- ===== CENTER PANEL: HOW IT WORKS ===== -->
+  <g
+     filter="url(#shadow-lg)"
+     id="g68">
+    <rect
+       x="442"
+       y="80"
+       width="342"
+       height="490"
+       rx="12"
+       fill="url(#g-center)"
+       id="rect68" />
+  </g>
+  <!-- Center panel header -->
+  <rect
+     x="442"
+     y="80"
+     width="342"
+     height="46"
+     rx="12"
+     fill="#000000"
+     fill-opacity="0.24"
+     id="rect69" />
+  <rect
+     x="442"
+     y="108"
+     width="342"
+     height="18"
+     fill="#000000"
+     fill-opacity="0.24"
+     id="rect70" />
+  <text
+     x="613"
+     y="107"
+     text-anchor="middle"
+     font-size="12"
+     font-weight="700"
+     fill="#ffffff"
+     letter-spacing="1"
+     id="text70">HOW IT WORKS</text>
+  <text
+     x="613"
+     y="122"
+     text-anchor="middle"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.68"
+     id="text71">5 steps on every query</text>
+  <!-- Step 1 -->
+  <rect
+     x="456"
+     y="140"
+     width="314"
+     height="52"
+     rx="8"
+     fill="#ffffff"
+     fill-opacity="0.10"
+     id="rect71" />
+  <circle
+     cx="482"
+     cy="166"
+     r="14"
+     fill="#ffffff"
+     fill-opacity="0.20"
+     id="circle71" />
+  <text
+     x="482"
+     y="171"
+     text-anchor="middle"
+     font-size="12"
+     font-weight="700"
+     fill="#ffffff"
+     id="text72">1</text>
+  <text
+     x="506"
+     y="161"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text73">Engineer asks a question</text>
+  <text
+     x="506"
+     y="177"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.68"
+     id="text74">Plain English or any language</text>
+  <line
+     x1="613"
+     y1="194"
+     x2="613"
+     y2="210"
+     stroke="#ffffff"
+     stroke-opacity="0.35"
+     stroke-width="2"
+     marker-end="url(#arr-dn)"
+     id="line74" />
+  <!-- Step 2 -->
+  <rect
+     x="456"
+     y="214"
+     width="314"
+     height="52"
+     rx="8"
+     fill="#ffffff"
+     fill-opacity="0.10"
+     id="rect74" />
+  <circle
+     cx="482"
+     cy="240"
+     r="14"
+     fill="#ffffff"
+     fill-opacity="0.20"
+     id="circle74" />
+  <text
+     x="482"
+     y="245"
+     text-anchor="middle"
+     font-size="12"
+     font-weight="700"
+     fill="#ffffff"
+     id="text75">2</text>
+  <text
+     x="506"
+     y="235"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text76">Check for similar threads</text>
+  <text
+     x="506"
+     y="251"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.68"
+     id="text77">Surface duplicates before generating</text>
+  <line
+     x1="613"
+     y1="268"
+     x2="613"
+     y2="284"
+     stroke="#ffffff"
+     stroke-opacity="0.35"
+     stroke-width="2"
+     marker-end="url(#arr-dn)"
+     id="line77" />
+  <!-- Step 3 — HIGHLIGHTED -->
+  <rect
+     x="456"
+     y="288"
+     width="314"
+     height="62"
+     rx="8"
+     fill="#ffffff"
+     fill-opacity="0.20"
+     id="rect77" />
+  <rect
+     x="456"
+     y="288"
+     width="5"
+     height="62"
+     rx="2"
+     fill="#FFD54F"
+     id="rect78" />
+  <circle
+     cx="482"
+     cy="319"
+     r="14"
+     fill="#FFD54F"
+     id="circle78" />
+  <text
+     x="482"
+     y="324"
+     text-anchor="middle"
+     font-size="12"
+     font-weight="700"
+     fill="#311B92"
+     id="text78">3</text>
+  <text
+     x="506"
+     y="308"
+     font-size="11"
+     font-weight="700"
+     fill="#FFD54F"
+     id="text79">Search all 5 sources</text>
+  <text
+     x="506"
+     y="324"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.85"
+     id="text80">Simultaneously, in parallel</text>
+  <text
+     x="506"
+     y="340"
+     font-size="9"
+     fill="#FFD54F"
+     fill-opacity="0.85"
+     id="text81">~70,000 chunks queried</text>
+  <line
+     x1="613"
+     y1="352"
+     x2="613"
+     y2="368"
+     stroke="#ffffff"
+     stroke-opacity="0.35"
+     stroke-width="2"
+     marker-end="url(#arr-dn)"
+     id="line81" />
+  <!-- Step 4 -->
+  <rect
+     x="456"
+     y="372"
+     width="314"
+     height="52"
+     rx="8"
+     fill="#ffffff"
+     fill-opacity="0.10"
+     id="rect81" />
+  <circle
+     cx="482"
+     cy="398"
+     r="14"
+     fill="#ffffff"
+     fill-opacity="0.20"
+     id="circle81" />
+  <text
+     x="482"
+     y="403"
+     text-anchor="middle"
+     font-size="12"
+     font-weight="700"
+     fill="#ffffff"
+     id="text82">4</text>
+  <text
+     x="506"
+     y="393"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text83">Score confidence</text>
+  <text
+     x="506"
+     y="409"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.68"
+     id="text84">Green / Yellow / Red by retrieval quality</text>
+  <line
+     x1="613"
+     y1="426"
+     x2="613"
+     y2="442"
+     stroke="#ffffff"
+     stroke-opacity="0.35"
+     stroke-width="2"
+     marker-end="url(#arr-dn)"
+     id="line84" />
+  <!-- Step 5 -->
+  <rect
+     x="456"
+     y="446"
+     width="314"
+     height="52"
+     rx="8"
+     fill="#ffffff"
+     fill-opacity="0.10"
+     id="rect84" />
+  <circle
+     cx="482"
+     cy="472"
+     r="14"
+     fill="#ffffff"
+     fill-opacity="0.20"
+     id="circle84" />
+  <text
+     x="482"
+     y="477"
+     text-anchor="middle"
+     font-size="12"
+     font-weight="700"
+     fill="#ffffff"
+     id="text85">5</text>
+  <text
+     x="506"
+     y="467"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text86">Return grounded answer</text>
+  <text
+     x="506"
+     y="483"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.68"
+     id="text87">Answer + citations + confidence badge</text>
+  <!-- Tech note -->
+  <rect
+     x="456"
+     y="514"
+     width="314"
+     height="44"
+     rx="6"
+     fill="#000000"
+     fill-opacity="0.24"
+     id="rect87" />
+  <text
+     x="613"
+     y="532"
+     text-anchor="middle"
+     font-size="9"
+     fill="#ffffff"
+     fill-opacity="0.58"
+     letter-spacing="1"
+     id="text88">LLM ENGINE</text>
+  <text
+     x="613"
+     y="550"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text89">Groq — Llama 3.3-70B Versatile</text>
+  <!-- Arrow: Center panel to Right panel -->
+  <line
+     x1="786"
+     y1="325"
+     x2="808"
+     y2="325"
+     stroke="#2E7D32"
+     stroke-width="3"
+     marker-end="url(#arr-green)"
+     id="line89" />
+  <!-- ===== RIGHT PANEL: FEATURES AND OUTPUT ===== -->
+  <g
+     filter="url(#shadow-lg)"
+     id="g89">
+    <rect
+       x="812"
+       y="80"
+       width="574"
+       height="490"
+       rx="12"
+       fill="url(#g-right)"
+       id="rect89" />
+  </g>
+  <!-- Right panel header -->
+  <rect
+     x="812"
+     y="80"
+     width="574"
+     height="46"
+     rx="12"
+     fill="#2E7D32"
+     id="rect90" />
+  <rect
+     x="812"
+     y="108"
+     width="574"
+     height="18"
+     fill="#2E7D32"
+     id="rect91" />
+  <text
+     x="1099"
+     y="107"
+     text-anchor="middle"
+     font-size="12"
+     font-weight="700"
+     fill="#ffffff"
+     letter-spacing="1"
+     id="text91">WHAT YOU GET</text>
+  <text
+     x="1099"
+     y="122"
+     text-anchor="middle"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.72"
+     id="text92">Every answer includes all three</text>
+  <!-- Sample output box -->
+  <rect
+     x="824"
+     y="140"
+     width="550"
+     height="100"
+     rx="8"
+     fill="url(#g-answer)"
+     id="rect92" />
+  <text
+     x="1099"
+     y="160"
+     text-anchor="middle"
+     font-size="10"
+     font-weight="700"
+     fill="#ffffff"
+     fill-opacity="0.60"
+     letter-spacing="1"
+     id="text93">SAMPLE OUTPUT</text>
+  <rect
+     x="836"
+     y="166"
+     width="526"
+     height="62"
+     rx="6"
+     fill="#000000"
+     fill-opacity="0.22"
+     id="rect93" />
+  <text
+     x="850"
+     y="184"
+     font-size="10"
+     fill="#FFD54F"
+     font-family="'Courier New',monospace"
+     id="text94">Answer: Biometric data in MOSIP is encrypted at rest using...</text>
+  <text
+     x="850"
+     y="201"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.80"
+     font-family="'Courier New',monospace"
+     id="text95">Source: docs.mosip.io/1.2.0/biometrics  |  Confluence/ENGG-402</text>
+  <text
+     x="850"
+     y="218"
+     font-size="10"
+     fill="#ffffff"
+     fill-opacity="0.80"
+     font-family="'Courier New',monospace"
+     id="text96">Confidence: HIGH</text>
+  <!-- Feature rows -->
+  <!-- Multilingual -->
+  <rect
+     x="824"
+     y="254"
+     width="550"
+     height="36"
+     rx="6"
+     fill="#1565C0"
+     fill-opacity="0.08"
+     id="rect96" />
+  <rect
+     x="824"
+     y="254"
+     width="4"
+     height="36"
+     rx="2"
+     fill="#1565C0"
+     id="rect97" />
+  <text
+     x="840"
+     y="269"
+     font-size="11"
+     font-weight="700"
+     fill="#1A237E"
+     id="text97">Multilingual</text>
+  <text
+     x="840"
+     y="283"
+     font-size="10"
+     fill="#546E7A"
+     id="text98">Ask in Tamil, Hindi, French, Arabic or any language — replies in the same language (100+ supported)</text>
+  <!-- Source attribution -->
+  <rect
+     x="824"
+     y="296"
+     width="550"
+     height="36"
+     rx="6"
+     fill="#7B1FA2"
+     fill-opacity="0.08"
+     id="rect98" />
+  <rect
+     x="824"
+     y="296"
+     width="4"
+     height="36"
+     rx="2"
+     fill="#7B1FA2"
+     id="rect99" />
+  <text
+     x="840"
+     y="311"
+     font-size="11"
+     font-weight="700"
+     fill="#4A148C"
+     id="text99">Source Attribution</text>
+  <text
+     x="840"
+     y="325"
+     font-size="10"
+     fill="#546E7A"
+     id="text100">Every answer cites the exact doc page, forum thread, GitHub issue, or Confluence page</text>
+  <!-- Confidence scoring -->
+  <rect
+     x="824"
+     y="338"
+     width="550"
+     height="36"
+     rx="6"
+     fill="#E65100"
+     fill-opacity="0.08"
+     id="rect100" />
+  <rect
+     x="824"
+     y="338"
+     width="4"
+     height="36"
+     rx="2"
+     fill="#E65100"
+     id="rect101" />
+  <text
+     x="840"
+     y="353"
+     font-size="11"
+     font-weight="700"
+     fill="#BF360C"
+     id="text101">Confidence Scoring</text>
+  <text
+     x="840"
+     y="367"
+     font-size="10"
+     fill="#546E7A"
+     id="text102">Green / Yellow / Red badge based on retrieval quality — not a guess, always verifiable</text>
+  <!-- No hallucination -->
+  <rect
+     x="824"
+     y="380"
+     width="550"
+     height="36"
+     rx="6"
+     fill="#2E7D32"
+     fill-opacity="0.08"
+     id="rect102" />
+  <rect
+     x="824"
+     y="380"
+     width="4"
+     height="36"
+     rx="2"
+     fill="#2E7D32"
+     id="rect103" />
+  <text
+     x="840"
+     y="395"
+     font-size="11"
+     font-weight="700"
+     fill="#1B5E20"
+     id="text103">No Hallucination Guard</text>
+  <text
+     x="840"
+     y="409"
+     font-size="10"
+     fill="#546E7A"
+     id="text104">Returns &quot;not available in MOSIP sources&quot; instead of making something up</text>
+  <!-- Chat memory (half width) -->
+  <rect
+     x="824"
+     y="422"
+     width="265"
+     height="36"
+     rx="6"
+     fill="#37474F"
+     fill-opacity="0.08"
+     id="rect104" />
+  <rect
+     x="824"
+     y="422"
+     width="4"
+     height="36"
+     rx="2"
+     fill="#37474F"
+     id="rect105" />
+  <text
+     x="840"
+     y="437"
+     font-size="11"
+     font-weight="700"
+     fill="#263238"
+     id="text105">Chat Memory</text>
+  <text
+     x="840"
+     y="451"
+     font-size="10"
+     fill="#546E7A"
+     id="text106">Follow-up questions retain full context</text>
+  <!-- REST API (half width) -->
+  <rect
+     x="1109"
+     y="422"
+     width="265"
+     height="36"
+     rx="6"
+     fill="#00695C"
+     fill-opacity="0.08"
+     id="rect106" />
+  <rect
+     x="1109"
+     y="422"
+     width="4"
+     height="36"
+     rx="2"
+     fill="#00695C"
+     id="rect107" />
+  <text
+     x="1125"
+     y="437"
+     font-size="11"
+     font-weight="700"
+     fill="#004D40"
+     id="text107">REST API</text>
+  <text
+     x="1125"
+     y="451"
+     font-size="10"
+     fill="#546E7A"
+     id="text108">Integrate with portals, bots, tooling</text>
+  <!-- Tech stack -->
+  <rect
+     x="824"
+     y="472"
+     width="550"
+     height="98.153397"
+     rx="8"
+     fill="#1a237e"
+     id="rect108"
+     style="stroke-width:1.06833" />
+  <text
+     x="1099"
+     y="490"
+     text-anchor="middle"
+     font-size="9"
+     fill="#ffffff"
+     fill-opacity="0.55"
+     letter-spacing="1"
+     id="text109">TECH STACK</text>
+  <line
+     x1="838"
+     y1="496"
+     x2="1360"
+     y2="496"
+     stroke="#ffffff"
+     stroke-opacity="0.16"
+     stroke-width="1"
+     id="line109" />
+  <text
+     x="920"
+     y="512"
+     text-anchor="middle"
+     font-size="9"
+     fill="#ffffff"
+     fill-opacity="0.60"
+     id="text110">Framework</text>
+  <text
+     x="920"
+     y="527"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text111">LangChain (LCEL)</text>
+  <text
+     x="1099"
+     y="512"
+     text-anchor="middle"
+     font-size="9"
+     fill="#ffffff"
+     fill-opacity="0.60"
+     id="text112">Vector DB</text>
+  <text
+     x="1099"
+     y="527"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text113">ChromaDB</text>
+  <text
+     x="1290"
+     y="512"
+     text-anchor="middle"
+     font-size="9"
+     fill="#ffffff"
+     fill-opacity="0.60"
+     id="text114">Observability</text>
+  <text
+     x="1290"
+     y="527"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text115">LangSmith</text>
+  <text
+     x="920"
+     y="546"
+     text-anchor="middle"
+     font-size="9"
+     fill="#ffffff"
+     fill-opacity="0.60"
+     id="text116">Interface</text>
+  <text
+     x="920"
+     y="561"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text117">Streamlit + FastAPI</text>
+  <text
+     x="1099"
+     y="546"
+     text-anchor="middle"
+     font-size="9"
+     fill="#ffffff"
+     fill-opacity="0.60"
+     id="text118">Embeddings</text>
+  <text
+     x="1099"
+     y="561"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text119">multilingual-e5-base</text>
+  <!-- ===== ROADMAP SECTION ===== -->
+  <text
+     x="700"
+     y="596"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#37474F"
+     letter-spacing="1"
+     id="text120">18-WEEK ENHANCEMENT ROADMAP</text>
+  <!-- Phase 1 -->
+  <g
+     filter="url(#shadow)"
+     id="g127">
+    <rect
+       x="14"
+       y="606"
+       width="432"
+       height="132"
+       rx="10"
+       fill="url(#g-p1)"
+       id="rect120" />
+    <rect
+       x="14"
+       y="606"
+       width="432"
+       height="40"
+       rx="10"
+       fill="#000000"
+       fill-opacity="0.20"
+       id="rect121" />
+    <rect
+       x="14"
+       y="634"
+       width="432"
+       height="12"
+       fill="#000000"
+       fill-opacity="0.20"
+       id="rect122" />
+    <text
+       x="230"
+       y="630"
+       text-anchor="middle"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       letter-spacing="0.5"
+       id="text122">PHASE 1 — Weeks 1 to 4</text>
+    <text
+       x="230"
+       y="643"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.68"
+       id="text123">Quick Wins</text>
+    <line
+       x1="28"
+       y1="652"
+       x2="432"
+       y2="652"
+       stroke="#ffffff"
+       stroke-opacity="0.18"
+       stroke-width="1"
+       id="line123" />
+    <text
+       x="28"
+       y="671"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text124">Support Desk indexing</text>
+    <text
+       x="28"
+       y="689"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text125">eSignet documentation</text>
+    <text
+       x="28"
+       y="707"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text126">GitHub design docs</text>
+    <text
+       x="28"
+       y="725"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text127">Prompt Library</text>
+  </g>
+  <!-- Phase 2 -->
+  <g
+     filter="url(#shadow)"
+     id="g134">
+    <rect
+       x="462"
+       y="606"
+       width="476"
+       height="132"
+       rx="10"
+       fill="url(#g-p2)"
+       id="rect127" />
+    <rect
+       x="462"
+       y="606"
+       width="476"
+       height="40"
+       rx="10"
+       fill="#000000"
+       fill-opacity="0.20"
+       id="rect128" />
+    <rect
+       x="462"
+       y="634"
+       width="476"
+       height="12"
+       fill="#000000"
+       fill-opacity="0.20"
+       id="rect129" />
+    <text
+       x="700"
+       y="630"
+       text-anchor="middle"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       letter-spacing="0.5"
+       id="text129">PHASE 2 — Weeks 5 to 11</text>
+    <text
+       x="700"
+       y="643"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.68"
+       id="text130">Core and Diagnostic</text>
+    <line
+       x1="476"
+       y1="652"
+       x2="924"
+       y2="652"
+       stroke="#ffffff"
+       stroke-opacity="0.18"
+       stroke-width="1"
+       id="line130" />
+    <text
+       x="476"
+       y="671"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text131">Cross-module GraphRAG</text>
+    <text
+       x="476"
+       y="689"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text132">Environment Diagnostic System</text>
+    <text
+       x="476"
+       y="707"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text133">Logs and DSL report analysis</text>
+    <text
+       x="476"
+       y="725"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text134">Video KT indexing</text>
+  </g>
+  <!-- Phase 3 -->
+  <g
+     filter="url(#shadow)"
+     id="g141">
+    <rect
+       x="954"
+       y="606"
+       width="432"
+       height="132"
+       rx="10"
+       fill="url(#g-p3)"
+       id="rect134" />
+    <rect
+       x="954"
+       y="606"
+       width="432"
+       height="40"
+       rx="10"
+       fill="#000000"
+       fill-opacity="0.20"
+       id="rect135" />
+    <rect
+       x="954"
+       y="634"
+       width="432"
+       height="12"
+       fill="#000000"
+       fill-opacity="0.20"
+       id="rect136" />
+    <text
+       x="1170"
+       y="630"
+       text-anchor="middle"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       letter-spacing="0.5"
+       id="text136">PHASE 3 — Weeks 12 to 17</text>
+    <text
+       x="1170"
+       y="643"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.68"
+       id="text137">Advanced</text>
+    <line
+       x1="968"
+       y1="652"
+       x2="1372"
+       y2="652"
+       stroke="#ffffff"
+       stroke-opacity="0.18"
+       stroke-width="1"
+       id="line137" />
+    <text
+       x="968"
+       y="671"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text138">Architecture diagram generation</text>
+    <text
+       x="968"
+       y="689"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text139">Confluence data governance</text>
+    <text
+       x="968"
+       y="707"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text140">Confidence scoring improvements</text>
+    <text
+       x="968"
+       y="725"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text141">Community integration (public-facing)</text>
+  </g>
+  <!-- Footer -->
+  <text
+     x="700"
+     y="752"
+     text-anchor="middle"
+     font-size="10"
+     fill="#78909C"
+     id="text142">When mature, Nexus AI powers both internal engineering and community.mosip.io — one knowledge base, two interfaces.</text>
+</svg>

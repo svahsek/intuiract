@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1280" height="630" viewBox="0 0 1280 630" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',Arial,Helvetica,sans-serif">
+  <defs>
+    <filter id="sh" x="-8%" y="-8%" width="120%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="sblur"/>
+      <feOffset dx="0" dy="2" in="sblur" result="soffset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.13" result="sflood"/>
+      <feComposite in="sflood" in2="soffset" operator="in" result="sshadow"/>
+      <feMerge>
+        <feMergeNode in="sshadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="sh2" x="-5%" y="-5%" width="115%" height="125%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="sblur"/>
+      <feOffset dx="0" dy="1" in="sblur" result="soffset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.09" result="sflood"/>
+      <feComposite in="sflood" in2="soffset" operator="in" result="sshadow"/>
+      <feMerge>
+        <feMergeNode in="sshadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F3F6FB"/>
+      <stop offset="100%" stop-color="#E2EAF6"/>
+    </linearGradient>
+    <linearGradient id="g-cc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFA726"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </linearGradient>
+    <linearGradient id="g-now" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EF5350"/>
+      <stop offset="100%" stop-color="#B71C1C"/>
+    </linearGradient>
+    <linearGradient id="g-next" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFA726"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </linearGradient>
+    <linearGradient id="g-then" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#42A5F5"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+    <linearGradient id="g-later" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#66BB6A"/>
+      <stop offset="100%" stop-color="#1B5E20"/>
+    </linearGradient>
+
+    <marker id="arr-dn" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#90A4AE"/>
+    </marker>
+    <marker id="arr-st" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#546E7A"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="630" fill="url(#bg)"/>
+
+  <text x="640" y="30" text-anchor="middle" font-size="19" font-weight="700" fill="#1A2740">Path Forward: Next Steps, Course Correction, and Immediate Roadmap</text>
+  <line x1="40" y1="42" x2="1240" y2="42" stroke="#C5D0E0" stroke-width="1.2"/>
+
+  <!-- SECTION 1: NEXT STEPS -->
+  <rect x="20" y="50" width="1240" height="28" rx="6" fill="#1565C0"/>
+  <text x="36" y="69" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">01  NEXT STEPS</text>
+  <text x="188" y="69" font-size="10" fill="#ffffff" fill-opacity="0.72">What we are delivering now</text>
+
+  <!-- Card 1: Demo the Skill -->
+  <g filter="url(#sh2)">
+    <rect x="20" y="82" width="232" height="90" rx="8" fill="#ffffff"/>
+    <rect x="20" y="82" width="232" height="6" rx="4" fill="#1565C0"/>
+    <rect x="20" y="86" width="232" height="2" fill="#1565C0"/>
+    <text x="33" y="105" font-size="11" font-weight="700" fill="#1565C0">Demo the Skill</text>
+    <text x="33" y="121" font-size="10" fill="#546E7A">Run against a real release</text>
+    <text x="33" y="135" font-size="10" fill="#546E7A">cycle end-to-end</text>
+    <text x="33" y="149" font-size="10" fill="#546E7A">Validate all 5 pipeline phases</text>
+    <text x="33" y="164" font-size="9" fill="#B0BEC5">proof of concept</text>
+  </g>
+
+  <!-- Card 2: Onboard Team -->
+  <g filter="url(#sh2)">
+    <rect x="264" y="82" width="232" height="90" rx="8" fill="#ffffff"/>
+    <rect x="264" y="82" width="232" height="6" rx="4" fill="#1565C0"/>
+    <rect x="264" y="86" width="232" height="2" fill="#1565C0"/>
+    <text x="277" y="105" font-size="11" font-weight="700" fill="#1565C0">Onboard One Team</text>
+    <text x="277" y="121" font-size="10" fill="#546E7A">Adopt registry/manifest</text>
+    <text x="277" y="135" font-size="10" fill="#546E7A">pattern in a product repo</text>
+    <text x="277" y="149" font-size="10" fill="#546E7A">Validate the consumer model</text>
+    <text x="277" y="164" font-size="9" fill="#B0BEC5">consumer adoption</text>
+  </g>
+
+  <!-- Card 3: Extend Content Types -->
+  <g filter="url(#sh2)">
+    <rect x="508" y="82" width="232" height="90" rx="8" fill="#ffffff"/>
+    <rect x="508" y="82" width="232" height="6" rx="4" fill="#1565C0"/>
+    <rect x="508" y="86" width="232" height="2" fill="#1565C0"/>
+    <text x="521" y="105" font-size="11" font-weight="700" fill="#1565C0">Extend Content Types</text>
+    <text x="521" y="121" font-size="10" fill="#546E7A">Add features page and</text>
+    <text x="521" y="135" font-size="10" fill="#546E7A">API changelog to registry</text>
+    <text x="521" y="149" font-size="10" fill="#546E7A">Replicate release-notes chain</text>
+    <text x="521" y="164" font-size="9" fill="#B0BEC5">framework expansion</text>
+  </g>
+
+  <!-- Card 4: Track Quality -->
+  <g filter="url(#sh2)">
+    <rect x="752" y="82" width="232" height="90" rx="8" fill="#ffffff"/>
+    <rect x="752" y="82" width="232" height="6" rx="4" fill="#1565C0"/>
+    <rect x="752" y="86" width="232" height="2" fill="#1565C0"/>
+    <text x="765" y="105" font-size="11" font-weight="700" fill="#1565C0">Track Quality Gains</text>
+    <text x="765" y="121" font-size="10" fill="#546E7A">Measure time saved and</text>
+    <text x="765" y="135" font-size="10" fill="#546E7A">error rate improvement</text>
+    <text x="765" y="149" font-size="10" fill="#546E7A">vs. manual process</text>
+    <text x="765" y="164" font-size="9" fill="#B0BEC5">quality measurement</text>
+  </g>
+
+  <!-- Card 5: Adopt as Standard -->
+  <g filter="url(#sh2)">
+    <rect x="996" y="82" width="264" height="90" rx="8" fill="#ffffff"/>
+    <rect x="996" y="82" width="264" height="6" rx="4" fill="#1565C0"/>
+    <rect x="996" y="86" width="264" height="2" fill="#1565C0"/>
+    <text x="1009" y="105" font-size="11" font-weight="700" fill="#1565C0">Adopt as Standard Process</text>
+    <text x="1009" y="121" font-size="10" fill="#546E7A">Make this the default release</text>
+    <text x="1009" y="135" font-size="10" fill="#546E7A">documentation method</text>
+    <text x="1009" y="149" font-size="10" fill="#546E7A">across all product teams</text>
+    <text x="1009" y="164" font-size="9" fill="#B0BEC5">organisation-wide</text>
+  </g>
+
+  <line x1="640" y1="175" x2="640" y2="204" stroke="#90A4AE" stroke-width="2" marker-end="url(#arr-dn)"/>
+  <rect x="502" y="180" width="276" height="19" rx="9" fill="#90A4AE" fill-opacity="0.18"/>
+  <text x="640" y="193" text-anchor="middle" font-size="10" fill="#546E7A" font-weight="600">reveals current execution gap — close this first</text>
+
+  <!-- SECTION 2: COURSE CORRECTION -->
+  <rect x="20" y="207" width="1240" height="28" rx="6" fill="#E65100"/>
+  <text x="36" y="226" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">02  COURSE CORRECTION</text>
+  <text x="244" y="226" font-size="10" fill="#ffffff" fill-opacity="0.72">Three moves that close the Tier 2 execution gap — do these before anything else</text>
+
+  <!-- CC Card 1: Prompt Caching -->
+  <g filter="url(#sh)">
+    <rect x="20" y="239" width="392" height="108" rx="8" fill="url(#g-cc)"/>
+    <rect x="20" y="239" width="392" height="36" rx="8" fill="#000000" fill-opacity="0.18"/>
+    <rect x="20" y="263" width="392" height="12" fill="#000000" fill-opacity="0.18"/>
+    <text x="36" y="261" font-size="13" font-weight="700" fill="#ffffff">Prompt Caching</text>
+    <rect x="330" y="245" width="74" height="16" rx="8" fill="#ffffff" fill-opacity="0.22"/>
+    <text x="367" y="257" text-anchor="middle" font-size="9" font-weight="700" fill="#ffffff">Half day</text>
+    <text x="36" y="283" font-size="10" fill="#ffffff" fill-opacity="0.93">Standards files are large and static. Cache</text>
+    <text x="36" y="298" font-size="10" fill="#ffffff" fill-opacity="0.93">them once — cut token cost on every future</text>
+    <text x="36" y="313" font-size="10" fill="#ffffff" fill-opacity="0.93">run permanently. Immediate ROI.</text>
+    <text x="36" y="334" font-size="9" fill="#ffffff" fill-opacity="0.55">applies to: reconciliation + generation phases</text>
+  </g>
+
+  <!-- CC Card 2: Structured Outputs -->
+  <g filter="url(#sh)">
+    <rect x="424" y="239" width="392" height="108" rx="8" fill="url(#g-cc)"/>
+    <rect x="424" y="239" width="392" height="36" rx="8" fill="#000000" fill-opacity="0.18"/>
+    <rect x="424" y="263" width="392" height="12" fill="#000000" fill-opacity="0.18"/>
+    <text x="440" y="261" font-size="13" font-weight="700" fill="#ffffff">Structured Outputs</text>
+    <rect x="734" y="245" width="74" height="16" rx="8" fill="#ffffff" fill-opacity="0.22"/>
+    <text x="771" y="257" text-anchor="middle" font-size="9" font-weight="700" fill="#ffffff">Half day</text>
+    <text x="440" y="283" font-size="10" fill="#ffffff" fill-opacity="0.93">Replace free-form YAML generation with</text>
+    <text x="440" y="298" font-size="10" fill="#ffffff" fill-opacity="0.93">schema-enforced output. Catch violations at</text>
+    <text x="440" y="313" font-size="10" fill="#ffffff" fill-opacity="0.93">generation time, not in Phase 4 validation.</text>
+    <text x="440" y="334" font-size="9" fill="#ffffff" fill-opacity="0.55">applies to: Phase 3 content generation</text>
+  </g>
+
+  <!-- CC Card 3: reconcile.py -->
+  <g filter="url(#sh)">
+    <rect x="828" y="239" width="432" height="108" rx="8" fill="url(#g-cc)"/>
+    <rect x="828" y="239" width="432" height="36" rx="8" fill="#000000" fill-opacity="0.18"/>
+    <rect x="828" y="263" width="432" height="12" fill="#000000" fill-opacity="0.18"/>
+    <text x="844" y="261" font-size="13" font-weight="700" fill="#ffffff">reconcile.py</text>
+    <rect x="1174" y="245" width="78" height="16" rx="8" fill="#ffffff" fill-opacity="0.22"/>
+    <text x="1213" y="257" text-anchor="middle" font-size="9" font-weight="700" fill="#ffffff">2-3 days</text>
+    <text x="844" y="283" font-size="10" fill="#ffffff" fill-opacity="0.93">Move source-precedence logic from LLM prose</text>
+    <text x="844" y="298" font-size="10" fill="#ffffff" fill-opacity="0.93">instructions to deterministic Python code. The</text>
+    <text x="844" y="313" font-size="10" fill="#ffffff" fill-opacity="0.93">single most important gap to close.</text>
+    <text x="844" y="334" font-size="9" fill="#ffffff" fill-opacity="0.55">applies to: Phase 2 reconciliation</text>
+  </g>
+
+  <line x1="640" y1="350" x2="640" y2="379" stroke="#90A4AE" stroke-width="2" marker-end="url(#arr-dn)"/>
+  <rect x="524" y="355" width="232" height="19" rx="9" fill="#90A4AE" fill-opacity="0.18"/>
+  <text x="640" y="368" text-anchor="middle" font-size="10" fill="#546E7A" font-weight="600">becomes the execution sequence</text>
+
+  <!-- SECTION 3: IMMEDIATE ROADMAP -->
+  <rect x="20" y="382" width="1240" height="28" rx="6" fill="#37474F"/>
+  <text x="36" y="401" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">03  IMMEDIATE ROADMAP</text>
+  <text x="234" y="401" font-size="10" fill="#ffffff" fill-opacity="0.72">Four stages in sequence — each unlocks the next</text>
+
+  <!-- Stage 1: NOW -->
+  <g id="stage-now" filter="url(#sh)">
+    <rect x="20" y="414" width="272" height="170" rx="10" fill="url(#g-now)"/>
+    <rect x="20" y="414" width="272" height="40" rx="10" fill="#000000" fill-opacity="0.20"/>
+    <rect x="20" y="444" width="272" height="10" fill="#000000" fill-opacity="0.20"/>
+    <text x="156" y="438" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" letter-spacing="2">NOW</text>
+    <text x="156" y="452" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.65">Harden execution</text>
+    <line x1="36" y1="462" x2="274" y2="462" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+    <text x="36" y="479" font-size="11" fill="#ffffff" fill-opacity="0.95">Prompt caching</text>
+    <text x="36" y="496" font-size="11" fill="#ffffff" fill-opacity="0.95">Structured outputs</text>
+    <text x="36" y="513" font-size="11" fill="#ffffff" fill-opacity="0.95">reconcile.py</text>
+    <line x1="36" y1="527" x2="274" y2="527" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1"/>
+    <text x="36" y="543" font-size="9" fill="#ffffff" fill-opacity="0.58">Gap: Tier 2 execution</text>
+    <text x="36" y="557" font-size="9" fill="#ffffff" fill-opacity="0.58">Goal: Tier 4 reliability</text>
+    <text x="36" y="574" font-size="9" fill="#ffffff" fill-opacity="0.40">prerequisite for everything below</text>
+  </g>
+
+  <line x1="294" y1="499" x2="324" y2="499" stroke="#546E7A" stroke-width="2.5" marker-end="url(#arr-st)"/>
+
+  <!-- Stage 2: NEXT -->
+  <g id="stage-next" filter="url(#sh)">
+    <rect x="326" y="414" width="272" height="170" rx="10" fill="url(#g-next)"/>
+    <rect x="326" y="414" width="272" height="40" rx="10" fill="#000000" fill-opacity="0.20"/>
+    <rect x="326" y="444" width="272" height="10" fill="#000000" fill-opacity="0.20"/>
+    <text x="462" y="438" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" letter-spacing="2">NEXT</text>
+    <text x="462" y="452" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.65">Real-world validation</text>
+    <line x1="342" y1="462" x2="580" y2="462" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+    <text x="342" y="479" font-size="11" fill="#ffffff" fill-opacity="0.95">Test on a real repo</text>
+    <text x="342" y="496" font-size="11" fill="#ffffff" fill-opacity="0.95">Inconsistent labels</text>
+    <text x="342" y="513" font-size="11" fill="#ffffff" fill-opacity="0.95">PRs without linked issues</text>
+    <line x1="342" y1="527" x2="580" y2="527" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1"/>
+    <text x="342" y="543" font-size="9" fill="#ffffff" fill-opacity="0.58">Source-precedence must</text>
+    <text x="342" y="557" font-size="9" fill="#ffffff" fill-opacity="0.58">earn its keep against noise</text>
+    <text x="342" y="574" font-size="9" fill="#ffffff" fill-opacity="0.40">before any packaging</text>
+  </g>
+
+  <line x1="600" y1="499" x2="630" y2="499" stroke="#546E7A" stroke-width="2.5" marker-end="url(#arr-st)"/>
+
+  <!-- Stage 3: THEN -->
+  <g id="stage-then" filter="url(#sh)">
+    <rect x="632" y="414" width="272" height="170" rx="10" fill="url(#g-then)"/>
+    <rect x="632" y="414" width="272" height="40" rx="10" fill="#000000" fill-opacity="0.20"/>
+    <rect x="632" y="444" width="272" height="10" fill="#000000" fill-opacity="0.20"/>
+    <text x="768" y="438" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" letter-spacing="2">THEN</text>
+    <text x="768" y="452" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.65">Package for consumers</text>
+    <line x1="648" y1="462" x2="886" y2="462" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+    <text x="648" y="479" font-size="11" fill="#ffffff" fill-opacity="0.95">GitHub Action</text>
+    <text x="648" y="496" font-size="11" fill="#ffffff" fill-opacity="0.95">Triggered on tag push</text>
+    <text x="648" y="513" font-size="11" fill="#ffffff" fill-opacity="0.95">Zero manual work per release</text>
+    <line x1="648" y1="527" x2="886" y2="527" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1"/>
+    <text x="648" y="543" font-size="9" fill="#ffffff" fill-opacity="0.58">SKILL.md is already a</text>
+    <text x="648" y="557" font-size="9" fill="#ffffff" fill-opacity="0.58">workflow contract — wrap it</text>
+    <text x="648" y="574" font-size="9" fill="#ffffff" fill-opacity="0.40">after reconcile.py is done</text>
+  </g>
+
+  <line x1="906" y1="499" x2="936" y2="499" stroke="#546E7A" stroke-width="2.5" marker-end="url(#arr-st)"/>
+
+  <!-- Stage 4: LATER -->
+  <g id="stage-later" filter="url(#sh)">
+    <rect x="938" y="414" width="322" height="170" rx="10" fill="url(#g-later)"/>
+    <rect x="938" y="414" width="322" height="40" rx="10" fill="#000000" fill-opacity="0.20"/>
+    <rect x="938" y="444" width="322" height="10" fill="#000000" fill-opacity="0.20"/>
+    <text x="1099" y="438" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" letter-spacing="2">LATER</text>
+    <text x="1099" y="452" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.65">Scale the platform</text>
+    <line x1="954" y1="462" x2="1242" y2="462" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+    <text x="954" y="479" font-size="11" fill="#ffffff" fill-opacity="0.95">MCP Server</text>
+    <text x="954" y="496" font-size="11" fill="#ffffff" fill-opacity="0.95">Multi-output pipeline</text>
+    <text x="954" y="513" font-size="11" fill="#ffffff" fill-opacity="0.95">Features pages + API changelogs</text>
+    <line x1="954" y1="527" x2="1242" y2="527" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1"/>
+    <text x="954" y="543" font-size="9" fill="#ffffff" fill-opacity="0.58">All reading from the same</text>
+    <text x="954" y="557" font-size="9" fill="#ffffff" fill-opacity="0.58">release-evidence.yaml</text>
+    <text x="954" y="574" font-size="9" fill="#ffffff" fill-opacity="0.40">one pipeline, many outputs</text>
+  </g>
+
+  <text x="640" y="614" text-anchor="middle" font-size="10" fill="#90A4AE">Structured Documentation Intelligence (SDI) — Standards are the brain. AI is the hand.</text>
+</svg>

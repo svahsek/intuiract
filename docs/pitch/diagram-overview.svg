@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="840" viewBox="0 0 1400 840" font-family="'Segoe UI',Arial,Helvetica,sans-serif">
+  <defs>
+    <filter id="sh" x="-10%" y="-10%" width="125%" height="135%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="sblur"/>
+      <feOffset dx="0" dy="3" in="sblur" result="soffset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="sflood"/>
+      <feComposite in="sflood" in2="soffset" operator="in" result="sshadow"/>
+      <feMerge><feMergeNode in="sshadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="sh-sm" x="-8%" y="-8%" width="120%" height="125%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="sblur"/>
+      <feOffset dx="0" dy="2" in="sblur" result="soffset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.14" result="sflood"/>
+      <feComposite in="sflood" in2="soffset" operator="in" result="sshadow"/>
+      <feMerge><feMergeNode in="sshadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F0F4FB"/>
+      <stop offset="100%" stop-color="#DDE5F5"/>
+    </linearGradient>
+    <linearGradient id="gr-reg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#42A5F5"/>
+      <stop offset="100%" stop-color="#0D47A1"/>
+    </linearGradient>
+    <linearGradient id="gr-man" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#BA68C8"/>
+      <stop offset="100%" stop-color="#4A148C"/>
+    </linearGradient>
+    <linearGradient id="gr-a1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#42A5F5"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+    <linearGradient id="gr-a2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4DB6AC"/>
+      <stop offset="100%" stop-color="#00695C"/>
+    </linearGradient>
+    <linearGradient id="gr-a3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </linearGradient>
+    <linearGradient id="gr-a4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#CE93D8"/>
+      <stop offset="100%" stop-color="#6A1B9A"/>
+    </linearGradient>
+    <linearGradient id="gr-a5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#81C784"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#64B5F6"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F48FB1"/>
+      <stop offset="100%" stop-color="#880E4F"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4DB6AC"/>
+      <stop offset="100%" stop-color="#00695C"/>
+    </linearGradient>
+    <linearGradient id="g4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </linearGradient>
+    <linearGradient id="g5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#81C784"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+    <linearGradient id="s1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFD54F"/>
+      <stop offset="100%" stop-color="#F57F17"/>
+    </linearGradient>
+    <linearGradient id="s2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#90CAF9"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+    <linearGradient id="s3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#A5D6A7"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+    <linearGradient id="s4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#CFD8DC"/>
+      <stop offset="100%" stop-color="#546E7A"/>
+    </linearGradient>
+    <linearGradient id="eng" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7E57C2"/>
+      <stop offset="100%" stop-color="#311B92"/>
+    </linearGradient>
+    <linearGradient id="out" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#66BB6A"/>
+      <stop offset="100%" stop-color="#1B5E20"/>
+    </linearGradient>
+    <linearGradient id="pri" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#78909C"/>
+      <stop offset="100%" stop-color="#263238"/>
+    </linearGradient>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#607D8B"/>
+    </marker>
+    <marker id="arr-fan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9575CD"/>
+    </marker>
+    <marker id="arr-grn" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#388E3C"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#E53935"/>
+    </marker>
+    <marker id="arr-org" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F57F17"/>
+    </marker>
+    <marker id="arr-dim" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#B0BEC5"/>
+    </marker>
+    <marker id="arr-dn" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#455A64"/>
+    </marker>
+  </defs>
+
+  <!-- BACKGROUND -->
+  <rect width="1400" height="840" fill="url(#bg)"/>
+
+  <!-- TITLE -->
+  <text x="700" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#1A2740">Release Notes Automation - Full Framework Overview</text>
+  <text x="700" y="56" text-anchor="middle" font-size="13" fill="#607D8B">Architecture governs. Pipeline executes. Reconciliation resolves. All three layers working together.</text>
+  <line x1="80" y1="64" x2="1320" y2="64" stroke="#C0CEDF" stroke-width="1.2"/>
+
+  <!-- ================================================ -->
+  <!-- LAYER 1: ARCHITECTURE                           -->
+  <!-- ================================================ -->
+  <rect x="0" y="70" width="1400" height="30" fill="#1a3060"/>
+  <text x="16" y="89" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">LAYER 1 - ARCHITECTURE: Registry to Manifest to Asset Chain (diagram-architecture.svg)</text>
+  <text x="1384" y="89" text-anchor="end" font-size="10" fill="#90b4e0">standards/content-types.yaml</text>
+
+  <rect x="0" y="100" width="1400" height="130" fill="#E8EFF8" fill-opacity="0.50"/>
+
+  <!-- Registry -->
+  <g filter="url(#sh)">
+    <rect x="16" y="108" width="196" height="80" rx="10" fill="url(#gr-reg)"/>
+    <text x="114" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Central Registry</text>
+    <text x="114" y="148" text-anchor="middle" font-size="10" fill="#ffffff" fill-opacity="0.85">standards/content-types.yaml</text>
+    <text x="114" y="164" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.70">"What content types exist?"</text>
+    <text x="114" y="181" text-anchor="middle" font-size="8" font-weight="700" fill="#ffffff" fill-opacity="0.60">STEP 1</text>
+  </g>
+
+  <line x1="214" y1="148" x2="248" y2="148" stroke="#607D8B" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="231" y="143" text-anchor="middle" font-size="9" fill="#546E7A">resolves</text>
+
+  <!-- Manifest -->
+  <g filter="url(#sh)">
+    <rect x="250" y="108" width="220" height="80" rx="10" fill="url(#gr-man)"/>
+    <text x="360" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Manifest</text>
+    <text x="360" y="148" text-anchor="middle" font-size="10" fill="#ffffff" fill-opacity="0.85">content-types/release-notes.yaml</text>
+    <text x="360" y="164" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.70">"Where are all entrypoints?"</text>
+    <text x="360" y="181" text-anchor="middle" font-size="8" font-weight="700" fill="#ffffff" fill-opacity="0.60">STEP 2</text>
+  </g>
+
+  <!-- Fan line from Manifest to 5 assets -->
+  <line x1="472" y1="148" x2="502" y2="148" stroke="#9575CD" stroke-width="2"/>
+  <line x1="502" y1="148" x2="1380" y2="148" stroke="#9575CD" stroke-width="1.5"/>
+  <text x="940" y="143" text-anchor="middle" font-size="9" font-weight="700" fill="#6a1b9a" letter-spacing="1">STEP 3 - resolves all file assets</text>
+
+  <!-- Fan arrows: asset centers at 579, 755, 931, 1107, 1283 -->
+  <line x1="579" y1="148" x2="579" y2="168" stroke="#9575CD" stroke-width="1.5" marker-end="url(#arr-fan)"/>
+  <line x1="755" y1="148" x2="755" y2="168" stroke="#9575CD" stroke-width="1.5" marker-end="url(#arr-fan)"/>
+  <line x1="931" y1="148" x2="931" y2="168" stroke="#9575CD" stroke-width="1.5" marker-end="url(#arr-fan)"/>
+  <line x1="1107" y1="148" x2="1107" y2="168" stroke="#9575CD" stroke-width="1.5" marker-end="url(#arr-fan)"/>
+  <line x1="1283" y1="148" x2="1283" y2="168" stroke="#9575CD" stroke-width="1.5" marker-end="url(#arr-fan)"/>
+
+  <!-- Asset boxes: x=502, each w=166, gap=10 -->
+  <g filter="url(#sh-sm)">
+    <rect x="502" y="170" width="154" height="52" rx="8" fill="url(#gr-a1)"/>
+    <text x="579" y="191" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Schema</text>
+    <text x="579" y="207" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.85">release-notes-schema.yaml</text>
+    <text x="579" y="218" text-anchor="middle" font-size="8" fill="#ffffff" fill-opacity="0.65">Field contracts</text>
+  </g>
+  <g filter="url(#sh-sm)">
+    <rect x="668" y="170" width="174" height="52" rx="8" fill="url(#gr-a2)"/>
+    <text x="755" y="191" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Rendering</text>
+    <text x="755" y="207" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.85">release-notes-rendering.yaml</text>
+    <text x="755" y="218" text-anchor="middle" font-size="8" fill="#ffffff" fill-opacity="0.65">YAML to Markdown rules</text>
+  </g>
+  <g filter="url(#sh-sm)">
+    <rect x="854" y="170" width="154" height="52" rx="8" fill="url(#gr-a3)"/>
+    <text x="931" y="191" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Rules</text>
+    <text x="931" y="207" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.85">release-notes-rule.yaml</text>
+    <text x="931" y="218" text-anchor="middle" font-size="8" fill="#ffffff" fill-opacity="0.65">Policy + schema checks</text>
+  </g>
+  <g filter="url(#sh-sm)">
+    <rect x="1020" y="170" width="174" height="52" rx="8" fill="url(#gr-a4)"/>
+    <text x="1107" y="191" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Skill</text>
+    <text x="1107" y="207" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.85">skills/release-notes/SKILL.md</text>
+    <text x="1107" y="218" text-anchor="middle" font-size="8" fill="#ffffff" fill-opacity="0.65">Agent orchestration</text>
+  </g>
+  <g filter="url(#sh-sm)">
+    <rect x="1206" y="170" width="174" height="52" rx="8" fill="url(#gr-a5)"/>
+    <text x="1283" y="191" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Quick Ref</text>
+    <text x="1283" y="207" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.85">quick-reference.md</text>
+    <text x="1283" y="218" text-anchor="middle" font-size="8" fill="#ffffff" fill-opacity="0.65">Lightweight prompting</text>
+  </g>
+
+  <!-- Connector Layer 1 to Layer 2 -->
+  <line x1="700" y1="232" x2="700" y2="260" stroke="#455A64" stroke-width="2" marker-end="url(#arr-dn)"/>
+  <text x="720" y="249" font-size="10" font-weight="700" fill="#455A64">governs all pipeline execution</text>
+
+  <!-- ================================================ -->
+  <!-- LAYER 2: PIPELINE                               -->
+  <!-- ================================================ -->
+  <rect x="0" y="264" width="1400" height="30" fill="#1a4030"/>
+  <text x="16" y="283" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">LAYER 2 - PIPELINE: Five Deterministic Phases, No Skipping (diagram-pipeline.svg)</text>
+  <text x="1384" y="283" text-anchor="end" font-size="10" fill="#80c8a0">Extraction to Rendering</text>
+
+  <rect x="0" y="294" width="1400" height="192" fill="#E8F5EA" fill-opacity="0.45"/>
+
+  <!-- Phase 1: Extraction -->
+  <g filter="url(#sh)">
+    <rect x="14" y="298" width="242" height="150" rx="11" fill="url(#g1)"/>
+    <circle cx="135" cy="319" r="14" fill="#ffffff" fill-opacity="0.22"/>
+    <text x="135" y="324" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">01</text>
+    <text x="135" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Extraction</text>
+    <line x1="30" y1="358" x2="240" y2="358" stroke="#ffffff" stroke-opacity="0.28" stroke-width="1"/>
+    <text x="36" y="376" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; GitHub Issues</text>
+    <text x="36" y="393" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Pull Requests</text>
+    <text x="36" y="410" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Commits / QA / Scans</text>
+    <rect x="30" y="425" width="174" height="16" rx="5" fill="#000000" fill-opacity="0.20"/>
+    <text x="117" y="437" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.70" font-weight="600">OUTPUT: raw evidence</text>
+  </g>
+
+  <line x1="258" y1="373" x2="292" y2="373" stroke="#90A4AE" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- Phase 2: Reconciliation (HIGHLIGHTED — zoomed in Layer 3) -->
+  <rect x="288" y="290" width="258" height="166" rx="14" fill="none" stroke="#F57F17" stroke-width="3" stroke-dasharray="6,3"/>
+  <g filter="url(#sh)">
+    <rect x="294" y="298" width="246" height="150" rx="11" fill="url(#g2)"/>
+    <circle cx="417" cy="319" r="14" fill="#ffffff" fill-opacity="0.22"/>
+    <text x="417" y="324" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">02</text>
+    <text x="417" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Reconciliation</text>
+    <line x1="310" y1="358" x2="524" y2="358" stroke="#ffffff" stroke-opacity="0.28" stroke-width="1"/>
+    <text x="316" y="376" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Source precedence</text>
+    <text x="316" y="393" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Conflict resolution</text>
+    <text x="316" y="410" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Confidence scoring</text>
+    <rect x="310" y="425" width="210" height="16" rx="5" fill="#000000" fill-opacity="0.20"/>
+    <text x="415" y="437" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.70" font-weight="600">OUTPUT: release-evidence.yaml</text>
+  </g>
+  <text x="417" y="464" text-anchor="middle" font-size="9" font-weight="700" fill="#F57F17">&#x25BC; detail in Layer 3 below</text>
+
+  <line x1="542" y1="373" x2="576" y2="373" stroke="#90A4AE" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- Phase 3: Content Generation -->
+  <g filter="url(#sh)">
+    <rect x="578" y="298" width="242" height="150" rx="11" fill="url(#g3)"/>
+    <circle cx="699" cy="319" r="14" fill="#ffffff" fill-opacity="0.22"/>
+    <text x="699" y="324" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">03</text>
+    <text x="699" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Content Generation</text>
+    <line x1="594" y1="358" x2="804" y2="358" stroke="#ffffff" stroke-opacity="0.28" stroke-width="1"/>
+    <text x="600" y="376" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Evidence to schema map</text>
+    <text x="600" y="393" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Field normalization</text>
+    <text x="600" y="410" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Structured YAML out</text>
+    <rect x="594" y="425" width="192" height="16" rx="5" fill="#000000" fill-opacity="0.20"/>
+    <text x="690" y="437" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.70" font-weight="600">OUTPUT: release-notes.yaml</text>
+  </g>
+
+  <line x1="822" y1="373" x2="856" y2="373" stroke="#90A4AE" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- Phase 4: Validation Gate -->
+  <g filter="url(#sh)">
+    <rect x="858" y="298" width="242" height="150" rx="11" fill="url(#g4)"/>
+    <circle cx="979" cy="319" r="14" fill="#ffffff" fill-opacity="0.22"/>
+    <text x="979" y="324" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">04</text>
+    <text x="979" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Validation Gate</text>
+    <line x1="874" y1="358" x2="1084" y2="358" stroke="#ffffff" stroke-opacity="0.28" stroke-width="1"/>
+    <text x="880" y="376" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Schema rules</text>
+    <text x="880" y="393" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Policy rules</text>
+    <text x="880" y="410" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Confidence threshold</text>
+    <rect x="874" y="425" width="192" height="16" rx="5" fill="#000000" fill-opacity="0.20"/>
+    <text x="970" y="437" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.70" font-weight="600">GATE: PASS or BLOCKED</text>
+  </g>
+
+  <!-- PASS arrow -->
+  <line x1="1102" y1="373" x2="1136" y2="373" stroke="#388E3C" stroke-width="2.5" marker-end="url(#arr-grn)"/>
+  <text x="1119" y="367" text-anchor="middle" font-size="10" font-weight="700" fill="#2E7D32">PASS</text>
+
+  <!-- Phase 5: Rendering -->
+  <g filter="url(#sh)">
+    <rect x="1138" y="298" width="248" height="150" rx="11" fill="url(#g5)"/>
+    <circle cx="1262" cy="319" r="14" fill="#ffffff" fill-opacity="0.22"/>
+    <text x="1262" y="324" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">05</text>
+    <text x="1262" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Rendering</text>
+    <line x1="1154" y1="358" x2="1370" y2="358" stroke="#ffffff" stroke-opacity="0.28" stroke-width="1"/>
+    <text x="1160" y="376" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; YAML to Markdown</text>
+    <text x="1160" y="393" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Rendering rules applied</text>
+    <text x="1160" y="410" font-size="12" fill="#ffffff" fill-opacity="0.93">&#x25CF; Publication-ready</text>
+    <rect x="1154" y="425" width="210" height="16" rx="5" fill="#000000" fill-opacity="0.20"/>
+    <text x="1259" y="437" text-anchor="middle" font-size="9" fill="#ffffff" fill-opacity="0.70" font-weight="600">OUTPUT: release-notes.md</text>
+  </g>
+
+  <!-- FAIL arc -->
+  <path d="M 979,450 L 979,470 L 417,470 L 417,450" fill="none" stroke="#E53935" stroke-width="2" stroke-dasharray="7,4" marker-end="url(#arr-red)"/>
+  <rect x="638" y="458" width="208" height="22" rx="11" fill="#E53935"/>
+  <text x="742" y="473" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">FAIL - Review and Re-run</text>
+
+  <!-- Connector Layer 2 to Layer 3 -->
+  <line x1="417" y1="476" x2="417" y2="514" stroke="#F57F17" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-org)"/>
+  <line x1="700" y1="478" x2="700" y2="514" stroke="#455A64" stroke-width="2" marker-end="url(#arr-dn)"/>
+  <text x="720" y="500" font-size="10" font-weight="700" fill="#455A64">Validation uses Schema + Rules from Layer 1</text>
+  <text x="438" y="500" font-size="9" font-weight="700" fill="#E65100">Phase 02 zoomed below</text>
+
+  <!-- ================================================ -->
+  <!-- LAYER 3: RECONCILIATION DETAIL                  -->
+  <!-- ================================================ -->
+  <rect x="0" y="518" width="1400" height="30" fill="#2d0a5a"/>
+  <text x="16" y="537" font-size="11" font-weight="700" fill="#ffffff" letter-spacing="1">LAYER 3 - RECONCILIATION: How Phase 02 Resolves Conflicting Sources (diagram-reconciliation.svg)</text>
+  <text x="1384" y="537" text-anchor="end" font-size="10" fill="#c4a0e8">standards/source-precedence.yaml</text>
+
+  <rect x="0" y="548" width="1400" height="262" fill="#F3EAF8" fill-opacity="0.40"/>
+
+  <!-- Source column header -->
+  <text x="149" y="566" text-anchor="middle" font-size="11" font-weight="700" fill="#546E7A" letter-spacing="1">SOURCES (highest to lowest trust)</text>
+  <rect x="16" y="570" width="267" height="16" rx="4" fill="#000000" fill-opacity="0.05"/>
+  <text x="149" y="582" text-anchor="middle" font-size="10" fill="#607D8B">Example field: <tspan font-weight="700">change_type</tspan></text>
+
+  <!-- Source 1: WINNER -->
+  <g filter="url(#sh)">
+    <rect x="16" y="586" width="267" height="60" rx="10" fill="url(#s1)"/>
+    <rect x="16" y="586" width="52" height="60" rx="10" fill="#000000" fill-opacity="0.15"/>
+    <circle cx="42" cy="614" r="12" fill="#ffffff" fill-opacity="0.85"/>
+    <text x="42" y="619" text-anchor="middle" font-size="13" font-weight="700" fill="#E65100">1</text>
+    <text x="42" y="636" text-anchor="middle" font-size="8" fill="#ffffff" fill-opacity="0.85" font-weight="700">P1</text>
+    <text x="82" y="609" font-size="12" font-weight="700" fill="#1A2740">GitHub Issue Label</text>
+    <text x="82" y="626" font-size="11" fill="#1A2740">Value: <tspan font-weight="700">"bug"</tspan></text>
+    <text x="82" y="639" font-size="9" fill="#000000" fill-opacity="0.55">Highest trust - explicit human label</text>
+    <rect x="205" y="592" width="62" height="18" rx="9" fill="#000000" fill-opacity="0.22"/>
+    <text x="236" y="605" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">WINNER</text>
+  </g>
+
+  <!-- Source 2: dimmed -->
+  <g filter="url(#sh-sm)" opacity="0.70">
+    <rect x="16" y="652" width="267" height="50" rx="10" fill="url(#s2)"/>
+    <rect x="16" y="652" width="52" height="50" rx="10" fill="#000000" fill-opacity="0.15"/>
+    <circle cx="42" cy="673" r="12" fill="#ffffff" fill-opacity="0.85"/>
+    <text x="42" y="678" text-anchor="middle" font-size="13" font-weight="700" fill="#1565C0">2</text>
+    <text x="42" y="694" text-anchor="middle" font-size="8" fill="#ffffff" fill-opacity="0.85" font-weight="700">P2</text>
+    <text x="82" y="671" font-size="12" font-weight="700" fill="#ffffff">PR Label</text>
+    <text x="82" y="687" font-size="11" fill="#ffffff" fill-opacity="0.90">Value: <tspan font-weight="700">"enhancement"</tspan></text>
+    <text x="82" y="697" font-size="9" fill="#ffffff" fill-opacity="0.65">Skipped - P1 already resolved</text>
+  </g>
+
+  <!-- Source 3: dimmed -->
+  <g filter="url(#sh-sm)" opacity="0.55">
+    <rect x="16" y="708" width="267" height="50" rx="10" fill="url(#s3)"/>
+    <rect x="16" y="708" width="52" height="50" rx="10" fill="#000000" fill-opacity="0.15"/>
+    <circle cx="42" cy="729" r="12" fill="#ffffff" fill-opacity="0.85"/>
+    <text x="42" y="734" text-anchor="middle" font-size="13" font-weight="700" fill="#2E7D32">3</text>
+    <text x="42" y="750" text-anchor="middle" font-size="8" fill="#ffffff" fill-opacity="0.85" font-weight="700">P3</text>
+    <text x="82" y="727" font-size="12" font-weight="700" fill="#ffffff">PR Title Prefix</text>
+    <text x="82" y="743" font-size="11" fill="#ffffff" fill-opacity="0.90">Value: <tspan font-weight="700">"feat:"</tspan></text>
+    <text x="82" y="753" font-size="9" fill="#ffffff" fill-opacity="0.65">Skipped - P1 already resolved</text>
+  </g>
+
+  <!-- Source 4: dimmed -->
+  <g filter="url(#sh-sm)" opacity="0.40">
+    <rect x="16" y="764" width="267" height="50" rx="10" fill="url(#s4)"/>
+    <rect x="16" y="764" width="52" height="50" rx="10" fill="#000000" fill-opacity="0.15"/>
+    <circle cx="42" cy="785" r="12" fill="#ffffff" fill-opacity="0.85"/>
+    <text x="42" y="790" text-anchor="middle" font-size="13" fill="#ffffff">4</text>
+    <text x="42" y="806" text-anchor="middle" font-size="8" fill="#ffffff" fill-opacity="0.85" font-weight="700">P4</text>
+    <text x="82" y="783" font-size="12" font-weight="700" fill="#ffffff">Commit Message Prefix</text>
+    <text x="82" y="799" font-size="11" fill="#ffffff" fill-opacity="0.90">Value: <tspan font-weight="700">"fix:"</tspan></text>
+    <text x="82" y="809" font-size="9" fill="#ffffff" fill-opacity="0.65">Lowest trust - fallback only</text>
+  </g>
+
+  <!-- Winner arrow (bold orange) -->
+  <line x1="285" y1="616" x2="304" y2="660" stroke="#F57F17" stroke-width="2.5" marker-end="url(#arr-org)"/>
+  <!-- Dimmed arrows -->
+  <line x1="285" y1="677" x2="304" y2="690" stroke="#B0BEC5" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-dim)"/>
+  <line x1="285" y1="733" x2="304" y2="710" stroke="#B0BEC5" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-dim)"/>
+  <line x1="285" y1="789" x2="304" y2="730" stroke="#B0BEC5" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-dim)"/>
+
+  <!-- Precedence Engine -->
+  <g filter="url(#sh)">
+    <rect x="306" y="576" width="342" height="224" rx="12" fill="url(#eng)"/>
+    <rect x="306" y="576" width="342" height="38" rx="12" fill="#000000" fill-opacity="0.20"/>
+    <rect x="306" y="601" width="342" height="13" fill="#000000" fill-opacity="0.20"/>
+    <text x="477" y="601" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="0.5">Precedence Engine</text>
+    <text x="322" y="632" font-size="11" fill="#ffffff" fill-opacity="0.70" font-weight="600">Authority chain for change_type:</text>
+    <rect x="318" y="638" width="308" height="22" rx="5" fill="#ffffff" fill-opacity="0.10"/>
+    <text x="477" y="653" text-anchor="middle" font-size="11" fill="#ffffff" fill-opacity="0.90" font-family="'Courier New',monospace">issue-label - pr-label - title - commit</text>
+    <line x1="322" y1="668" x2="634" y2="668" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+    <text x="322" y="686" font-size="11" fill="#ffffff" fill-opacity="0.70">Algorithm:</text>
+    <text x="322" y="704" font-size="11" fill="#ffffff" fill-opacity="0.90">1.  Walk chain from highest priority</text>
+    <text x="322" y="720" font-size="11" fill="#ffffff" fill-opacity="0.90">2.  Use first source that has a value</text>
+    <text x="322" y="736" font-size="11" fill="#ffffff" fill-opacity="0.90">3.  Record provenance + confidence</text>
+    <line x1="322" y1="746" x2="634" y2="746" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+    <text x="477" y="762" text-anchor="middle" font-size="10" fill="#ffffff" fill-opacity="0.65">Defined in: standards/source-precedence.yaml</text>
+    <text x="477" y="778" text-anchor="middle" font-size="10" fill="#ffffff" fill-opacity="0.55">No hardcoding - fully data-driven</text>
+    <text x="477" y="793" text-anchor="middle" font-size="10" fill="#ffffff" fill-opacity="0.55">Same inputs always produce same output</text>
+  </g>
+
+  <!-- Arrow Engine to Output -->
+  <line x1="650" y1="688" x2="670" y2="688" stroke="#388E3C" stroke-width="2.5" marker-end="url(#arr-grn)"/>
+  <text x="660" y="681" text-anchor="middle" font-size="10" font-weight="700" fill="#2E7D32">resolved</text>
+
+  <!-- Canonical Output -->
+  <g filter="url(#sh)">
+    <rect x="672" y="576" width="338" height="224" rx="12" fill="url(#out)"/>
+    <rect x="672" y="576" width="338" height="38" rx="12" fill="#000000" fill-opacity="0.18"/>
+    <rect x="672" y="601" width="338" height="13" fill="#000000" fill-opacity="0.18"/>
+    <text x="841" y="601" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="0.5">Canonical Output</text>
+    <rect x="688" y="628" width="306" height="112" rx="6" fill="#000000" fill-opacity="0.22"/>
+    <text x="700" y="648" font-size="10" fill="#ffffff" fill-opacity="0.60" font-family="'Courier New',monospace">release-evidence.yaml</text>
+    <text x="700" y="668" font-size="11" fill="#ffffff" fill-opacity="0.90" font-family="'Courier New',monospace">change_type: <tspan font-weight="700">"bug"</tspan></text>
+    <text x="700" y="686" font-size="11" fill="#ffffff" fill-opacity="0.90" font-family="'Courier New',monospace">source: <tspan font-weight="700">issue-label</tspan></text>
+    <text x="700" y="704" font-size="11" fill="#ffffff" fill-opacity="0.90" font-family="'Courier New',monospace">confidence: <tspan font-weight="700">0.95</tspan></text>
+    <text x="700" y="722" font-size="11" fill="#ffffff" fill-opacity="0.90" font-family="'Courier New',monospace">priority_used: <tspan font-weight="700">P1</tspan></text>
+    <text x="700" y="734" font-size="9" fill="#ffffff" fill-opacity="0.55" font-family="'Courier New',monospace">&#x25CF; &#x25CF; &#x25CF; (all fields resolved same way)</text>
+    <rect x="688" y="754" width="306" height="20" rx="5" fill="#000000" fill-opacity="0.20"/>
+    <text x="841" y="768" text-anchor="middle" font-size="10" fill="#ffffff" fill-opacity="0.80">Provenance recorded - fully auditable</text>
+    <text x="841" y="788" text-anchor="middle" font-size="11" fill="#ffffff" fill-opacity="0.90">Feeds Phase 03: Content Generation</text>
+  </g>
+
+  <!-- Principles panel -->
+  <g filter="url(#sh)">
+    <rect x="1022" y="576" width="362" height="224" rx="12" fill="url(#pri)"/>
+    <rect x="1022" y="576" width="362" height="38" rx="12" fill="#000000" fill-opacity="0.25"/>
+    <rect x="1022" y="601" width="362" height="13" fill="#000000" fill-opacity="0.25"/>
+    <text x="1203" y="601" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="0.5">Why This Matters</text>
+    <text x="1038" y="632" font-size="12" fill="#ffffff" fill-opacity="0.90">&#x25CF; No guesswork — authority chain</text>
+    <text x="1038" y="650" font-size="12" fill="#ffffff" fill-opacity="0.90">   removes ambiguity from every field</text>
+    <text x="1038" y="672" font-size="12" fill="#ffffff" fill-opacity="0.90">&#x25CF; If P1 has a value — it wins.</text>
+    <text x="1038" y="690" font-size="12" fill="#ffffff" fill-opacity="0.90">   Lower sources are never consulted</text>
+    <text x="1038" y="712" font-size="12" fill="#ffffff" fill-opacity="0.90">&#x25CF; Confidence score enables safe</text>
+    <text x="1038" y="730" font-size="12" fill="#ffffff" fill-opacity="0.90">   automation with minimal human review</text>
+    <text x="1038" y="752" font-size="12" fill="#ffffff" fill-opacity="0.90">&#x25CF; Fully auditable — every resolved</text>
+    <text x="1038" y="770" font-size="12" fill="#ffffff" fill-opacity="0.90">   field records its provenance</text>
+    <line x1="1038" y1="780" x2="1366" y2="780" stroke="#ffffff" stroke-opacity="0.20" stroke-width="1"/>
+    <text x="1203" y="796" text-anchor="middle" font-size="10" fill="#ffffff" fill-opacity="0.65">Deterministic. Standards-driven. Reusable.</text>
+  </g>
+
+  <!-- FOOTER -->
+  <line x1="80" y1="808" x2="1320" y2="808" stroke="#C0CEDF" stroke-width="1"/>
+  <text x="700" y="826" text-anchor="middle" font-size="11" fill="#78909C">Move a file - update one manifest entry. Validation fails - never render. Source conflicts - precedence engine decides. Always auditable.</text>
+
+</svg>

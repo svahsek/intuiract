@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1500"
+   height="510"
+   viewBox="0 0 1500 510"
+   font-family="'Segoe UI',Arial,Helvetica,sans-serif"
+   version="1.1"
+   id="svg59"
+   sodipodi:docname="diagram-pipeline.svg"
+   inkscape:export-filename="diagram-pipeline.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview59"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.62114478"
+     inkscape:cx="881.43702"
+     inkscape:cy="234.24491"
+     inkscape:window-width="1710"
+     inkscape:window-height="990"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg59" />
+  <defs
+     id="defs15">
+    <filter
+       id="shadow"
+       x="-0.06"
+       y="-0.062608696"
+       width="1.12"
+       height="1.1426087">
+      <feGaussianBlur
+         in="SourceAlpha"
+         stdDeviation="6"
+         result="sblur"
+         id="feGaussianBlur1" />
+      <feOffset
+         dx="0"
+         dy="4"
+         in="sblur"
+         result="soffset"
+         id="feOffset1" />
+      <feFlood
+         flood-color="#000000"
+         flood-opacity="0.18"
+         result="sflood"
+         id="feFlood1" />
+      <feComposite
+         in="sflood"
+         in2="soffset"
+         operator="in"
+         result="sshadow"
+         id="feComposite1" />
+      <feMerge
+         id="feMerge2">
+        <feMergeNode
+           in="sshadow"
+           id="feMergeNode1" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode2" />
+      </feMerge>
+    </filter>
+    <linearGradient
+       id="bg-g"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#EEF2F7"
+         id="stop2" />
+      <stop
+         offset="100%"
+         stop-color="#D8E3EF"
+         id="stop3" />
+    </linearGradient>
+    <linearGradient
+       id="g1"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#64B5F6"
+         id="stop4" />
+      <stop
+         offset="100%"
+         stop-color="#1565C0"
+         id="stop5" />
+    </linearGradient>
+    <linearGradient
+       id="g2"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#CE93D8"
+         id="stop6" />
+      <stop
+         offset="100%"
+         stop-color="#6A1B9A"
+         id="stop7" />
+    </linearGradient>
+    <linearGradient
+       id="g3"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#4DB6AC"
+         id="stop8" />
+      <stop
+         offset="100%"
+         stop-color="#00695C"
+         id="stop9" />
+    </linearGradient>
+    <linearGradient
+       id="g4"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#FFB74D"
+         id="stop10" />
+      <stop
+         offset="100%"
+         stop-color="#E65100"
+         id="stop11" />
+    </linearGradient>
+    <linearGradient
+       id="g5"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#81C784"
+         id="stop12" />
+      <stop
+         offset="100%"
+         stop-color="#2E7D32"
+         id="stop13" />
+    </linearGradient>
+    <marker
+       id="arr"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#90A4AE"
+         id="polygon13" />
+    </marker>
+    <marker
+       id="arr-grn"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#388E3C"
+         id="polygon14" />
+    </marker>
+    <marker
+       id="arr-red"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#E53935"
+         id="polygon15" />
+    </marker>
+  </defs>
+  <rect
+     width="1500"
+     height="510"
+     rx="14"
+     fill="url(#bg-g)"
+     id="rect15" />
+  <text
+     x="750"
+     y="46"
+     text-anchor="middle"
+     font-size="25"
+     font-weight="700"
+     fill="#1A2740"
+     letter-spacing="0.3"
+     id="text15">Evidence Workflow Pipeline</text>
+  <text
+     x="750"
+     y="68"
+     text-anchor="middle"
+     font-size="13"
+     fill="#607D8B"
+     id="text16">Five deterministic phases — no skipping, no combining</text>
+  <line
+     x1="180"
+     y1="80"
+     x2="1320"
+     y2="80"
+     stroke="#C0CEDF"
+     stroke-width="1.2"
+     id="line16" />
+  <!-- PHASE 1: EXTRACTION -->
+  <g
+     id="phase-extraction"
+     filter="url(#shadow)">
+    <rect
+       x="70"
+       y="100"
+       width="240"
+       height="230"
+       rx="11"
+       fill="url(#g1)"
+       id="rect16" />
+    <circle
+       cx="190"
+       cy="121"
+       r="14"
+       fill="#ffffff"
+       fill-opacity="0.22"
+       id="circle16" />
+    <text
+       x="190"
+       y="126"
+       text-anchor="middle"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text17">01</text>
+    <text
+       x="190"
+       y="153"
+       text-anchor="middle"
+       font-size="15"
+       font-weight="700"
+       fill="#ffffff"
+       id="text18">Extraction</text>
+    <line
+       x1="88"
+       y1="163"
+       x2="292"
+       y2="163"
+       stroke="#ffffff"
+       stroke-opacity="0.28"
+       stroke-width="1"
+       id="line18" />
+    <text
+       x="92"
+       y="183"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text19">● GitHub Issues</text>
+    <text
+       x="92"
+       y="202"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text20">● Pull Requests</text>
+    <text
+       x="92"
+       y="221"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text21">● Commits</text>
+    <text
+       x="92"
+       y="240"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text22">● QA Results</text>
+    <text
+       x="92"
+       y="259"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text23">● Security Scans</text>
+    <rect
+       x="88"
+       y="278"
+       width="166"
+       height="38"
+       rx="6"
+       fill="#000000"
+       fill-opacity="0.21"
+       id="rect23" />
+    <text
+       x="171"
+       y="292"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.68"
+       font-weight="600"
+       letter-spacing="1"
+       id="text24">OUTPUT</text>
+    <text
+       x="171"
+       y="308"
+       text-anchor="middle"
+       font-size="11"
+       fill="#ffffff"
+       font-weight="600"
+       id="text25">raw evidence</text>
+  </g>
+  <line
+     x1="312"
+     y1="215"
+     x2="348"
+     y2="215"
+     stroke="#90A4AE"
+     stroke-width="2.5"
+     marker-end="url(#arr)"
+     id="line25" />
+  <!-- PHASE 2: RECONCILIATION -->
+  <g
+     id="phase-reconciliation"
+     filter="url(#shadow)">
+    <rect
+       x="350"
+       y="100"
+       width="240"
+       height="230"
+       rx="11"
+       fill="url(#g2)"
+       id="rect25" />
+    <circle
+       cx="470"
+       cy="121"
+       r="14"
+       fill="#ffffff"
+       fill-opacity="0.22"
+       id="circle25" />
+    <text
+       x="470"
+       y="126"
+       text-anchor="middle"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text26">02</text>
+    <text
+       x="470"
+       y="153"
+       text-anchor="middle"
+       font-size="15"
+       font-weight="700"
+       fill="#ffffff"
+       id="text27">Reconciliation</text>
+    <line
+       x1="368"
+       y1="163"
+       x2="572"
+       y2="163"
+       stroke="#ffffff"
+       stroke-opacity="0.28"
+       stroke-width="1"
+       id="line27" />
+    <text
+       x="372"
+       y="183"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text28">● Source precedence</text>
+    <text
+       x="372"
+       y="202"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text29">● Conflict resolution</text>
+    <text
+       x="372"
+       y="221"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text30">● Confidence scoring</text>
+    <text
+       x="372"
+       y="240"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text31">● Provenance tracking</text>
+    <rect
+       x="368"
+       y="278"
+       width="204"
+       height="38"
+       rx="6"
+       fill="#000000"
+       fill-opacity="0.21"
+       id="rect31" />
+    <text
+       x="470"
+       y="292"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.68"
+       font-weight="600"
+       letter-spacing="1"
+       id="text32">OUTPUT</text>
+    <text
+       x="470"
+       y="308"
+       text-anchor="middle"
+       font-size="11"
+       fill="#ffffff"
+       font-weight="600"
+       id="text33">release-evidence.yaml</text>
+  </g>
+  <line
+     x1="592"
+     y1="215"
+     x2="628"
+     y2="215"
+     stroke="#90A4AE"
+     stroke-width="2.5"
+     marker-end="url(#arr)"
+     id="line33" />
+  <!-- PHASE 3: CONTENT GENERATION -->
+  <g
+     id="phase-content-generation"
+     filter="url(#shadow)">
+    <rect
+       x="630"
+       y="100"
+       width="240"
+       height="230"
+       rx="11"
+       fill="url(#g3)"
+       id="rect33" />
+    <circle
+       cx="750"
+       cy="121"
+       r="14"
+       fill="#ffffff"
+       fill-opacity="0.22"
+       id="circle33" />
+    <text
+       x="750"
+       y="126"
+       text-anchor="middle"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text34">03</text>
+    <text
+       x="750"
+       y="153"
+       text-anchor="middle"
+       font-size="15"
+       font-weight="700"
+       fill="#ffffff"
+       id="text35">Content Generation</text>
+    <line
+       x1="648"
+       y1="163"
+       x2="852"
+       y2="163"
+       stroke="#ffffff"
+       stroke-opacity="0.28"
+       stroke-width="1"
+       id="line35" />
+    <text
+       x="652"
+       y="183"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text36">● Evidence to Schema map</text>
+    <text
+       x="652"
+       y="202"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text37">● Field normalization</text>
+    <text
+       x="652"
+       y="221"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text38">● Category assignment</text>
+    <text
+       x="652"
+       y="240"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text39">● Structured YAML out</text>
+    <rect
+       x="648"
+       y="278"
+       width="204"
+       height="38"
+       rx="6"
+       fill="#000000"
+       fill-opacity="0.21"
+       id="rect39" />
+    <text
+       x="750"
+       y="292"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.68"
+       font-weight="600"
+       letter-spacing="1"
+       id="text40">OUTPUT</text>
+    <text
+       x="750"
+       y="308"
+       text-anchor="middle"
+       font-size="11"
+       fill="#ffffff"
+       font-weight="600"
+       id="text41">release-notes.yaml</text>
+  </g>
+  <line
+     x1="872"
+     y1="215"
+     x2="908"
+     y2="215"
+     stroke="#90A4AE"
+     stroke-width="2.5"
+     marker-end="url(#arr)"
+     id="line41" />
+  <!-- PHASE 4: VALIDATION GATE -->
+  <g
+     id="phase-validation"
+     filter="url(#shadow)">
+    <rect
+       x="910"
+       y="100"
+       width="240"
+       height="230"
+       rx="11"
+       fill="url(#g4)"
+       id="rect41" />
+    <circle
+       cx="1030"
+       cy="121"
+       r="14"
+       fill="#ffffff"
+       fill-opacity="0.22"
+       id="circle41" />
+    <text
+       x="1030"
+       y="126"
+       text-anchor="middle"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text42">04</text>
+    <text
+       x="1030"
+       y="153"
+       text-anchor="middle"
+       font-size="15"
+       font-weight="700"
+       fill="#ffffff"
+       id="text43">Validation Gate</text>
+    <line
+       x1="928"
+       y1="163"
+       x2="1132"
+       y2="163"
+       stroke="#ffffff"
+       stroke-opacity="0.28"
+       stroke-width="1"
+       id="line43" />
+    <text
+       x="932"
+       y="183"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text44">● Schema rules</text>
+    <text
+       x="932"
+       y="202"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text45">● Policy rules</text>
+    <text
+       x="932"
+       y="221"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text46">● Confidence threshold</text>
+    <text
+       x="932"
+       y="240"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text47">● PASS or BLOCKED</text>
+    <rect
+       x="928"
+       y="278"
+       width="204"
+       height="38"
+       rx="6"
+       fill="#000000"
+       fill-opacity="0.21"
+       id="rect47" />
+    <text
+       x="1030"
+       y="292"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.68"
+       font-weight="600"
+       letter-spacing="1"
+       id="text48">GATE</text>
+    <text
+       x="1030"
+       y="308"
+       text-anchor="middle"
+       font-size="11"
+       fill="#ffffff"
+       font-weight="600"
+       id="text49">PASS — continue</text>
+  </g>
+  <line
+     x1="1152"
+     y1="215"
+     x2="1188"
+     y2="215"
+     stroke="#388E3C"
+     stroke-width="2.5"
+     marker-end="url(#arr-grn)"
+     id="line49" />
+  <text
+     x="1170"
+     y="208"
+     text-anchor="middle"
+     font-size="10"
+     font-weight="700"
+     fill="#2E7D32"
+     id="text50">PASS</text>
+  <!-- PHASE 5: RENDERING -->
+  <g
+     id="phase-rendering"
+     filter="url(#shadow)">
+    <rect
+       x="1190"
+       y="100"
+       width="240"
+       height="230"
+       rx="11"
+       fill="url(#g5)"
+       id="rect50" />
+    <circle
+       cx="1310"
+       cy="121"
+       r="14"
+       fill="#ffffff"
+       fill-opacity="0.22"
+       id="circle50" />
+    <text
+       x="1310"
+       y="126"
+       text-anchor="middle"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text51">05</text>
+    <text
+       x="1310"
+       y="153"
+       text-anchor="middle"
+       font-size="15"
+       font-weight="700"
+       fill="#ffffff"
+       id="text52">Rendering</text>
+    <line
+       x1="1208"
+       y1="163"
+       x2="1412"
+       y2="163"
+       stroke="#ffffff"
+       stroke-opacity="0.28"
+       stroke-width="1"
+       id="line52" />
+    <text
+       x="1212"
+       y="183"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text53">● YAML to Markdown</text>
+    <text
+       x="1212"
+       y="202"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text54">● Rendering rules applied</text>
+    <text
+       x="1212"
+       y="221"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.93"
+       id="text55">● Publication-ready</text>
+    <rect
+       x="1208"
+       y="278"
+       width="204"
+       height="38"
+       rx="6"
+       fill="#000000"
+       fill-opacity="0.21"
+       id="rect55" />
+    <text
+       x="1310"
+       y="292"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.68"
+       font-weight="600"
+       letter-spacing="1"
+       id="text56">OUTPUT</text>
+    <text
+       x="1310"
+       y="308"
+       text-anchor="middle"
+       font-size="11"
+       fill="#ffffff"
+       font-weight="600"
+       id="text57">release-notes.md (validated)</text>
+  </g>
+  <!-- FAIL feedback arc -->
+  <path
+     d="M 1030,332 L 1030,418 L 470,418 L 470,332"
+     fill="none"
+     stroke="#E53935"
+     stroke-width="2"
+     stroke-dasharray="7,4"
+     marker-end="url(#arr-red)"
+     id="path57" />
+  <rect
+     x="646"
+     y="404"
+     width="208"
+     height="26"
+     rx="13"
+     fill="#E53935"
+     id="rect57" />
+  <text
+     x="750"
+     y="421"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#ffffff"
+     id="text58">FAIL — Review and Re-run</text>
+  <text
+     x="750"
+     y="478"
+     text-anchor="middle"
+     font-size="11"
+     fill="#78909C"
+     id="text59">Rendering only happens after all validation checks pass. No exceptions.</text>
+</svg>

@@ -1,0 +1,1116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1060"
+   height="680"
+   viewBox="0 0 1060 680"
+   font-family="'Segoe UI',Arial,Helvetica,sans-serif"
+   version="1.1"
+   id="svg81"
+   sodipodi:docname="diagram-architecture.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   inkscape:export-filename="diagram-architecture.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview81"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.0726415"
+     inkscape:cx="530"
+     inkscape:cy="342.61214"
+     inkscape:window-width="1710"
+     inkscape:window-height="990"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg81" />
+  <defs
+     id="defs23">
+    <filter
+       id="shadow"
+       x="-0.033488372"
+       y="-0.16"
+       width="1.0669767"
+       height="1.3644444">
+      <feGaussianBlur
+         in="SourceAlpha"
+         stdDeviation="6"
+         result="sblur"
+         id="feGaussianBlur1" />
+      <feOffset
+         dx="0"
+         dy="4"
+         in="sblur"
+         result="soffset"
+         id="feOffset1" />
+      <feFlood
+         flood-color="#000000"
+         flood-opacity="0.18"
+         result="sflood"
+         id="feFlood1" />
+      <feComposite
+         in="sflood"
+         in2="soffset"
+         operator="in"
+         result="sshadow"
+         id="feComposite1" />
+      <feMerge
+         id="feMerge2">
+        <feMergeNode
+           in="sshadow"
+           id="feMergeNode1" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode2" />
+      </feMerge>
+    </filter>
+    <filter
+       id="shadow-sm"
+       x="-0.064"
+       y="-0.12631579"
+       width="1.128"
+       height="1.2789474">
+      <feGaussianBlur
+         in="SourceAlpha"
+         stdDeviation="4"
+         result="sblur"
+         id="feGaussianBlur2" />
+      <feOffset
+         dx="0"
+         dy="2"
+         in="sblur"
+         result="soffset"
+         id="feOffset2" />
+      <feFlood
+         flood-color="#000000"
+         flood-opacity="0.14"
+         result="sflood"
+         id="feFlood2" />
+      <feComposite
+         in="sflood"
+         in2="soffset"
+         operator="in"
+         result="sshadow"
+         id="feComposite2" />
+      <feMerge
+         id="feMerge4">
+        <feMergeNode
+           in="sshadow"
+           id="feMergeNode3" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode4" />
+      </feMerge>
+    </filter>
+    <linearGradient
+       id="bg"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#F0F4FB"
+         id="stop4" />
+      <stop
+         offset="100%"
+         stop-color="#D8E3F0"
+         id="stop5" />
+    </linearGradient>
+    <linearGradient
+       id="gr-reg"
+       x1="144.11115"
+       y1="218.58128"
+       x2="144.11115"
+       y2="415.30444"
+       gradientTransform="scale(2.1858128,0.45749571)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#42A5F5"
+         id="stop6" />
+      <stop
+         offset="100%"
+         stop-color="#0D47A1"
+         id="stop7" />
+    </linearGradient>
+    <linearGradient
+       id="gr-man"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#BA68C8"
+         id="stop8" />
+      <stop
+         offset="100%"
+         stop-color="#4A148C"
+         id="stop9" />
+    </linearGradient>
+    <linearGradient
+       id="gr-a1"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#42A5F5"
+         id="stop10" />
+      <stop
+         offset="100%"
+         stop-color="#1565C0"
+         id="stop11" />
+    </linearGradient>
+    <linearGradient
+       id="gr-a2"
+       x1="178.12056"
+       y1="432.06691"
+       x2="178.12056"
+       y2="560.51924"
+       gradientTransform="scale(1.1677484,0.85634884)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#4DB6AC"
+         id="stop12" />
+      <stop
+         offset="100%"
+         stop-color="#00695C"
+         id="stop13" />
+    </linearGradient>
+    <linearGradient
+       id="gr-a3"
+       x1="327.98161"
+       y1="432.06691"
+       x2="327.98161"
+       y2="560.51924"
+       gradientTransform="scale(1.1677484,0.85634884)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#FFB74D"
+         id="stop14" />
+      <stop
+         offset="100%"
+         stop-color="#E65100"
+         id="stop15" />
+    </linearGradient>
+    <linearGradient
+       id="gr-a4"
+       x1="477.84265"
+       y1="432.06691"
+       x2="477.84265"
+       y2="560.51924"
+       gradientTransform="scale(1.1677484,0.85634884)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#CE93D8"
+         id="stop16" />
+      <stop
+         offset="100%"
+         stop-color="#6A1B9A"
+         id="stop17" />
+    </linearGradient>
+    <linearGradient
+       id="gr-a5"
+       x1="627.7037"
+       y1="432.06691"
+       x2="627.7037"
+       y2="560.51924"
+       gradientTransform="scale(1.1677484,0.85634884)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#81C784"
+         id="stop18" />
+      <stop
+         offset="100%"
+         stop-color="#2E7D32"
+         id="stop19" />
+    </linearGradient>
+    <linearGradient
+       id="gr-con"
+       x1="81.8576"
+       y1="1477.9324"
+       x2="295.39916"
+       y2="1477.9324"
+       gradientTransform="scale(2.8097574,0.35590261)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#546E7A"
+         id="stop20" />
+      <stop
+         offset="100%"
+         stop-color="#263238"
+         id="stop21" />
+    </linearGradient>
+    <marker
+       id="arr-dn"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#607D8B"
+         id="polygon21" />
+    </marker>
+    <marker
+       id="arr-fan"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#9575CD"
+         id="polygon22" />
+    </marker>
+    <marker
+       id="arr-con"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#455A64"
+         id="polygon23" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#gr-a1"
+       id="linearGradient1"
+       x1="28.259512"
+       y1="432.06691"
+       x2="28.259512"
+       y2="560.51924"
+       gradientTransform="scale(1.1677484,0.85634884)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <text
+     x="530"
+     y="46"
+     text-anchor="middle"
+     font-size="24"
+     font-weight="700"
+     fill="#1A2740"
+     id="text23">Registry to Manifest to Asset Chain</text>
+  <text
+     x="530"
+     y="68"
+     text-anchor="middle"
+     font-size="13"
+     fill="#607D8B"
+     id="text24">How consumers discover every file from a single source of truth</text>
+  <line
+     x1="140"
+     y1="80"
+     x2="920"
+     y2="80"
+     stroke="#C0CEDF"
+     stroke-width="1.2"
+     id="line24" />
+  <text
+     x="32"
+     y="146"
+     font-size="11"
+     font-weight="700"
+     fill="#90A4AE"
+     letter-spacing="1"
+     id="text25">STEP 1</text>
+  <text
+     x="32"
+     y="262"
+     font-size="11"
+     font-weight="700"
+     fill="#90A4AE"
+     letter-spacing="1"
+     id="text26">STEP 2</text>
+  <text
+     x="32"
+     y="420"
+     font-size="11"
+     font-weight="700"
+     fill="#90A4AE"
+     letter-spacing="1"
+     id="text27">STEP 3</text>
+  <!-- REGISTRY BOX -->
+  <g
+     id="registry"
+     filter="url(#shadow)"
+     transform="translate(0,-12)">
+    <rect
+       x="315"
+       y="100"
+       width="430"
+       height="90"
+       rx="12"
+       fill="url(#gr-reg)"
+       id="rect27"
+       style="fill:url(#gr-reg)" />
+    <rect
+       x="328"
+       y="113"
+       width="60"
+       height="64"
+       rx="8"
+       fill="#ffffff"
+       fill-opacity="0.15"
+       id="rect28" />
+    <rect
+       x="337"
+       y="124"
+       width="13"
+       height="13"
+       rx="2"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="rect29" />
+    <rect
+       x="354"
+       y="124"
+       width="13"
+       height="13"
+       rx="2"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="rect30" />
+    <rect
+       x="337"
+       y="141"
+       width="13"
+       height="13"
+       rx="2"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="rect31" />
+    <rect
+       x="354"
+       y="141"
+       width="13"
+       height="13"
+       rx="2"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="rect32" />
+    <text
+       x="410"
+       y="132"
+       font-size="16px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text32">Central Registry</text>
+    <text
+       x="410"
+       y="152"
+       font-size="12px"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="text33">standards/content-types.yaml</text>
+    <text
+       x="410"
+       y="171"
+       font-size="11px"
+       fill="#ffffff"
+       fill-opacity="0.7"
+       id="text34">&quot;What content types exist?&quot;</text>
+  </g>
+  <line
+     x1="529.59753"
+     y1="177.77895"
+     x2="529.59753"
+     y2="194.31102"
+     stroke="#607d8b"
+     stroke-width="1.5948"
+     marker-end="url(#arr-dn)"
+     id="line34" />
+  <rect
+     x="455"
+     y="195"
+     width="150"
+     height="20"
+     rx="10"
+     fill="#607D8B"
+     fill-opacity="0.14"
+     id="rect34" />
+  <text
+     x="530"
+     y="209"
+     text-anchor="middle"
+     font-size="10"
+     fill="#546E7A"
+     font-weight="600"
+     id="text35">resolves manifest path</text>
+  <!-- MANIFEST BOX -->
+  <g
+     id="manifest"
+     filter="url(#shadow)">
+    <rect
+       x="290"
+       y="222"
+       width="480"
+       height="90"
+       rx="12"
+       fill="url(#gr-man)"
+       id="rect35" />
+    <rect
+       x="303"
+       y="235"
+       width="60"
+       height="64"
+       rx="8"
+       fill="#ffffff"
+       fill-opacity="0.15"
+       id="rect36" />
+    <rect
+       x="312"
+       y="246"
+       width="30"
+       height="3"
+       rx="1.5"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="rect37" />
+    <rect
+       x="312"
+       y="254"
+       width="26"
+       height="3"
+       rx="1.5"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="rect38" />
+    <rect
+       x="312"
+       y="262"
+       width="28"
+       height="3"
+       rx="1.5"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="rect39" />
+    <rect
+       x="312"
+       y="270"
+       width="22"
+       height="3"
+       rx="1.5"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="rect40" />
+    <text
+       x="385"
+       y="252"
+       font-size="16"
+       font-weight="700"
+       fill="#ffffff"
+       id="text40">Manifest</text>
+    <text
+       x="385"
+       y="272"
+       font-size="12"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="text41">standards/content-types/release-notes.yaml</text>
+    <text
+       x="385"
+       y="291"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.70"
+       id="text42">&quot;Where are all entrypoints for this type?&quot;</text>
+  </g>
+  <line
+     x1="530"
+     y1="314"
+     x2="530"
+     y2="340"
+     stroke="#9575CD"
+     stroke-width="1.5"
+     id="line42" />
+  <line
+     x1="56.482224"
+     y1="340"
+     x2="952"
+     y2="340"
+     stroke="#9575cd"
+     stroke-width="1.5"
+     id="line43" />
+  <line
+     x1="92.973984"
+     y1="340"
+     x2="92.973984"
+     y2="368"
+     stroke="#9575cd"
+     stroke-width="1.5"
+     marker-end="url(#arr-fan)"
+     id="line44" />
+  <line
+     x1="264.02679"
+     y1="341.51785"
+     x2="264.02679"
+     y2="369.51785"
+     stroke="#9575cd"
+     stroke-width="1.5"
+     marker-end="url(#arr-fan)"
+     id="line45" />
+  <line
+     x1="436.53427"
+     y1="342.14658"
+     x2="436.53427"
+     y2="370.14658"
+     stroke="#9575cd"
+     stroke-width="1.5"
+     marker-end="url(#arr-fan)"
+     id="line46" />
+  <line
+     x1="609.3877"
+     y1="342.14658"
+     x2="609.3877"
+     y2="370.14658"
+     stroke="#9575cd"
+     stroke-width="1.5"
+     marker-end="url(#arr-fan)"
+     id="line47" />
+  <line
+     x1="767.21509"
+     y1="341.07327"
+     x2="767.21509"
+     y2="369.07327"
+     stroke="#9575cd"
+     stroke-width="1.5"
+     marker-end="url(#arr-fan)"
+     id="line48" />
+  <line
+     x1="952"
+     y1="340"
+     x2="952"
+     y2="368"
+     stroke="#9575CD"
+     stroke-width="1.5"
+     marker-end="url(#arr-fan)"
+     id="line49" />
+  <!-- Asset 1: Schema -->
+  <g
+     id="asset-schema"
+     filter="url(#shadow-sm)"
+     transform="translate(-10.73287)">
+    <rect
+       x="33"
+       y="370"
+       width="150"
+       height="110"
+       rx="10"
+       fill="url(#gr-a1)"
+       id="rect49"
+       style="fill:url(#linearGradient1)" />
+    <circle
+       cx="108"
+       cy="391"
+       r="12"
+       fill="#ffffff"
+       fill-opacity="0.25"
+       id="circle49" />
+    <text
+       x="108"
+       y="396"
+       text-anchor="middle"
+       font-size="13px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text49">S</text>
+    <text
+       x="108"
+       y="422"
+       text-anchor="middle"
+       font-size="12px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text50">Schema</text>
+    <line
+       x1="48"
+       y1="430"
+       x2="168"
+       y2="430"
+       stroke="#ffffff"
+       stroke-opacity="0.3"
+       stroke-width="1"
+       id="line50" />
+    <text
+       x="108"
+       y="448"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text51">release-notes-</text>
+    <text
+       x="108"
+       y="461"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text52">schema.yaml</text>
+    <text
+       x="108"
+       y="474"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.6"
+       id="text53">Field contracts</text>
+  </g>
+  <!-- Asset 2: Rendering Rules -->
+  <g
+     id="asset-rendering"
+     filter="url(#shadow-sm)"
+     transform="translate(-6.8303572)">
+    <rect
+       x="208"
+       y="370"
+       width="150"
+       height="110"
+       rx="10"
+       fill="url(#gr-a2)"
+       id="rect53"
+       style="fill:url(#gr-a2)" />
+    <circle
+       cx="283"
+       cy="391"
+       r="12"
+       fill="#ffffff"
+       fill-opacity="0.25"
+       id="circle53" />
+    <text
+       x="283"
+       y="396"
+       text-anchor="middle"
+       font-size="13px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text54">R</text>
+    <text
+       x="283"
+       y="422"
+       text-anchor="middle"
+       font-size="12px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text55">Rendering</text>
+    <line
+       x1="223"
+       y1="430"
+       x2="343"
+       y2="430"
+       stroke="#ffffff"
+       stroke-opacity="0.3"
+       stroke-width="1"
+       id="line55" />
+    <text
+       x="283"
+       y="448"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text56">release-notes-</text>
+    <text
+       x="283"
+       y="461"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text57">rendering.yaml</text>
+    <text
+       x="283"
+       y="474"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.6"
+       id="text58">YAML to Markdown</text>
+  </g>
+  <!-- Asset 3: Validation Rules -->
+  <g
+     id="asset-rules"
+     filter="url(#shadow-sm)"
+     transform="translate(-17.455357)">
+    <rect
+       x="383"
+       y="370"
+       width="150"
+       height="110"
+       rx="10"
+       fill="url(#gr-a3)"
+       id="rect58"
+       style="fill:url(#gr-a3)" />
+    <circle
+       cx="458"
+       cy="391"
+       r="12"
+       fill="#ffffff"
+       fill-opacity="0.25"
+       id="circle58" />
+    <polyline
+       points="452,391 456,396 465,386"
+       fill="none"
+       stroke="#ffffff"
+       stroke-width="2.5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="polyline58" />
+    <text
+       x="458"
+       y="422"
+       text-anchor="middle"
+       font-size="12px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text59">Rules</text>
+    <line
+       x1="398"
+       y1="430"
+       x2="518"
+       y2="430"
+       stroke="#ffffff"
+       stroke-opacity="0.3"
+       stroke-width="1"
+       id="line59" />
+    <text
+       x="458"
+       y="448"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text60">release-notes-</text>
+    <text
+       x="458"
+       y="461"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text61">rule.yaml</text>
+    <text
+       x="458"
+       y="474"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.6"
+       id="text62">Policy + schema checks</text>
+  </g>
+  <!-- Asset 4: Skill -->
+  <g
+     id="asset-skill"
+     filter="url(#shadow-sm)"
+     transform="translate(-24.685602,-1.073287)">
+    <rect
+       x="558"
+       y="370"
+       width="150"
+       height="110"
+       rx="10"
+       fill="url(#gr-a4)"
+       id="rect62"
+       style="fill:url(#gr-a4)" />
+    <circle
+       cx="633"
+       cy="391"
+       r="12"
+       fill="#ffffff"
+       fill-opacity="0.25"
+       id="circle62" />
+    <text
+       x="633"
+       y="395"
+       text-anchor="middle"
+       font-size="10px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text63">AI</text>
+    <text
+       x="633"
+       y="422"
+       text-anchor="middle"
+       font-size="12px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text64">Skill</text>
+    <line
+       x1="573"
+       y1="430"
+       x2="693"
+       y2="430"
+       stroke="#ffffff"
+       stroke-opacity="0.3"
+       stroke-width="1"
+       id="line64" />
+    <text
+       x="633"
+       y="448"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text65">skills/release-notes/</text>
+    <text
+       x="633"
+       y="461"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text66">SKILL.md</text>
+    <text
+       x="633"
+       y="474"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.6"
+       id="text67">Agent orchestration</text>
+  </g>
+  <!-- Asset 5: Quick Reference -->
+  <g
+     id="asset-quickref"
+     filter="url(#shadow-sm)"
+     transform="translate(-26.832176)">
+    <rect
+       x="733"
+       y="370"
+       width="150"
+       height="110"
+       rx="10"
+       fill="url(#gr-a5)"
+       id="rect67"
+       style="fill:url(#gr-a5)" />
+    <circle
+       cx="808"
+       cy="391"
+       r="12"
+       fill="#ffffff"
+       fill-opacity="0.25"
+       id="circle67" />
+    <polygon
+       points="804,392 809,392 806,401 814,390 809,390 811,381 "
+       fill="#ffffff"
+       id="polygon67" />
+    <text
+       x="808"
+       y="422"
+       text-anchor="middle"
+       font-size="12px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text68">Quick Ref</text>
+    <line
+       x1="748"
+       y1="430"
+       x2="868"
+       y2="430"
+       stroke="#ffffff"
+       stroke-opacity="0.3"
+       stroke-width="1"
+       id="line68" />
+    <text
+       x="808"
+       y="448"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text69">release-notes-</text>
+    <text
+       x="808"
+       y="461"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text70">quick-reference.md</text>
+    <text
+       x="808"
+       y="474"
+       text-anchor="middle"
+       font-size="9px"
+       fill="#ffffff"
+       fill-opacity="0.6"
+       id="text71">Lightweight prompting</text>
+  </g>
+  <!-- Asset 6: Examples -->
+  <g
+     id="asset-examples"
+     filter="url(#shadow-sm)">
+    <rect
+       x="877"
+       y="370"
+       width="150"
+       height="110"
+       rx="10"
+       fill="url(#gr-a1)"
+       id="rect71" />
+    <circle
+       cx="952"
+       cy="391"
+       r="12"
+       fill="#ffffff"
+       fill-opacity="0.25"
+       id="circle71" />
+    <text
+       x="952"
+       y="396"
+       text-anchor="middle"
+       font-size="11"
+       font-weight="700"
+       fill="#ffffff"
+       id="text72">Ex</text>
+    <text
+       x="952"
+       y="422"
+       text-anchor="middle"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text73">Examples</text>
+    <line
+       x1="892"
+       y1="430"
+       x2="1012"
+       y2="430"
+       stroke="#ffffff"
+       stroke-opacity="0.3"
+       stroke-width="1"
+       id="line73" />
+    <text
+       x="952"
+       y="448"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text74">minimal /</text>
+    <text
+       x="952"
+       y="461"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.82"
+       id="text75">comprehensive</text>
+    <text
+       x="952"
+       y="474"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.60"
+       id="text76">Reference payloads</text>
+  </g>
+  <!-- CONSUMER SECTION -->
+  <line
+     x1="60"
+     y1="538"
+     x2="1000"
+     y2="538"
+     stroke="#b0bec5"
+     stroke-width="1.2"
+     stroke-dasharray="6, 4"
+     id="line76" />
+  <text
+     x="530"
+     y="506"
+     text-anchor="middle"
+     font-size="10"
+     fill="#90A4AE"
+     font-weight="600"
+     letter-spacing="1"
+     id="text77">CONSUMER TERRITORY</text>
+  <g
+     id="consumer"
+     filter="url(#shadow-sm)"
+     transform="translate(-5.3664352,33.271898)">
+    <rect
+       x="230"
+       y="526"
+       width="600"
+       height="76"
+       rx="10"
+       fill="url(#gr-con)"
+       id="rect77"
+       style="fill:url(#gr-con)" />
+    <text
+       x="530"
+       y="552"
+       text-anchor="middle"
+       font-size="15px"
+       font-weight="700"
+       fill="#ffffff"
+       id="text78">Consumer Repository</text>
+    <text
+       x="530"
+       y="571"
+       text-anchor="middle"
+       font-size="11px"
+       fill="#ffffff"
+       fill-opacity="0.8"
+       id="text79">1. Fetch manifest 2. Resolve entrypoints 3. Validate and Render</text>
+    <text
+       x="530"
+       y="590"
+       text-anchor="middle"
+       font-size="10px"
+       fill="#ffffff"
+       fill-opacity="0.55"
+       id="text80">Never copies standards — always fetches from the authoritative source</text>
+  </g>
+  <line
+     x1="457.686"
+     y1="482.01987"
+     x2="427.11325"
+     y2="559.76379"
+     stroke="#607d8b"
+     stroke-width="1.5"
+     stroke-dasharray="4, 3"
+     marker-end="url(#arr-con)"
+     id="line80" />
+  <line
+     x1="628.4953"
+     y1="484.16449"
+     x2="571.36572"
+     y2="559.39417"
+     stroke="#607d8b"
+     stroke-width="1.66553"
+     stroke-dasharray="4, 3"
+     marker-end="url(#arr-con)"
+     id="line81" />
+  <text
+     x="528.48212"
+     y="666.21429"
+     text-anchor="middle"
+     font-size="11px"
+     fill="#78909c"
+     id="text81">Move a file — update one manifest entry. All consumers stay intact automatically.</text>
+</svg>

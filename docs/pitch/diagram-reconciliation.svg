@@ -1,0 +1,982 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1100"
+   height="520"
+   viewBox="0 0 1100 520"
+   font-family="'Segoe UI',Arial,Helvetica,sans-serif"
+   version="1.1"
+   id="svg71"
+   sodipodi:docname="diagram-reconciliation.svg"
+   inkscape:export-filename="diagram-reconciliation.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview71"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.30459984"
+     inkscape:cx="691.07061"
+     inkscape:cy="375.90302"
+     inkscape:window-width="1710"
+     inkscape:window-height="990"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg71" />
+  <defs
+     id="defs20">
+    <filter
+       id="shadow"
+       x="-0.054961832"
+       y="-0.18947368"
+       width="1.1099237"
+       height="1.4315789">
+      <feGaussianBlur
+         in="SourceAlpha"
+         stdDeviation="6"
+         result="sblur"
+         id="feGaussianBlur1" />
+      <feOffset
+         dx="0"
+         dy="4"
+         in="sblur"
+         result="soffset"
+         id="feOffset1" />
+      <feFlood
+         flood-color="#000000"
+         flood-opacity="0.18"
+         result="sflood"
+         id="feFlood1" />
+      <feComposite
+         in="sflood"
+         in2="soffset"
+         operator="in"
+         result="sshadow"
+         id="feComposite1" />
+      <feMerge
+         id="feMerge2">
+        <feMergeNode
+           in="sshadow"
+           id="feMergeNode1" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode2" />
+      </feMerge>
+    </filter>
+    <filter
+       id="shadow-sm"
+       x="-0.036641221"
+       y="-0.13714286"
+       width="1.0732824"
+       height="1.3028571">
+      <feGaussianBlur
+         in="SourceAlpha"
+         stdDeviation="4"
+         result="sblur"
+         id="feGaussianBlur2" />
+      <feOffset
+         dx="0"
+         dy="2"
+         in="sblur"
+         result="soffset"
+         id="feOffset2" />
+      <feFlood
+         flood-color="#000000"
+         flood-opacity="0.14"
+         result="sflood"
+         id="feFlood2" />
+      <feComposite
+         in="sflood"
+         in2="soffset"
+         operator="in"
+         result="sshadow"
+         id="feComposite2" />
+      <feMerge
+         id="feMerge4">
+        <feMergeNode
+           in="sshadow"
+           id="feMergeNode3" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode4" />
+      </feMerge>
+    </filter>
+    <linearGradient
+       id="bg"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#F0F4FB"
+         id="stop4" />
+      <stop
+         offset="100%"
+         stop-color="#D8E3F0"
+         id="stop5" />
+    </linearGradient>
+    <linearGradient
+       id="s1"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#FFD54F"
+         id="stop6" />
+      <stop
+         offset="100%"
+         stop-color="#F57F17"
+         id="stop7" />
+    </linearGradient>
+    <linearGradient
+       id="s2"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#90CAF9"
+         id="stop8" />
+      <stop
+         offset="100%"
+         stop-color="#1565C0"
+         id="stop9" />
+    </linearGradient>
+    <linearGradient
+       id="s3"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#A5D6A7"
+         id="stop10" />
+      <stop
+         offset="100%"
+         stop-color="#2E7D32"
+         id="stop11" />
+    </linearGradient>
+    <linearGradient
+       id="s4"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0">
+      <stop
+         offset="0%"
+         stop-color="#CFD8DC"
+         id="stop12" />
+      <stop
+         offset="100%"
+         stop-color="#546E7A"
+         id="stop13" />
+    </linearGradient>
+    <linearGradient
+       id="eng"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#7E57C2"
+         id="stop14" />
+      <stop
+         offset="100%"
+         stop-color="#311B92"
+         id="stop15" />
+    </linearGradient>
+    <linearGradient
+       id="out"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#66BB6A"
+         id="stop16" />
+      <stop
+         offset="100%"
+         stop-color="#1B5E20"
+         id="stop17" />
+    </linearGradient>
+    <marker
+       id="arr"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#7B1FA2"
+         id="polygon17" />
+    </marker>
+    <marker
+       id="arr-out"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#2E7D32"
+         id="polygon18" />
+    </marker>
+    <marker
+       id="arr-win"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#F57F17"
+         id="polygon19" />
+    </marker>
+    <marker
+       id="arr-dim"
+       markerWidth="8"
+       markerHeight="6"
+       refX="7"
+       refY="3"
+       orient="auto">
+      <polygon
+         points="0 0, 8 3, 0 6"
+         fill="#B0BEC5"
+         id="polygon20" />
+    </marker>
+  </defs>
+  <rect
+     width="1100"
+     height="520"
+     rx="14"
+     fill="url(#bg)"
+     id="rect20" />
+  <text
+     x="550"
+     y="46"
+     text-anchor="middle"
+     font-size="24"
+     font-weight="700"
+     fill="#1A2740"
+     id="text20">Source Precedence and Reconciliation</text>
+  <text
+     x="550"
+     y="68"
+     text-anchor="middle"
+     font-size="13"
+     fill="#607D8B"
+     id="text21">One field, four possible sources — deterministic authority chain picks the winner</text>
+  <line
+     x1="140"
+     y1="80"
+     x2="960"
+     y2="80"
+     stroke="#C0CEDF"
+     stroke-width="1.2"
+     id="line21" />
+  <text
+     x="150"
+     y="102"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#546E7A"
+     letter-spacing="1"
+     id="text22">SOURCES  (highest to lowest trust)</text>
+  <text
+     x="550"
+     y="102"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#546E7A"
+     letter-spacing="1"
+     id="text23">PRECEDENCE ENGINE</text>
+  <text
+     x="920"
+     y="102"
+     text-anchor="middle"
+     font-size="11"
+     font-weight="700"
+     fill="#546E7A"
+     letter-spacing="1"
+     id="text24">CANONICAL OUTPUT</text>
+  <rect
+     x="18"
+     y="108"
+     width="262"
+     height="20"
+     rx="4"
+     fill="#000000"
+     fill-opacity="0.05"
+     id="rect24" />
+  <text
+     x="149"
+     y="122"
+     text-anchor="middle"
+     font-size="10"
+     fill="#607D8B"
+     id="text25">Example field: <tspan
+   font-weight="700"
+   id="tspan24">change_type</tspan></text>
+  <!-- SOURCE 1: GitHub Issue Label (WINNER) -->
+  <g
+     id="source-1-winner"
+     filter="url(#shadow)">
+    <rect
+       x="18"
+       y="132"
+       width="262"
+       height="76"
+       rx="10"
+       fill="url(#s1)"
+       id="rect25" />
+    <rect
+       x="18"
+       y="132"
+       width="52"
+       height="76"
+       rx="10"
+       fill="#000000"
+       fill-opacity="0.15"
+       id="rect26" />
+    <circle
+       cx="44"
+       cy="159"
+       r="12"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="circle26" />
+    <text
+       x="44"
+       y="164"
+       text-anchor="middle"
+       font-size="13"
+       font-weight="700"
+       fill="#E65100"
+       id="text26">1</text>
+    <text
+       x="44"
+       y="183"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       font-weight="700"
+       id="text27">P1</text>
+    <text
+       x="84"
+       y="155"
+       font-size="12"
+       font-weight="700"
+       fill="#1A2740"
+       id="text28">GitHub Issue Label</text>
+    <text
+       x="84"
+       y="173"
+       font-size="11"
+       fill="#1A2740"
+       id="text29">Value: <tspan
+   font-weight="700"
+   id="tspan28">&quot;bug&quot;</tspan></text>
+    <text
+       x="84"
+       y="191"
+       font-size="10"
+       fill="#000000"
+       fill-opacity="0.60"
+       id="text30">Highest trust — explicit human label</text>
+    <rect
+       x="200"
+       y="138"
+       width="68"
+       height="20"
+       rx="10"
+       fill="#000000"
+       fill-opacity="0.22"
+       id="rect30" />
+    <text
+       x="234"
+       y="152"
+       text-anchor="middle"
+       font-size="10"
+       font-weight="700"
+       fill="#ffffff"
+       id="text31">WINNER</text>
+  </g>
+  <!-- SOURCE 2: PR Label (DIMMED) -->
+  <g
+     id="source-2"
+     filter="url(#shadow-sm)"
+     opacity="0.70">
+    <rect
+       x="18"
+       y="220"
+       width="262"
+       height="70"
+       rx="10"
+       fill="url(#s2)"
+       id="rect31" />
+    <rect
+       x="18"
+       y="220"
+       width="52"
+       height="70"
+       rx="10"
+       fill="#000000"
+       fill-opacity="0.15"
+       id="rect32" />
+    <circle
+       cx="44"
+       cy="244"
+       r="12"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="circle32" />
+    <text
+       x="44"
+       y="249"
+       text-anchor="middle"
+       font-size="13"
+       font-weight="700"
+       fill="#1565C0"
+       id="text32">2</text>
+    <text
+       x="44"
+       y="268"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       font-weight="700"
+       id="text33">P2</text>
+    <text
+       x="84"
+       y="243"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text34">PR Label</text>
+    <text
+       x="84"
+       y="261"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       id="text35">Value: <tspan
+   font-weight="700"
+   id="tspan34">&quot;enhancement&quot;</tspan></text>
+    <text
+       x="84"
+       y="279"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.65"
+       id="text36">Skipped — P1 already resolved</text>
+  </g>
+  <!-- SOURCE 3: PR Title Prefix (DIMMED) -->
+  <g
+     id="source-3"
+     filter="url(#shadow-sm)"
+     opacity="0.55">
+    <rect
+       x="18"
+       y="302"
+       width="262"
+       height="70"
+       rx="10"
+       fill="url(#s3)"
+       id="rect36" />
+    <rect
+       x="18"
+       y="302"
+       width="52"
+       height="70"
+       rx="10"
+       fill="#000000"
+       fill-opacity="0.15"
+       id="rect37" />
+    <circle
+       cx="44"
+       cy="326"
+       r="12"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       id="circle37" />
+    <text
+       x="44"
+       y="331"
+       text-anchor="middle"
+       font-size="13"
+       font-weight="700"
+       fill="#2E7D32"
+       id="text37">3</text>
+    <text
+       x="44"
+       y="350"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       font-weight="700"
+       id="text38">P3</text>
+    <text
+       x="84"
+       y="325"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text39">PR Title Prefix</text>
+    <text
+       x="84"
+       y="343"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       id="text40">Value: <tspan
+   font-weight="700"
+   id="tspan39">&quot;feat:&quot;</tspan></text>
+    <text
+       x="84"
+       y="361"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.65"
+       id="text41">Skipped — P1 already resolved</text>
+  </g>
+  <!-- SOURCE 4: Commit Message (DIMMED) -->
+  <g
+     id="source-4"
+     filter="url(#shadow-sm)"
+     opacity="0.40">
+    <rect
+       x="18"
+       y="384"
+       width="262"
+       height="70"
+       rx="10"
+       fill="url(#s4)"
+       id="rect41" />
+    <rect
+       x="18"
+       y="384"
+       width="52"
+       height="70"
+       rx="10"
+       fill="#000000"
+       fill-opacity="0.15"
+       id="rect42" />
+    <text
+       x="44"
+       y="416"
+       text-anchor="middle"
+       font-size="20"
+       fill="#ffffff"
+       id="text42">4</text>
+    <text
+       x="44"
+       y="432"
+       text-anchor="middle"
+       font-size="9"
+       fill="#ffffff"
+       fill-opacity="0.85"
+       font-weight="700"
+       id="text43">P4</text>
+    <text
+       x="84"
+       y="407"
+       font-size="12"
+       font-weight="700"
+       fill="#ffffff"
+       id="text44">Commit Message Prefix</text>
+    <text
+       x="84"
+       y="425"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       id="text45">Value: <tspan
+   font-weight="700"
+   id="tspan44">&quot;fix:&quot;</tspan></text>
+    <text
+       x="84"
+       y="443"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.65"
+       id="text46">Lowest trust — fallback only</text>
+  </g>
+  <!-- Winner arrow (bold, gold) -->
+  <line
+     x1="282"
+     y1="170"
+     x2="370"
+     y2="260"
+     stroke="#F57F17"
+     stroke-width="2.5"
+     marker-end="url(#arr-win)"
+     id="line46" />
+  <!-- Dimmed arrows from other sources -->
+  <line
+     x1="282"
+     y1="255"
+     x2="370"
+     y2="280"
+     stroke="#B0BEC5"
+     stroke-width="1.5"
+     stroke-dasharray="5,3"
+     marker-end="url(#arr-dim)"
+     id="line47" />
+  <line
+     x1="282"
+     y1="337"
+     x2="370"
+     y2="295"
+     stroke="#B0BEC5"
+     stroke-width="1.5"
+     stroke-dasharray="5,3"
+     marker-end="url(#arr-dim)"
+     id="line48" />
+  <line
+     x1="282"
+     y1="419"
+     x2="370"
+     y2="315"
+     stroke="#B0BEC5"
+     stroke-width="1.5"
+     stroke-dasharray="5,3"
+     marker-end="url(#arr-dim)"
+     id="line49" />
+  <!-- PRECEDENCE ENGINE -->
+  <g
+     id="precedence-engine"
+     filter="url(#shadow)">
+    <rect
+       x="370"
+       y="178"
+       width="320"
+       height="200"
+       rx="12"
+       fill="url(#eng)"
+       id="rect49" />
+    <rect
+       x="370"
+       y="178"
+       width="320"
+       height="40"
+       rx="12"
+       fill="#000000"
+       fill-opacity="0.20"
+       id="rect50" />
+    <rect
+       x="370"
+       y="198"
+       width="320"
+       height="20"
+       fill="#000000"
+       fill-opacity="0.20"
+       id="rect51" />
+    <text
+       x="530"
+       y="204"
+       text-anchor="middle"
+       font-size="14"
+       font-weight="700"
+       fill="#ffffff"
+       letter-spacing="0.5"
+       id="text51">Precedence Engine</text>
+    <text
+       x="390"
+       y="234"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.70"
+       font-weight="600"
+       id="text52">Authority chain for  change_type:</text>
+    <rect
+       x="385"
+       y="242"
+       width="290"
+       height="24"
+       rx="5"
+       fill="#ffffff"
+       fill-opacity="0.10"
+       id="rect52" />
+    <text
+       x="530"
+       y="258"
+       text-anchor="middle"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       font-family="'Courier New',monospace"
+       id="text53">issue-label - pr-label - title - commit</text>
+    <line
+       x1="390"
+       y1="274"
+       x2="670"
+       y2="274"
+       stroke="#ffffff"
+       stroke-opacity="0.18"
+       stroke-width="1"
+       id="line53" />
+    <text
+       x="390"
+       y="292"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.70"
+       id="text54">Algorithm:</text>
+    <text
+       x="390"
+       y="310"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       id="text55">1.  Walk chain from highest priority</text>
+    <text
+       x="390"
+       y="328"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       id="text56">2.  Use first source that has a value</text>
+    <text
+       x="390"
+       y="346"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       id="text57">3.  Record provenance + confidence</text>
+    <line
+       x1="390"
+       y1="355"
+       x2="670"
+       y2="355"
+       stroke="#ffffff"
+       stroke-opacity="0.18"
+       stroke-width="1"
+       id="line57" />
+    <text
+       x="530"
+       y="370"
+       text-anchor="middle"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.65"
+       id="text58">Defined in: standards/source-precedence.yaml</text>
+  </g>
+  <line
+     x1="692"
+     y1="278"
+     x2="790"
+     y2="278"
+     stroke="#388E3C"
+     stroke-width="2.5"
+     marker-end="url(#arr-out)"
+     id="line58" />
+  <text
+     x="741"
+     y="271"
+     text-anchor="middle"
+     font-size="10"
+     font-weight="700"
+     fill="#2E7D32"
+     id="text59">resolved</text>
+  <!-- OUTPUT BOX -->
+  <g
+     id="canonical-output"
+     filter="url(#shadow)">
+    <rect
+       x="792"
+       y="190"
+       width="278"
+       height="190"
+       rx="12"
+       fill="url(#out)"
+       id="rect59" />
+    <rect
+       x="792"
+       y="190"
+       width="278"
+       height="38"
+       rx="12"
+       fill="#000000"
+       fill-opacity="0.18"
+       id="rect60" />
+    <rect
+       x="792"
+       y="216"
+       width="278"
+       height="12"
+       fill="#000000"
+       fill-opacity="0.18"
+       id="rect61" />
+    <text
+       x="931"
+       y="215"
+       text-anchor="middle"
+       font-size="13"
+       font-weight="700"
+       fill="#ffffff"
+       letter-spacing="0.5"
+       id="text61">Canonical Output</text>
+    <rect
+       x="808"
+       y="240"
+       width="246"
+       height="100"
+       rx="6"
+       fill="#000000"
+       fill-opacity="0.22"
+       id="rect62" />
+    <text
+       x="820"
+       y="258"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.60"
+       font-family="'Courier New',monospace"
+       id="text62">release-evidence.yaml</text>
+    <text
+       x="820"
+       y="276"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       font-family="'Courier New',monospace"
+       id="text63">change_type: <tspan
+   font-weight="700"
+   fill="#ffffff"
+   id="tspan62">&quot;bug&quot;</tspan></text>
+    <text
+       x="820"
+       y="294"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       font-family="'Courier New',monospace"
+       id="text64">source: <tspan
+   font-weight="700"
+   fill="#ffffff"
+   id="tspan63">issue-label</tspan></text>
+    <text
+       x="820"
+       y="312"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       font-family="'Courier New',monospace"
+       id="text65">confidence: <tspan
+   font-weight="700"
+   fill="#ffffff"
+   id="tspan64">0.95</tspan></text>
+    <text
+       x="820"
+       y="330"
+       font-size="11"
+       fill="#ffffff"
+       fill-opacity="0.90"
+       font-family="'Courier New',monospace"
+       id="text66">priority_used: <tspan
+   font-weight="700"
+   fill="#ffffff"
+   id="tspan65">P1</tspan></text>
+    <rect
+       x="808"
+       y="352"
+       width="246"
+       height="22"
+       rx="6"
+       fill="#000000"
+       fill-opacity="0.20"
+       id="rect66" />
+    <text
+       x="931"
+       y="367"
+       text-anchor="middle"
+       font-size="10"
+       fill="#ffffff"
+       fill-opacity="0.80"
+       id="text67">Provenance recorded — fully auditable</text>
+  </g>
+  <!-- Legend -->
+  <rect
+     x="18"
+     y="474"
+     width="1064"
+     height="32"
+     rx="8"
+     fill="#000000"
+     fill-opacity="0.06"
+     id="rect67" />
+  <text
+     x="40"
+     y="494"
+     font-size="11"
+     fill="#607D8B"
+     font-weight="600"
+     id="text68">Legend:</text>
+  <rect
+     x="105"
+     y="482"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#F57F17"
+     id="rect68" />
+  <text
+     x="122"
+     y="493"
+     font-size="11"
+     fill="#455A64"
+     id="text69">P1 — Winner (highest trust source with value)</text>
+  <rect
+     x="420"
+     y="482"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#B0BEC5"
+     id="rect69" />
+  <text
+     x="437"
+     y="493"
+     font-size="11"
+     fill="#455A64"
+     id="text70">P2-P4 — Skipped when higher priority resolves field</text>
+  <rect
+     x="760"
+     y="482"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#9575CD"
+     id="rect70" />
+  <text
+     x="777"
+     y="493"
+     font-size="11"
+     fill="#455A64"
+     id="text71">Engine reads source-precedence.yaml — no hardcoding</text>
+</svg>
