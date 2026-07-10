@@ -331,13 +331,16 @@ Probe once, cheaply:
 test -f "{inputs.po_notes_path:-docs/releases/po-notes/{version}.md}"
 ```
 
-**If found:** read it. Use it as the **primary draft source** for narrative-only fields —
-`summary.headline`, `summary.paragraphs`, `keyBenefits`, and as a hint list of feature names to
-look for corroborating evidence on. Every claim still requires a resolvable PR/issue reference
-before publication (CON-002) — a PO draft never substitutes for evidence, it substitutes for the
-agent's own guesswork when drafting prose. It **never** overrides `shipped_included_in_release`
-(tag boundary is always truth — a PO draft written before the tag is cut may describe things
-that slip) and never supplies migration notes, severity, or technical fields.
+**If found:** read it. Treat it as a strong source of information — the PO produced it with
+context an agent doesn't have — for narrative-only fields (summary.headline,
+summary.paragraphs, keyBenefits) and as a hint list of feature names to look for corroborating
+evidence on. It is not an authority: PO drafts get scrutinized the same way any other source
+does, because POs make mistakes too. Score every PO-sourced claim through the confidence_rule
+(Step 1) same as git/GitHub-sourced claims; only treat it as usable without further corroboration
+at confidence ≥80 — below that band it needs the same corroboration-or-exclude treatment as any
+other sub-84 item in Step 3d. Every claim still requires a resolvable PR/issue reference before
+publication (CON-002) — a PO draft never substitutes for evidence, it substitutes for the agent's
+own guesswork when drafting prose.
 
 **If not found:** log once — `"No PO release notes draft found at {path}. Drafting narrative
 fields from evidence."` — and continue: the agent writes
