@@ -1,7 +1,7 @@
 id: "release-notes"
 name: "Release Notes"
 status: "active"
-last_updated: "2026-04-23"
+last_updated: "2026-07-10"
 description: >-
   Public manifest for the release-notes content type. Consumer repositories can
   fetch this file first, then resolve the schema, rendering rules, examples,
@@ -24,7 +24,6 @@ entrypoints:
 examples:
   minimal: "templates/release-notes/examples/minimal-release-notes.yaml"
   comprehensive: "templates/release-notes/examples/comprehensive-release-notes.yaml"
-  release_inputs: "templates/release-notes/examples/release-inputs.yaml"
   classification_overrides: "templates/release-notes/examples/classification-overrides.yaml"
 
 consumer_usage:
@@ -43,5 +42,5 @@ consumer_usage:
     - "The quick reference is optimized for agent prompting and lightweight generation."
     - "The consumer_skill is a full orchestration template for consumer repos — copy and adapt."
     - "classification_rules defines the central baseline for commit-to-category mapping."
-    - "Copy release_inputs example to docs/releases/release-inputs.yaml in the consumer repo."
+    - "consumer_skill has no separate input file: per-repo and per-release configuration is edited directly in its Step 0a Release Configuration block after copying. In CI, per-release values can be overridden via env vars instead of editing the file."
     - "Copy classification_overrides example to standards/ in the consumer repo and customize."

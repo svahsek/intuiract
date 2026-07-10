@@ -1,5 +1,5 @@
 version: "0.1.0"
-last_updated: "2026-04-14"
+last_updated: "2026-07-10"
 description: >-
   Central registry of content types that can be consumed from this
   repository by local agents, reusable skills, or external repositories.
@@ -25,7 +25,6 @@ content_types:
       examples:
         - "templates/release-notes/examples/minimal-release-notes.yaml"
         - "templates/release-notes/examples/comprehensive-release-notes.yaml"
-        - "templates/release-notes/examples/release-inputs.yaml"
         - "templates/release-notes/examples/classification-overrides.yaml"
     intended_consumers:
       - "Workspace-local agent skills"

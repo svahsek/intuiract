@@ -1,0 +1,96 @@
+---
+# Release Inputs — Inji Verify (v2 proposed template)
+# ===============================================================================
+# Revision of the original docs/release-inputs.yaml / docs/releases/release-inputs.yaml.
+# Two changes from the version used to generate 0.17.0:
+#
+#   1. Every field is always present and always active. "Unset" is expressed as an
+#      empty string/list, never by commenting a line out. This is a direct fix for
+#      the bug that started this whole exercise: a stray, uncommented duplicate
+#      `release_ref:` inside what was meant to be a fully-commented block silently
+#      overrode the real value.
+#
+#   2. JIRA is gone. Everything that used to reference jira_project_key /
+#      jira_fix_version now uses GitHub-native equivalents: github_milestone
+#      (replaces JIRA fixVersion) and label_taxonomy (replaces free-text keyword
+#      classification, and is the same mechanism GitHub's own "auto-generated
+#      release notes" feature and release-drafter use).
+#
+# See release-inputs-improvement-proposal.md in this directory for the full
+# rationale behind every field below.
+
+# ─── REQUIRED FIELDS ────────────────────────────────────────────────────────────
+version: "0.18.0"
+base_tag: "v0.17.0"
+release_ref: "v0.18.0"                     # MUST resolve via `git rev-parse --verify <this>` — skill should check this before Step 1, not discover a bad ref mid-run
+release_type: "Minor"                      # Major | Minor | Patch | Hotfix
+product_name: "Inji Verify"
+product_name_abbr: "INJIVER"
+
+# ─── REPO IDENTITY ──────────────────────────────────────────────────────────────
+# Removes the need to infer this from `git remote -v`, which is ambiguous whenever
+# origin (fork/personal remote) and upstream (canonical org repo) differ — as they
+# do in this repo (origin=svahsek/inji-verify, upstream=inji/inji-verify). Every
+# generated doc link, issue link, and PR link uses this value.
+github_repo: "inji/inji-verify"
+
+# ─── CONDITIONAL REQUIREMENTS (needed for validation) ───────────────────────────
+compatible_modules:                        # CON-006: at least one entry required
+  - module: "inji-wallet"
+    version: "0.12.0"
+
+repositories_released:                     # CON-007: at least one entry required
+  - repo: "inji-verify"
+    tag: "v0.18.0"
+
+output_dir: "docs/releases/"
+
+# ─── EVIDENCE SOURCE (GitHub-native — replaces JIRA entirely) ───────────────────
+evidence_source:
+  fetch_strategy: "graphql_batch"          # graphql_batch (fast, default) | rest_sequential | commits_only (fastest, lowest quality). graphql_batch turns what was a ~15-20 min PR-fetch saga in the 0.17.0 run into a handful of seconds.
+  label_usage: "none"                      # none | full. Set to "full" once the label_taxonomy below is actually applied to issues/PRs in this repo — until then the agent should not waste time trying label-based filtering.
+  github_milestone: ""                     # GitHub milestone scoping this release, e.g. "0.18.0". Replaces JIRA fixVersion. Required if release_type is Major/Minor and you want CON-012 (userStories) satisfied — leave empty to accept that warning.
+  include_discussions: false
+  include_projects: false
+  include_qa_evidence: true
+  include_security_scans: true
+  label_taxonomy:                          # what label on an Issue/PR maps to which release-notes section. This is the same mechanism GitHub's native "auto-generated release notes" (.github/release.yml) and release-drafter use — adopting it here is the actual long-term fix for classification accuracy, not just an /crn-iv input tweak.
+    "type:feature": newFeatures
+    "type:enhancement": enhancedFeatures
+    "type:bug": bugFixes
+    "type:security": securityUpdates
+    "type:breaking": enhancedFeatures       # + migrationRequired=true
+    "type:deprecation": deprecations
+    "type:chore": internal                  # omitted from published output
+
+# ─── KNOWN DEPRECATIONS ──────────────────────────────────────────────────────────
+# State known deprecations here rather than letting the agent infer (and possibly
+# fabricate) a removal version from PR prose. Leave removal_version empty if it's
+# genuinely undecided — the agent must not guess it.
+known_deprecations: []
+#  - item: "@mosip/react-inji-verify-sdk"
+#    replacement: "@injistack/react-inji-verify-sdk"
+#    tracking_issue: ""                     # GitHub issue number, e.g. "#1300"
+#    removal_version: ""
+
+# ─── SUPPORT RESOURCES ────────────────────────────────────────────────────────────
+test_report_url: ""                        # CON-009 — populate once a CI run/report link exists for this tag
+release_date: ""                           # leave empty to auto-use today's date
+release_highlights: ""
+rollout_timeline: ""
+known_issues_tracker: ""
+collab_guide: ""
+
+target_audience:
+  - "Developers"
+  - "Implementers"
+
+# ─── STANDARDS CACHE ──────────────────────────────────────────────────────────────
+# If cache_dir is populated with schema.yaml / rendering.yaml / human-rules.yaml /
+# classification-rules.yaml, the skill should skip the network fetch entirely.
+standards:
+  cache_dir: ".github/standards/"
+  pinned_ref: ""                           # commit SHA in the standards repo, for reproducibility. Empty = use main, log a WARNING.
+
+# ─── SPEED / QUALITY KNOB ──────────────────────────────────────────────────────────
+generation_mode: "full"                    # full (fetch + read PR bodies, best descriptions) | fast (commit subjects only, ~10x faster, rougher copy)

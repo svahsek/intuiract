@@ -1,0 +1,240 @@
+metadata:
+  version: "0.17.0"
+  releaseDate: "2026-03-04"
+  releaseType: "Minor"
+  productName: "Inji Verify"
+  productNameAbbr: "INJIVER"
+  targetAudience:
+    - "Developers"
+    - "Implementers"
+
+summary:
+  headline: "Inji Verify 0.17.0 Adds CWT Credential Support and V2 Verification APIs"
+  paragraphs:
+    - text: "This release adds support for CBOR Web Token (CWT) credentials, including Claim 169 QR codes, alongside the existing SD-JWT and LDP credential formats. It also introduces V2 verification API endpoints that return structured, per-credential results."
+      sectionLabel: "Purpose"
+    - text: "Beyond new credential and API support, this release closes three security gaps (response header hardening, a reflected-XSS path, and an object-injection vector in the UI), fixes 17 defects across SVG rendering, VP verification, and UI accessibility, and migrates the verify-service runtime database to resolve an open-source license compliance issue."
+      sectionLabel: "ThemesAndFocus"
+  keyBenefits:
+    - "Adds CWT/Claim 169 credential verification alongside existing SD-JWT and LDP support"
+    - "New V2 API endpoints return structured, per-credential verification results"
+    - "Closes 3 security gaps: response header hardening, reflected XSS, object injection"
+    - "Resolves an open-source license compliance issue by migrating the runtime database from H2 to HSQLDB"
+
+content:
+  newFeatures:
+    - name: "CBOR Web Token (CWT) / Claim 169 Credential Support"
+      description: "Verify service, SDK, and UI can now verify COSE/CBOR-based (CWT) credentials, including Claim 169 QR codes, alongside existing SD-JWT and LDP formats."
+      useCase: "Implementers integrating credentials issued in CWT format (e.g. Claim 169 age/attribute QR codes) can verify them through the same verification flow used for SD-JWT and LDP credentials, without format-specific integration work."
+      keyCapabilities:
+        - "Automatic credential format detection across submission and verification flows"
+        - "CWT claim extraction and exposure (iss, cnf, sub, aud, exp, nbf, iat, cti)"
+        - "QR code scanning and decoding for Claim 169 CWT credentials in the SDK and UI"
+      documentation:
+        title: "Claim 169"
+        url: "https://github.com/inji/inji-verify/blob/v0.17.0/docs/Claim169.md"
+      relatedIssues:
+        - "INJIVER-1366"
+        - "INJIVER-1389"
+        - "INJIVER-1529"
+
+    - name: "V2 Verification API Endpoints"
+      description: "New V2 endpoints return structured verification results with per-credential checks, replacing the single pass/fail response of the V1 endpoints."
+      useCase: "API consumers that need to know which specific credential in a presentation failed verification, and why, can call the V2 endpoints instead of parsing an aggregate V1 result."
+      keyCapabilities:
+        - "POST /v2/vc-verification returns schema/signature/expiry/status checks per credential"
+        - "GET /v2/vp-results/{transactionId} returns transactionId, allChecksSuccessful, and per-credential results including holder-proof checks"
+        - "Optional claim inclusion and status-check filtering on request"
+        - "SD-JWT and LDP claims exposed in V2 responses"
+      documentation:
+        title: "API Documentation (OpenAPI)"
+        url: "https://github.com/inji/inji-verify/blob/v0.17.0/docs/api-documentation-openapi.yaml"
+      relatedIssues:
+        - "INJIVER-1488"
+        - "INJIVER-1491"
+        - "INJIVER-1533"
+        - "INJIVER-1519"
+
+    - name: "VP Submission Without Holder Proof"
+      description: "The verify-service and SDK now accept verifiable presentations submitted without a holder proof, controlled by an explicit acceptVPWithoutHolderProof flag."
+      useCase: "Flows such as DataShare, where the wallet does not attach a holder proof to the VP, can now complete verification instead of being rejected outright."
+      keyCapabilities:
+        - "acceptVPWithoutHolderProof flag on /vp-request and /vp-results"
+        - "Same flag available in the SDK's OpenID4VP and QR code verification flows"
+        - "Default behavior unchanged: holder proof is still required unless the flag is set"
+      documentation:
+        title: "API Documentation (OpenAPI)"
+        url: "https://github.com/inji/inji-verify/blob/v0.17.0/docs/api-documentation-openapi.yaml"
+      relatedIssues:
+        - "INJIVER-1489"
+
+  enhancedFeatures:
+    - name: "SDK Package Migration to @injistack/react-inji-verify-sdk"
+      improvement: "The React SDK previously published as @mosip/react-inji-verify-sdk is deprecated in favor of @injistack/react-inji-verify-sdk, with an in-package deprecation banner and migration guide."
+      previousBehavior: "Consumers installed and imported the SDK as @mosip/react-inji-verify-sdk."
+      newBehavior: "Consumers should install @injistack/react-inji-verify-sdk; the old package name continues to work but displays a deprecation banner."
+      impactOnExistingUsers: "No functional change until the old package is removed; import paths need to be updated to adopt the new package name."
+      migrationRequired: true
+      migrationNotes: "Update package.json and import statements from @mosip/react-inji-verify-sdk to @injistack/react-inji-verify-sdk. No API changes are required beyond the package name."
+      affectedVersions: ["0.16.0", "0.17.0"]
+      documentation:
+        title: "Inji Verify SDK - OpenID4VP"
+        url: "https://github.com/inji/inji-verify/blob/v0.17.0/docs/InjiVerifySDKOpenID4VP.md"
+
+    - name: "SDK Session State Handling"
+      improvement: "The SDK no longer persists QR verification session state via pathname/session storage, reducing the amount of verification-flow state kept in the browser."
+      previousBehavior: "Verification session state, including a stored pathname, persisted across the QR verification flow."
+      newBehavior: "Session state is streamlined and pathname storage has been removed from the verification workflow."
+      impactOnExistingUsers: "No action required; behavior change is internal to the SDK's session handling."
+      migrationRequired: false
+      documentation:
+        title: "Inji Verify SDK - Scan and Upload"
+        url: "https://github.com/inji/inji-verify/blob/v0.17.0/docs/InjiVerifySDKScanAndUpload.md"
+
+  bugFixes:
+    - bugTitle: "SVG template rendering and missing QR codes in SVG templates"
+      description: "SVG-based credential templates were not always rendering correctly, and the embedded QR code was missing from some SVG templates."
+      severity: "Medium"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1566", "INJIVER-1541", "#1196", "#1159"]
+
+    - bugTitle: "Claim 169 CWT face-image rendering issue"
+      description: "The face image embedded in Claim 169 CWT credentials did not render correctly during verification."
+      severity: "Medium"
+      affectedVersions: ["0.17.0-beta"]
+      relatedIssues: ["INJIVER-1540", "#1113"]
+
+    - bugTitle: "VP verification tab re-rendering issue"
+      description: "The VP verification tab re-rendered unnecessarily, causing a disruptive flicker during the verification flow."
+      severity: "Low"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1184", "#1051"]
+
+    - bugTitle: "Language dropdown keyboard and accessibility issue"
+      description: "The language selection dropdown was not fully operable via keyboard and did not meet accessibility expectations."
+      severity: "Medium"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1424", "#970"]
+
+    - bugTitle: "Action button misalignment"
+      description: "Buttons in the verification UI were visually misaligned on certain screen sizes."
+      severity: "Low"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1440", "INJIVER-1461", "#969"]
+
+    - bugTitle: "Help dropdown did not close on outside click"
+      description: "The help dropdown menu remained open when a user clicked outside of it, requiring an explicit close action."
+      severity: "Low"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1459", "#1068"]
+
+    - bugTitle: "Home page refresh caused an unexpected reload loop"
+      description: "Refreshing the home page could trigger an unintended reload, disrupting the user's session."
+      severity: "Medium"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1470", "#1070"]
+
+    - bugTitle: "FAQ button was not clickable"
+      description: "The FAQ button on the verification UI did not respond to clicks."
+      severity: "Low"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1458", "#1042"]
+
+    - bugTitle: "Premature session expiry with unexpected page reload"
+      description: "Verification sessions expired earlier than intended and triggered an unexpected page reload."
+      severity: "Medium"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1442", "#964"]
+
+    - bugTitle: "Incorrect credential rendering order"
+      description: "Verifiable credentials were displayed in an inconsistent order on the results screen."
+      severity: "Low"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1103", "#917"]
+
+    - bugTitle: "SD-JWT VC verification failed due to a configuration issue"
+      description: "SD-JWT verifiable credentials failed verification in the VP verification flow because of an incorrect configuration value."
+      severity: "Medium"
+      affectedVersions: ["0.17.0-beta"]
+      relatedIssues: ["INJIVER-1527", "#1101", "#1097"]
+
+    - bugTitle: "DataShare QR scan redirection issue"
+      description: "Scanning a DataShare QR code did not always redirect to the correct verification result screen."
+      severity: "Medium"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1219", "#1127"]
+
+    - bugTitle: "Incorrect status shown on VC verification"
+      description: "The verification result screen sometimes displayed an incorrect status for a verified credential."
+      severity: "Medium"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1441", "#956"]
+
+    - bugTitle: "Credential status check returned an unstructured error"
+      description: "When a credential status check failed, the service returned a generic error instead of a proper HTTP 500 status with structured error details."
+      severity: "Medium"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1456", "#1004", "#1001"]
+
+    - bugTitle: "presentationDefinitionUri built as a relative URL instead of absolute"
+      description: "The presentationDefinitionUri included in verification requests was constructed as a relative URL, which some wallets could not resolve correctly."
+      severity: "Medium"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1500", "#1053", "#1047"]
+      workaround: "N/A"
+
+    - bugTitle: "Redirect URL incorrectly required, causing null-value errors"
+      description: "The redirect URL field was treated as required even when not configured, resulting in null-value errors on submission."
+      severity: "Medium"
+      affectedVersions: ["0.16.0"]
+      relatedIssues: ["INJIVER-1404", "#915"]
+
+    - bugTitle: "Unsigned VP incorrectly rejected for a single-credential presentation"
+      description: "A presentation with a single unsigned credential was rejected even in flows configured to accept unsigned VPs; single-credential handling now matches list handling."
+      severity: "Medium"
+      affectedVersions: ["0.17.0-beta"]
+      relatedIssues: ["INJIVER-1523", "#1160"]
+
+  securityUpdates:
+    - title: "Hardened HTTP response security headers"
+      severity: "Medium"
+      description: "Verify service responses now set X-Frame-Options: SAMEORIGIN and X-Content-Type-Options: nosniff, and no longer send the legacy X-XSS-Protection header, which modern browsers ignore."
+      affectedVersions: ["0.16.0"]
+      upgradeRecommended: true
+
+    - title: "Reflected XSS via error response path"
+      severity: "High"
+      description: "Error responses previously echoed the request path back to the client, creating a reflected cross-site scripting vector. Error responses no longer include the request path."
+      affectedVersions: ["0.16.0"]
+      upgradeRecommended: true
+
+    - title: "Object injection vulnerability in verify-ui"
+      severity: "Medium"
+      description: "Dynamic property-key access in credential data processing and theme handling could be manipulated to access unintended object properties. Property-key access is now validated before use."
+      affectedVersions: ["0.16.0"]
+      upgradeRecommended: true
+
+  technicalImprovements:
+    infrastructure:
+      - change: "Migrated the verify-service runtime database from H2 to HSQLDB"
+        description: "Resolves an open-source license compliance issue with the previously embedded H2 database."
+      - change: "Upgraded verify-service base image from eclipse-temurin:21-jre-alpine to eclipse-temurin:25.0.1_8-jre-alpine"
+        description: "Moves the service onto a current, supported Java base image."
+      - change: "Upgraded react-router-dom from 6.22.3 to 6.30.3 in verify-ui"
+        description: "Keeps the UI's routing dependency current with upstream fixes."
+      - change: "Integrated an updated vc-verifier library release candidate (1.6.0-SNAPSHOT to 1.7.0-RC3)"
+        description: "Brings in upstream verification library fixes ahead of a stable release."
+
+  compatibleModules:
+    - module: "inji-wallet"
+      version: "0.12.0"
+
+  repositories:
+    released:
+      - repo: "inji-verify"
+        tag: "v0.17.0"
+
+  supportResources:
+    documentation:
+      feature_docs: "https://github.com/inji/inji-verify/tree/v0.17.0/docs"
+      api_docs: "https://github.com/inji/inji-verify/blob/v0.17.0/docs/api-documentation-openapi.yaml"

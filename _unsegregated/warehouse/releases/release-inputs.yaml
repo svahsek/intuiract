@@ -1,0 +1,55 @@
+---
+# Release Inputs — Inji Verify 0.17.0
+# ===============================================
+# Minimal configuration for release notes generation.
+# Optional fields are commented out below.
+
+# ─── REQUIRED FIELDS ──────────────────────────────────────────────────────────
+
+version: "v0.17.0"                          # Semantic version: X.Y.Z format
+base_tag: "v0.16.0"                        # Previous release tag for diff range
+release_ref: "v0.17.0"                      # Target branch/tag for this release (tag, as-shipped)
+release_type: "Minor"                      # Major | Minor | Patch | Hotfix
+product_name: "inji-verify"                # Full product name
+product_name_abbr: "INJIVER"               # Short abbreviation
+
+# ─── CONDITIONAL REQUIREMENTS (needed for validation) ──────────────────────────
+
+compatible_modules:                        # CON-006: at least one entry required
+  - module: "inji-wallet"
+    version: "0.12.0"
+
+repositories_released:                     # CON-007: at least one entry required
+  - repo: "inji-verify"
+    tag: "v0.17.0"
+
+output_dir: "docs/releases/"               # Output directory for generated files
+
+# ─── OPTIONAL / COMMENTED OUT ─────────────────────────────────────────────────
+
+release_date: "2026-03-04"                 # Actual v0.17.0 tag date (as-shipped release)
+# jira_project_key: ""                     # JIRA key for issue linking (if using JIRA)
+# release_highlights: ""                   # Free text summary of release focus
+# rollout_timeline: ""                     # e.g. "Staggered over 2 weeks"
+# known_issues_tracker: ""                 # URL to known issues tracker
+# collab_guide: ""                         # Collaboration/onboarding guide URL
+
+# target_audience:
+#   - "Developers"
+#   - "Implementers"
+#   - "System Integrators"
+
+# evidence_source:                         # Optional: enhanced issue/PR discovery
+#   release_ref: "v0.17.0"
+#   milestone: "v0.18.x"
+#   include_issue_labels:
+#     - "type:feature"
+#     - "type:bug"
+#   include_pr_labels:
+#     - "ready-for-release"
+#   issue_query: "milestone:v0.18.x is:closed"
+#   pr_query: ""
+#   include_discussions: true
+#   include_projects: true
+#   include_qa_evidence: true
+#   include_security_scans: true
