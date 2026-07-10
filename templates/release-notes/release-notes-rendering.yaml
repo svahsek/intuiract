@@ -190,25 +190,22 @@ sections:
     _meta: {prefix: BUG, description: Bug fixes — severity badges, workarounds}
     template: |
       ## Bug Fixes
-      
+
       {if content.bugFixes is not empty}
+        | Severity | Bug | Description | Affected Versions | Related Issues |
+        |----------|-----|-------------|--------------------|-----------------|
         {renderBugFixes(content.bugFixes)}
       {else}
         No bug fixes in this release.
       {/if}
-    
+
     bugTemplate: |
-      ### {bug.bugTitle}
-      
-      **Severity**: {formatSeverityBadge(bug.severity)}  
-      **Affected Versions**: {join(bug.affectedVersions, ", ")}
-      
-      {bug.description}
-      
+      | {formatSeverityBadge(bug.severity)} | {bug.bugTitle} | {bug.description} | {join(bug.affectedVersions, ", ") or "—"} | {formatIssueLinks(bug.relatedIssues) or "—"} |
       {if bug.workaround}
-      **Workaround for earlier versions**: {bug.workaround}
+
+      > **Workaround for {bug.bugTitle} (earlier versions)**: {bug.workaround}
       {/if}
-    
+
     rules:
       - rule_id: "BUG-001"
         name: "Severity Badges"
@@ -223,6 +220,14 @@ sections:
         name: "Include Workarounds"
         description: "If workaround exists, make it prominent"
         rationale: "Users on older versions need immediate workaround"
+        implementation: "Workaround text does not go in the table cell — render it as a blockquote callout directly below the table row's implied position, keyed by bug title, so it stays scannable even when the table itself is dense."
+
+      - rule_id: "BUG-003"
+        name: "Bug Fixes Table"
+        description: "Render all bug fixes as a single markdown table instead of one heading block per bug"
+        reasoning: "Table format lets readers scan every fix (severity, title, versions affected) at a glance without scrolling through repeated H3 blocks — same rationale as ISS-001 for Known Issues."
+        columns: "Severity | Bug | Description | Affected Versions | Related Issues"
+        note: "If a description exceeds 1-2 sentences in practice, consider dropping the Description column from the table and rendering it as a sub-bullet below that row instead (same escape hatch as ISS-001)."
 
 # ================================
 # SECTION 7: SECURITY UPDATES

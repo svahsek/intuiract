@@ -64,10 +64,10 @@ rules:
     compatibility:
       CON-006:
         name: Compatible Modules Table Required
-        severity: error
+        severity: warning
         applies_to: all releaseTypes
         rule: compatibleModules must be present with at least one module + version entry
-        note: "Present in every release including patches."
+        note: "Present in every release including patches. Downgraded from error to warning: compatibility pinning is frequently unknown at release-notes-generation time (e.g. companion module not yet version-locked); blocking Markdown rendering on it forced operators through a manual gate on every run. Missing entries should still be flagged so operators can fill them in later, not silently dropped."
       CON-007:
         name: Repository Tags Required
         severity: error
