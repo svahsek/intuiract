@@ -35,7 +35,7 @@ argument-hint: 'Provide the release version, source inputs, and output target'
 **Reference & Examples**:
 - Target-state architecture: [../../docs/architecture/agentic-doc-pipeline-target-state.md](../../docs/architecture/agentic-doc-pipeline-target-state.md)
 - Sample evidence file: [../../templates/release-notes/examples/release-evidence.sample.yaml](../../templates/release-notes/examples/release-evidence.sample.yaml)
-- Quick reference: [../../templates/release-notes/agent-quick-reference.md](../../templates/release-notes/agent-quick-reference.md)
+- Quick reference: [../../templates/release-notes/release-notes-quick-reference.md](../../templates/release-notes/release-notes-quick-reference.md)
 
 ## Procedure
 

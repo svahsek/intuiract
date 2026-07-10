@@ -20,11 +20,17 @@ entrypoints:
   consumer_skill: "skills/release-notes/consumer-release-notes.skill.md"
   human_rules: "rules/release-notes/release-notes-rule.yaml"
   classification_rules: "standards/classification-rules.yaml"
+  source_precedence: "standards/source-precedence.yaml"
+  release_evidence_fields: "standards/release-evidence-fields.yaml"
+  confidence_rule: "rules/release-evidence-confidence-rule.yaml"
+  mapping: "templates/release-notes/evidence-to-release-notes-mapping.yaml"
+  release_evidence_contract: "docs/course-correction/release-evidence-contract-v1.md"
 
 examples:
   minimal: "templates/release-notes/examples/minimal-release-notes.yaml"
   comprehensive: "templates/release-notes/examples/comprehensive-release-notes.yaml"
   classification_overrides: "templates/release-notes/examples/classification-overrides.yaml"
+  evidence_sample: "templates/release-notes/examples/release-evidence.sample.yaml"
 
 consumer_usage:
   workflow:
@@ -44,3 +50,5 @@ consumer_usage:
     - "classification_rules defines the central baseline for commit-to-category mapping."
     - "consumer_skill has no separate input file: per-repo and per-release configuration is edited directly in its Step 0a Release Configuration block after copying. In CI, per-release values can be overridden via env vars instead of editing the file."
     - "Copy classification_overrides example to standards/ in the consumer repo and customize."
+    - "source_precedence, release_evidence_fields, confidence_rule, and mapping are all required by the reconciliation step (Step 4 of consumer_skill) — resolve them from this manifest the same way as schema/rendering/human_rules, do not hardcode their paths."
+    - "skill (skills/release-notes/SKILL.md) documents the full 4-layer pipeline this manifest and consumer_skill implement — read it for the conceptual model, not for file paths, since every path it references is also an entrypoint above."

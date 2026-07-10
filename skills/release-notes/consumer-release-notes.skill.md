@@ -174,7 +174,7 @@ Fetch the manifest first. Resolve all other URLs from it — never hardcode file
 
 ```
 Manifest URL:
-https://raw.githubusercontent.com/{org}/{repo}/main/standards/content-types/release-notes.yaml
+https://raw.githubusercontent.com/svahsek/intuiract/main/standards/content-types/release-notes.yaml
 ```
 
 > For stability in CI/CD, pin to a commit SHA instead of `main`.
@@ -184,16 +184,28 @@ https://raw.githubusercontent.com/{org}/{repo}/main/standards/content-types/rele
 | `schema` | Load — defines required fields and validation patterns |
 | `rendering` | Load — defines how to convert YAML to Markdown |
 | `human_rules` | Load — defines STR-*, CON-*, SEC-* validation rule IDs |
-| `skill` | Reference only — this file IS the consumer version of that skill |
+| `source_precedence` | Load — field-level source precedence, required by Step 4 |
+| `release_evidence_fields` | Load — field semantics glossary, required by Step 4 |
+| `confidence_rule` | Load — confidence scoring model, required by Step 4 |
+| `mapping` | Load — evidence-to-release-notes field mapping, required by Step 6 |
+| `release_evidence_contract` | Load — canonical evidence shape, required by Step 5's gate |
+| `skill` | Not fetched at runtime — `skills/release-notes/SKILL.md` documents the full pipeline this file implements a thinner version of. Every path it names is also an entrypoint above, so there's no path-resolution reason to read it; read it only for the conceptual model behind these steps. |
 | `quick_reference` | Load — use as fill-in template during Step 6 |
+
+**All nine entrypoints above are resolved from this one manifest fetch — none of Steps 2-7 should
+ever reference a standards file by bare name.** If a later step names a file that isn't in this
+table, that's a manifest gap, not something to guess a path for — stop and flag it rather than
+inventing a URL.
 
 **Always pull YAML/structured standards files with `curl`/raw content, never `WebFetch`** —
 `WebFetch` runs content through a summarizing model and returns paraphrase instead of exact YAML.
 Reserve `WebFetch` for genuinely prose content where a summary is acceptable.
 
-**Cache on first fetch.** Write `schema.yaml`, `rendering.yaml`, `human-rules.yaml`,
-`classification-rules.yaml` into `.github/standards/` in this repo. On every subsequent run,
-check that cache before any network call — don't re-fetch from network every time.
+**Cache on first fetch.** Write all resolved entrypoints — `schema.yaml`, `rendering.yaml`,
+`human-rules.yaml`, `classification-rules.yaml`, `source-precedence.yaml`,
+`release-evidence-fields.yaml`, `release-evidence-confidence-rule.yaml`,
+`evidence-to-release-notes-mapping.yaml` — into `.github/standards/` in this repo. On every
+subsequent run, check that cache before any network call — don't re-fetch from network every time.
 
 **Fallback if manifest URL is unreachable:**
 ```
@@ -211,7 +223,7 @@ Load in this order and deep-merge:
 
 ```
 1. Central baseline (from manifest or direct URL):
-   https://raw.githubusercontent.com/{org}/{repo}/main/standards/classification-rules.yaml
+   https://raw.githubusercontent.com/svahsek/intuiract/main/standards/classification-rules.yaml
 
 2. Consumer overrides (local, product-specific):
    .github/standards/classification-overrides.yaml
@@ -361,13 +373,13 @@ any PO draft content, each item tagged with its source(s) and a provisional clas
 
 Transform raw extracted signals into canonical release evidence.
 
-Use these authorities:
-1. `source-precedence.yaml` for field-level source selection
-2. `release-evidence-fields.yaml` for field semantics
-3. `classification-rules.yaml` for change typing (baseline; `release.yml` grouping from 3b, when
-   present, is treated as a computed shortcut for the same `github_pr_labels` fallback tier —
-   not a new precedence tier)
-4. `release-evidence-confidence-rule.yaml` for confidence scoring
+Use these authorities — all four resolved in Step 1 from the manifest, not fetched fresh here:
+1. `source_precedence` for field-level source selection
+2. `release_evidence_fields` for field semantics
+3. `classification_rules` (loaded in Step 2) for change typing (baseline; `release.yml` grouping
+   from 3b, when present, is treated as a computed shortcut for the same `github_pr_labels`
+   fallback tier — not a new precedence tier)
+4. `confidence_rule` for confidence scoring
 
 Reconciliation tasks:
 1. Merge issue, PR, commit, QA, and build/security signals by linkage keys.
@@ -389,7 +401,8 @@ Reconciliation tasks:
 
 ## Step 5 — Validate Canonical Evidence (Gate)
 
-Validate `release-evidence.yaml` before generating any release-notes content.
+Validate `release-evidence.yaml` before generating any release-notes content, against
+`release_evidence_contract` (resolved in Step 1).
 
 1. Contract shape matches release evidence contract.
 2. Required lifecycle fields exist (intent/change/evidence/shipped).
@@ -400,7 +413,8 @@ Blocking rule: if evidence validation fails, stop here. Do not generate `release
 
 ## Step 6 — Generate Structured Release Notes YAML
 
-Using the schema from Step 1 and reconciled evidence from Step 4, fill the release YAML.
+Using the `schema` and `mapping` (evidence-to-release-notes field mapping) resolved in Step 1,
+and reconciled evidence from Step 4, fill the release YAML.
 
 ```yaml
 metadata:
