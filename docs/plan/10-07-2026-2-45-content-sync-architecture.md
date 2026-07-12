@@ -191,7 +191,9 @@ list entry) — not for rewriting existing sentences.
 ## 6. Update algorithm (runs once per release, per content type)
 
 1. Load the already-produced `{version}-release-evidence.yaml` — no re-extraction, no new git
-   mining. This whole mechanism is a consumer of that file, not a second producer.
+   mining. This whole mechanism is a consumer of that file, not a second producer. Read from its
+   relocated path (`release-artifacts/{version}/`, not `docs/releases/` — see Section 10)
+   once that relocation lands.
 2. For each evidence item at or above the content type's `confidence_floor` (Section 4), resolve
    candidate `(content_type, section)` pairs via the routing table (Section 5).
 3. For each candidate, locate the anchor (Section 3's hybrid):
@@ -208,7 +210,8 @@ list entry) — not for rewriting existing sentences.
 5. Produce one consolidated artifact per release, mirroring the existing
    `{version}-validation-report.txt` pattern:
 
-   `docs/releases/{version}-content-sync-report.md`, containing:
+   `release-artifacts/{version}/content-sync-report.md` (relocated out of `docs/` for the
+   same reason as the release-notes pipeline's own internal artifacts — see Section 10), containing:
    - Auto-applicable changes (by content type, with rendered diff)
    - Items sent to manual placement (no anchor/heading match found)
    - Items flagged manual-only by category (bug fixes/known issues, Section 5)
@@ -268,11 +271,99 @@ someone with access there wants automated PRs into it, that's an explicit extens
 2. **Retrofit anchors** into the two known in-repo/partial targets — `Inji_Verify_API_Overview.md`
    and `deploy/README.md` — as a supervised, one-time pass (Phase 1 of Section 7).
 3. **Build `.github/standards/content-types.yaml`** using the schema drafted in Section 4.
-4. **Add a sibling skill**, e.g. `.claude/skills/content-sync/skill.md`, that runs *after*
-   release notes are generated, consumes `{version}-release-evidence.yaml`, and implements
-   Section 6 — starting in `suggest_only` mode for every content type, no exceptions.
-5. **Run it once per real release**, review every suggestion by hand, and use the false
+4. **Relocate release-notes pipeline artifacts** out of `docs/releases/` into
+   `release-artifacts/{version}/` (Section 10), before the sibling skill in the next step
+   is built against them — fix the path convention once, now, rather than migrating it after a
+   skill and a report format already depend on the old one.
+5. **Add a sibling skill**, e.g. `.claude/skills/content-sync/skill.md`, that runs *after*
+   release notes are generated, consumes `{version}-release-evidence.yaml` from its relocated path,
+   and implements Section 6 — starting in `suggest_only` mode for every content type, no exceptions.
+6. **Run it once per real release**, review every suggestion by hand, and use the false
    positives/negatives to correct the routing table in Section 5 — it's a first draft, not a
    spec to build the skill against blindly.
-6. **Only then** consider moving any individual content type from Phase 1 to Phase 2 in Section 7,
+7. **Only then** consider moving any individual content type from Phase 1 to Phase 2 in Section 7,
    one at a time, starting with the Overview page.
+8. **Only after step 7 has held cleanly across real releases**, evaluate building the feature-level
+   manual trigger described in Section 11. Deliberately last, not concurrent with the rest of this
+   rollout — see Section 11 for why.
+
+---
+
+## 10. Pipeline Artifact Hygiene — Keep Machine Output Out of `docs/`
+
+Not part of content-sync's own placement logic, but a prerequisite this document depends on
+getting right, since Section 6 both *reads* and *writes* machine-internal artifacts alongside it.
+
+**The problem, as it exists today:** the release-notes pipeline's `output_dir` default
+(`docs/releases/`) puts four files in the same folder — `{version}-release-notes.md` (the
+rendered, reader-facing document) alongside three machine-internal artifacts:
+`{version}-release-evidence.yaml`, `{version}-release-notes.yaml` (structured pre-render source),
+and `{version}-validation-report.txt`. Section 6, as originally drafted, compounded this by
+defaulting content-sync's own `{version}-content-sync-report.md` to the same folder too.
+
+**Only the rendered `.md` belongs under `docs/`.** It's the one file in that list a reader should
+ever land on. The other three, plus content-sync's report, are pipeline bookkeeping — audit trail
+for a machine, not content for a person — and belong somewhere that says so.
+
+**Why this matters more now than it would have on day one:** `release-evidence.yaml` and
+`release-notes.yaml` stopped being "release-notes' own output that happens to sit in `docs/`" the
+moment this document made them content-sync's primary input (Section 6, step 1). A file read by
+two separate pipelines is a shared signal, not a doc-adjacent scratch file.
+
+**Revised layout:**
+
+```text
+docs/
+  releases/
+    {version}-release-notes.md              # the only reader-facing file — stays here
+
+.github/
+  release-artifacts/
+    {version}/
+      release-evidence.yaml                 # relocated
+      release-notes.yaml                    # relocated
+      validation-report.txt                 # relocated
+      content-sync-report.md                # relocated (Section 6, step 5)
+```
+
+**Migration cost: effectively zero, if done now.** `1.0.0-alpha.1` is the first real output this
+pipeline has ever produced — fixing the convention before a second or third release accumulates
+under the old path is free; doing it after is not.
+
+**Out of scope for this document, but required as a follow-up:** `output_dir` in
+`skills/release-notes/consumer-release-notes.skill.md`'s Step 0a configuration block currently
+defaults to `docs/releases/` for all four files, undifferentiated. That default needs to split
+into two — one path for the rendered `.md`, one for the three internal artifacts — as a change to
+that file, not this one.
+
+---
+
+## 11. Trigger Granularity — Release-Level Now, Feature-Level Later (Deliberately Gradual)
+
+Every trigger specified so far in this document — Section 6's algorithm, Section 9's rollout —
+runs **once per release**, driven by a finished `{version}-release-evidence.yaml` covering a full
+`base_tag..target_ref` range. That is the only trigger being built right now.
+
+**The gap this leaves:** feature-completion and release cadence aren't the same rhythm. A feature
+can be done, merged, and stable well before a release is cut — but under the release-level trigger
+alone, its placeholder in `overview.md` or `features.md` sits unfilled until the next release
+pipeline runs, even though nothing about *placing* it actually required waiting that long.
+
+**The future direction — explicitly not being built yet:** a second, manual entrypoint that takes
+one completed issue/PR instead of a full commit range, runs it through the same precedence,
+classification, and confidence logic the release-level path already uses, produces a single
+evidence item, and hands it to the *exact same* Section 6 algorithm — same registry, same anchors,
+same `review_policy` gate. This is a narrower on-ramp into the mechanism that already exists, not
+a second, lighter-weight system running in parallel with different rules.
+
+**Why this is deliberately sequenced after, not alongside, the rest of this document's rollout:**
+the risk with "sync it the moment it's done" is that urgency becomes the reason to skip exactly
+the steps that keep an automated write from clobbering a page a writer owns — confidence scoring,
+precedence resolution, the suggest-only review gate. This should only be built once the
+release-level path has held up cleanly across real releases, ideally with at least one content
+type already promoted past Phase 1 in Section 7's trust ramp. Building the faster trigger before
+the underlying placement engine is trusted just gives a shaky mechanism a shorter fuse.
+
+**Still not full automation, even then.** The feature-level trigger is human-invoked — "this
+feature is done, sync it now" — not a webhook firing automatically off a merge event. Whether it
+ever becomes that is a separate, later decision this document isn't making.
