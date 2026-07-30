@@ -316,8 +316,8 @@ item to `unresolved[]` and proceed with the rest of the patch rather than blocki
 ## Step 8 — Render Markdown
 
 Using `overview-rendering.yaml` (loaded in Step 1), convert the validated `overview.yaml` to
-Markdown, applying rules in section order: HDR-*, FEA-*, TRY-*, ARC-*, PLG-*, DEP-*, CFG-*,
-DB-*, UPG-*, UPC-*, DOC-*, CTR-*.
+Markdown, applying rules in section order: HDR-*, FEA-*, TRY-*, ARC-*, PLG-*, DEP-*, SDK-*,
+CFG-*, DB-*, UPG-*, UPC-*, DOC-*, CTR-*.
 
 ---
 

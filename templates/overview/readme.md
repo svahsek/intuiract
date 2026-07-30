@@ -5,9 +5,9 @@ rather than a separate "generate fresh every time" model like release-notes.
 
 ## Why This Exists
 
-The existing `overview-page.template.md` in this directory is a hand-authored Markdown
-template with curly-brace placeholders (`{PRODUCT_NAME}`, `{FEATURE_1}`, ...). It works for a
-one-off manual write-up, but two problems show up as soon as more than one product needs one:
+This content type started from a hand-authored Markdown template with curly-brace placeholders
+(`{PRODUCT_NAME}`, `{FEATURE_1}`, ...), now retired to `_old/` (see File Map below). It worked
+for a one-off manual write-up, but two problems show up as soon as more than one product needs one:
 
 1. There's no machine-checkable definition of what a "complete" overview page contains —
    validation is "does it look right to a human," not a deterministic rule set.
@@ -18,6 +18,16 @@ This content type formalizes the same section structure into `overview-schema.ya
 `overview-rendering.yaml` (the same pattern already established for `release-notes`), and adds
 one pipeline capability release-notes doesn't need: **patching a long-lived file** instead of
 generating a fresh one every run.
+
+**Schema note**: the first bootstrap run against a real product surfaced gaps between the
+retired template's flat feature list and how a well-developed overview page actually organizes
+standards compliance — grouped into named categories (data models, protocols, formats, encoding
+standards, crypto algorithms), with a `partial` status in addition to supported/unsupported, plus
+an architecture "Key Components" breakdown, deployment prerequisites, and an optional SDK
+Integration section for products that ship embeddable components. `overview-schema.yaml`,
+`overview-rendering.yaml`, and `evidence-to-overview-mapping.yaml` were revised to support all of
+these — see `examples/comprehensive-overview.yaml` for a worked example exercising every one of
+them, and `examples/minimal-overview.yaml` for the simpler flat-list case that's still fully valid.
 
 ## The Pipeline (One Mode, Two Evidence Sources)
 
@@ -52,12 +62,13 @@ already-supported-but-wrong), or is it net-new?" See
 | File | Role |
 |---|---|
 | `overview-schema.yaml` | Schema authority — required/optional sections, field types, validation hooks |
-| `overview-rendering.yaml` | Deterministic YAML → Markdown conversion, matching the original template's section order |
+| `overview-rendering.yaml` | Deterministic YAML → Markdown conversion, matching the retired template's section order |
 | `evidence-to-overview-mapping.yaml` | Source-scoped mapping: what `bootstrap_ingestion` may touch vs. what `release_signal` may touch |
-| `overview-quick-reference.md` | Condensed cheat sheet for agent prompting |
-| `overview-page.template.md` | Legacy hand-written template. Kept as a reference for manual authoring; not read by the automated pipeline |
-| `overview-page-guideline.md` | Legacy guideline for the above; the section list under "REQUIRED SECTIONS" is what `overview-schema.yaml`'s `required` array formalizes |
-| `examples/minimal-overview.yaml` | Minimal valid `overview.yaml`, including a `release_signal`-provenance feature row |
+| `overview-quick-reference.md` | Condensed, up-to-date cheat sheet for agent prompting — the current human-readable reference (use this, not the retired template) |
+| `_old/overview-page.template.md` | Retired hand-written template this schema formalized. Historical reference only — not maintained in sync with schema changes, same convention as `templates/release-notes/_old/` |
+| `_old/overview-page-guideline.md` | Retired guideline for the above. Historical reference only |
+| `examples/minimal-overview.yaml` | Minimal valid `overview.yaml`, flat featureCoverage only, including a `release_signal`-provenance feature row |
+| `examples/comprehensive-overview.yaml` | Full example — categorized featureCoverage (with and without a Status column), `partial` status, `architecture.components`, `deployment.prerequisites`, flexible `configurations.content`, `sdkIntegration` |
 | `examples/overview-evidence.sample.yaml` | Sample normalized evidence file for a `release_signal` run |
 
 Standards-level files this content type depends on (outside this directory):

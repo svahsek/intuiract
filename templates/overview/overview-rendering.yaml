@@ -1,7 +1,7 @@
 # Overview: YAML → Markdown Rendering Rules
 # ================================================
 # Converts overview.yaml (per overview-schema.yaml) into the same section structure as the
-# pre-existing templates/overview/overview-page.template.md, so rendered output matches the
+# retired templates/overview/_old/overview-page.template.md, so rendered output matches the
 # established MOSIP/Inji overview page shape.
 
 renderingRules:
@@ -9,7 +9,7 @@ renderingRules:
     Source: overview-schema.yaml (agent authority)
     Output: overview.md (published version)
     Process: Deterministic rendering with embedded formatting rules
-    Reference: existing templates/overview/overview-page.template.md section order
+    Reference: templates/overview/_old/overview-page.template.md section order (retired but structurally still the basis)
 
 sections:
 
@@ -47,33 +47,68 @@ sections:
 # SECTION 2: FEATURE COVERAGE
 # ================================
   featureCoverage:
-    _meta: {prefix: FEA, description: Standards/spec feature-coverage table}
+    _meta: {prefix: FEA, description: Standards/spec feature-coverage — one or more tables, flat or categorized}
     template: |
-      {if featureCoverage.features}
+      {if featureCoverage.categories or featureCoverage.features}
       ## Standards, Specifications, and Compliance
 
       In particular, {metadata.productName} focuses on {metadata.primaryStandard} and provides the following features:
 
+      {if featureCoverage.categories}
+      {renderCategories(featureCoverage.categories)}
+      {/if}
+
+      {if featureCoverage.features}
+      ### Feature Coverage
+
       | Feature | Coverage |
       |:--------|:---------|
       {renderFeatureRows(featureCoverage.features)}
+      {/if}
 
       {if featureCoverage.documentationLink}
       To know more about features available in {metadata.productName} please refer to [this documentation]({featureCoverage.documentationLink}).
       {/if}
       {/if}
+    categoryTemplate: |
+      ### {category.name}
+
+      {if category.hasStatusColumn == false}
+      | {inferColumnHeader(category.name)} | Description |
+      |:--------|:------------|
+      {renderCategoryRowsNoStatus(category.items)}
+      {else}
+      | {inferColumnHeader(category.name)} | Status | Description |
+      |:--------|:-------|:------------|
+      {renderCategoryRowsWithStatus(category.items)}
+      {/if}
     rowTemplate: |
       | {feature.name} | {formatStatusBadge(feature.status)} |
+    categoryRowNoStatusTemplate: |
+      | **{item.name}** | {item.description} |
+    categoryRowWithStatusTemplate: |
+      | **{item.name}** | {formatStatusBadge(item.status)} | {item.description} |
     rules:
       - rule_id: "FEA-001"
         name: "Status Badge Mapping"
+        description: "Emoji + text label, consistent everywhere status is rendered (featureCoverage rows, category rows, sdkIntegration components)"
         mapping:
-          supported: "✅"
+          supported: "✅ Available"
           unsupported: "❌"
-          planned: "🕓 Planned"
+          planned: "🕓 Coming Soon"
+          partial: "🟡 Partial"
       - rule_id: "FEA-002"
         name: "Section Omitted When Empty"
-        description: "If featureCoverage.features is empty/absent, omit the whole '## Standards, Specifications, and Compliance' heading rather than rendering an empty table"
+        description: "If both featureCoverage.categories and featureCoverage.features are empty/absent, omit the whole '## Standards, Specifications, and Compliance' heading rather than rendering an empty table"
+      - rule_id: "FEA-003"
+        name: "Categories Render Before The Flat List"
+        description: "featureCoverage.categories, if present, render first as their own H3s; featureCoverage.features (if also present) renders last as a trailing '### Feature Coverage' table — this matches the reference structure of category tables (Data Models, Protocols, Formats, Encoding Standards, Crypto Algorithms) followed by a broader Feature Coverage table"
+      - rule_id: "FEA-004"
+        name: "Column Header Inference"
+        description: "The first column header is inferred from the category name, singularized where natural (e.g. 'Credential Data Models' → 'Standard', 'Verification Protocols' → 'Protocol', 'Cryptographic Algorithms' → 'Algorithm', 'Credential Formats' → 'Format'). Fall back to 'Item' if no natural singular form is obvious — never leave this blank."
+      - rule_id: "FEA-005"
+        name: "hasStatusColumn Default"
+        description: "Defaults to true if unset on a category. Set explicitly to false for purely descriptive reference tables with no per-item shipped/unshipped status."
 
 # ================================
 # SECTION 3: TRY IT OUT
@@ -91,7 +126,7 @@ sections:
 # SECTION 4: ARCHITECTURE
 # ================================
   architecture:
-    _meta: {prefix: ARC, description: Architecture description and link}
+    _meta: {prefix: ARC, description: Architecture description, key components, and link}
     template: |
       ## Architecture
 
@@ -100,9 +135,21 @@ sections:
       It interacts with {join(architecture.externalSystems, ", ")} via {architecture.interactionMethod}.
       {/if}
 
+      {if architecture.components}
+      **Key Components:**
+
+      {renderComponents(architecture.components)}
+      {/if}
+
       {if architecture.architectureDocumentationLink}
       For a detailed view of {metadata.productName}'s architecture and components, check this [link]({architecture.architectureDocumentationLink}).
       {/if}
+    componentTemplate: |
+      * **{component.name}**: {component.description}
+    rules:
+      - rule_id: "ARC-001"
+        name: "Key Components Bullet List"
+        description: "Render architecture.components as a bold-name bullet list directly after the description/externalSystems prose, before the documentation link"
 
 # ================================
 # SECTION 5: PLUGIN SUPPORT
@@ -149,7 +196,7 @@ sections:
 # SECTION 6: DEPLOYMENT
 # ================================
   deployment:
-    _meta: {prefix: DEP, description: Deployment modes}
+    _meta: {prefix: DEP, description: Deployment modes and prerequisites}
     template: |
       ## Deployment
 
@@ -160,6 +207,12 @@ sections:
       {if pluginSupport and pluginSupport.enabled and deployment.customPluginDeploymentLink}
       If you are creating your own custom plugin, you can refer to [this link]({deployment.customPluginDeploymentLink}) to know steps to deploy custom plugins.
       {/if}
+
+      {if deployment.prerequisites}
+      **Prerequisites:**
+
+      {renderPrerequisites(deployment.prerequisites)}
+      {/if}
     modeTemplate: |
       {index}. **{mode.name}**
 
@@ -167,10 +220,49 @@ sections:
           {if mode.link}
           * Refer to [this guide]({mode.link}) to try this mode of setup.
           {/if}
+    prerequisiteTemplate: |
+      * {prerequisite.name}{if prerequisite.note} ({prerequisite.note}){/if}
     rules:
       - rule_id: "DEP-001"
         name: "Numbered Deployment Modes"
         description: "Render deployment.modes as a numbered list, preserving array order"
+      - rule_id: "DEP-002"
+        name: "Prerequisites Bullet List"
+        description: "Render deployment.prerequisites as a bullet list at the end of the Deployment section, after any custom-plugin deployment note"
+
+# ================================
+# SECTION 6b: SDK INTEGRATION (optional — conditional)
+# ================================
+  sdkIntegration:
+    _meta: {prefix: SDK, description: Optional embeddable-SDK section — only rendered when present}
+    template: |
+      {if sdkIntegration and sdkIntegration.enabled}
+      ## SDK Integration
+
+      {metadata.productName} SDK provides plug-and-play components that enable developers to integrate {metadata.coreFunctionality} workflows into their own applications.
+
+      ### Available SDK Components
+
+      | Component | Description |
+      |-----------|-------------|
+      {renderSdkComponents(sdkIntegration.components)}
+
+      {if sdkIntegration.documentationLink}
+      **SDK Documentation**: [{metadata.productName} SDK Integration Guide]({sdkIntegration.documentationLink})
+      {/if}
+      {if sdkIntegration.note}
+      {sdkIntegration.note}
+      {/if}
+      {/if}
+    componentRowTemplate: |
+      | **{component.name}**{if component.status} ({formatStatusBadge(component.status)}){/if} | {component.description} |
+    rules:
+      - rule_id: "SDK-001"
+        name: "Section Omitted When Absent"
+        description: "Entirely conditional — omit '## SDK Integration' when sdkIntegration is absent or sdkIntegration.enabled is false. Do not render an empty section for products without an SDK offering."
+      - rule_id: "SDK-002"
+        name: "Status Inline, Not a Separate Column"
+        description: "Unlike featureCoverage tables, SDK component status (when present) is shown inline next to the name rather than as its own table column, since most SDK component listings don't need one"
 
 # ================================
 # SECTION 7: CONFIGURATIONS
@@ -190,9 +282,13 @@ sections:
 
       {config.description}:
 
+      {if config.content}
+      {config.content}
+      {elseif config.properties}
       ```properties
       {config.properties}
       ```
+      {/if}
 
       {if config.note}
       **Note**: {config.note}
@@ -201,6 +297,10 @@ sections:
       {if config.documentationLink}
       To know more about this configuration please refer to [this link]({config.documentationLink}).
       {/if}
+    rules:
+      - rule_id: "CFG-001"
+        name: "Content vs Properties"
+        description: "If config.content is set, render it verbatim as Markdown (tables, bullet lists) — this is the common case for non-properties-file configuration. Only fall back to the ```properties fence when config.properties is set instead. A config item should set one or the other, not both."
 
 # ================================
 # SECTION 8: DATABASES
@@ -312,7 +412,7 @@ globalRules:
 
     - rule_id: "RENDER-004"
       name: "Status Badge Consistency"
-      description: "Use the same ✅/❌/🕓 mapping wherever feature status is rendered (see FEA-001)"
+      description: "Use the same ✅/❌/🕓/🟡 mapping wherever feature status is rendered (see FEA-001)"
 
   style:
     - rule_id: "RENDER-005"
@@ -327,7 +427,7 @@ agentWorkflow: |
   Step 1: Read overview-schema.yaml, load overview.yaml
   Step 2: Validate against overview-rule.yaml
   Step 3: For each section in rendering.sections, in the order listed above (HDR, FEA, TRY,
-          ARC, PLG, DEP, CFG, DB, UPG, UPC, DOC, CTR):
+          ARC, PLG, DEP, SDK, CFG, DB, UPG, UPC, DOC, CTR):
     a) Extract data from overview.yaml
     b) Skip the section entirely if its top-level data is absent (see RENDER-003)
     c) Apply formatting rules (globalRules.formatting + globalRules.style)
@@ -342,5 +442,6 @@ agentWorkflow: |
 # EXAMPLE OUTPUT
 # ================================
 exampleOutput:
-  file: "templates/overview/examples/minimal-overview.yaml"
-  description: "See this file for a minimal example of how YAML renders to Markdown"
+  minimal: "templates/overview/examples/minimal-overview.yaml"
+  comprehensive: "templates/overview/examples/comprehensive-overview.yaml"
+  description: "See these files for examples of how YAML renders to Markdown — the comprehensive example exercises categorized featureCoverage, architecture.components, deployment.prerequisites, and sdkIntegration"

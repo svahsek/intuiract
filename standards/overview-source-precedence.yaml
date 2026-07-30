@@ -83,6 +83,29 @@ field_precedence:
       - "manual_input"
     excluded_sources: ["release_signal"]
 
+  architecture.components:
+    description: "'Key Components' breakdown (named internal building blocks + one-liners)"
+    primary: "existing_overview_page"
+    excluded_sources: ["features_page", "release_signal"]
+    note: "A component list changing (a service renamed, split, or removed) is a structural/architectural event, not a shipped-feature event — it belongs in a deliberate bootstrap refresh, not an automatic per-release patch."
+
+  deployment.prerequisites:
+    description: "Tool/runtime versions needed before deployment"
+    primary: "existing_overview_page"
+    excluded_sources: ["features_page", "release_signal"]
+    note: "Even when a release bumps a minimum runtime version, that's an operator decision to reflect deliberately, not something release-notes evidence should silently rewrite."
+
+  sdkIntegration:
+    description: "Embeddable SDK components section, when the product has one"
+    primary: "existing_overview_page"
+    excluded_sources: ["release_signal"]
+    note: >-
+      Bootstrap-only for now. A shipped SDK component is arguably as much a 'feature' as a
+      featureCoverage row, and a future revision may extend release_signal to patch
+      sdkIntegration.components the same way it patches featureCoverage — but that requires the
+      release-notes evidence to distinguish "SDK component" from "product feature" reliably,
+      which it does not do today. Treat this as a deliberate scope limit, not an oversight.
+
   deployment:
     description: "Deployment modes and links"
     primary: "existing_overview_page"
@@ -104,33 +127,55 @@ field_precedence:
     excluded_sources: ["release_signal"]
 
   # === Feature Coverage Fields ===
-  # These are the fields the incremental pipeline exists to maintain.
+  # These are the fields the incremental pipeline exists to maintain. Everything below applies
+  # equally to featureCoverage.features[*] (the flat/trailing list) and
+  # featureCoverage.categories[*].items[*] (any named grouping) — the pipeline does not treat
+  # these two locations differently for precedence purposes, only for where a net-new row lands
+  # (see evidence-to-overview-mapping.yaml: net-new rows always go to features[*], never into an
+  # existing category, since choosing a category is a bootstrap-time judgment call).
+
+  featureCoverage.categories:
+    description: "The set of named groupings itself (which categories exist, their names, hasStatusColumn) — distinct from the status of items within them, below"
+    primary: "existing_overview_page"
+    fallback:
+      - "features_page"
+    excluded_sources: ["release_signal"]
+    note: "release_signal can flip an item's status inside an existing category; it never adds, removes, renames, or re-scopes a category itself."
 
   featureCoverage.features[*].name:
   featureCoverage.features[*].description:
-    description: "Feature name/description in the coverage table"
+  featureCoverage.categories[*].items[*].name:
+  featureCoverage.categories[*].items[*].description:
+    description: "Feature name/description in a coverage table, flat or categorized"
     primary: "features_page"
     fallback:
       - "existing_overview_page"
     resolution_rule: |
       1. features_page is the most current, most detailed source for what a feature is called
          and how it's described — trust it over a possibly-stale overview page.
-      2. If a feature exists in the overview page's table but not in features_page, retain it
-         (do not silently drop rows the operator hasn't confirmed are gone) and flag it in
-         unresolved[] for human confirmation rather than deleting.
+      2. If a feature exists in an existing table (flat or within a category) but not in
+         features_page, retain it (do not silently drop rows the operator hasn't confirmed are
+         gone) and flag it in unresolved[] for human confirmation rather than deleting.
     excluded_sources: ["release_signal"]
-    note: "release_signal changes a row's status (see below), never its name/description."
+    note: "release_signal changes a row's status (see below), never its name/description, and never which category it lives in."
 
   featureCoverage.features[*].status:
-    description: "supported / unsupported / planned"
+  featureCoverage.categories[*].items[*].status:
+    description: "supported / unsupported / planned / partial"
     primary: "release_signal"
     fallback:
       - "features_page"
       - "existing_overview_page"
     resolution_rule: |
-      1. On a release_signal run: if a feature named in featureCoverage or upcomingFeatures
-         matches a shipped item in release-notes.yaml / release-evidence.yaml (shipped == true,
-         confidence >= 60 per release-evidence-confidence-rule.yaml), flip status to "supported".
+      0. "partial" can only ever be asserted by features_page or existing_overview_page
+         (bootstrap sources) — release_signal only ever moves a row TO "supported", never TO
+         "partial". A release shipping one of several sub-capabilities behind a "partial" row
+         is a bootstrap/full-refresh judgment call about whether the row is now fully supported
+         or still partial, not something the incremental patch decides on its own.
+      1. On a release_signal run: if a feature named in featureCoverage (any category, or the
+         flat list) or upcomingFeatures matches a shipped item in release-notes.yaml /
+         release-evidence.yaml (shipped == true, confidence >= 60 per
+         release-evidence-confidence-rule.yaml), flip status to "supported".
       2. On a bootstrap_ingestion run: status comes from features_page (does the features page
          document this as currently supported?), falling back to whatever the existing overview
          page's ✅/❌ table already says if features_page is silent on it.
@@ -145,6 +190,9 @@ field_precedence:
   featureCoverage.features[*].sourceRelease:
   featureCoverage.features[*].lastConfirmedVersion:
   featureCoverage.features[*].lastConfirmedDate:
+  featureCoverage.categories[*].items[*].sourceRelease:
+  featureCoverage.categories[*].items[*].lastConfirmedVersion:
+  featureCoverage.categories[*].items[*].lastConfirmedDate:
     description: "Provenance of the current status"
     primary: "release_signal"
     fallback:

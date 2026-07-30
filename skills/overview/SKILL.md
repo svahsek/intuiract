@@ -36,8 +36,9 @@ argument-hint: 'Provide the product name and, for ongoing runs, the release-note
 **Reference & Examples**:
 - Sample evidence file: [../../templates/overview/examples/overview-evidence.sample.yaml](../../templates/overview/examples/overview-evidence.sample.yaml)
 - Minimal overview example: [../../templates/overview/examples/minimal-overview.yaml](../../templates/overview/examples/minimal-overview.yaml)
+- Comprehensive overview example (categorized featureCoverage, partial status, components, prerequisites, sdkIntegration): [../../templates/overview/examples/comprehensive-overview.yaml](../../templates/overview/examples/comprehensive-overview.yaml)
 - Quick reference: [../../templates/overview/overview-quick-reference.md](../../templates/overview/overview-quick-reference.md)
-- Legacy manual template (superseded, kept for reference): [../../templates/overview/overview-page.template.md](../../templates/overview/overview-page.template.md)
+- Retired manual template (historical reference only, not maintained): [../../templates/overview/_old/overview-page.template.md](../../templates/overview/_old/overview-page.template.md)
 
 ## Procedure
 
@@ -49,9 +50,9 @@ this is enforced by `evidence-to-overview-mapping.yaml`, not left to judgment ca
 
 **Branch A — Bootstrap Ingestion** (first run for this product, or an explicit full refresh)
 
-1. Locate the existing overview page for this product (if one exists — e.g. this repo's
-   `templates/overview/overview-page.template.md`-derived draft, or a consumer repo's
-   hand-written page).
+1. Locate the existing overview page for this product (if one exists — e.g. a page originally
+   drafted from the retired `templates/overview/_old/overview-page.template.md`, or a consumer
+   repo's own hand-written page).
 2. Locate the features page/doc for this product.
 3. (Deferred) Code-repo ingestion is not yet implemented — skip it; do not block on it.
 4. Extract per-feature status claims and all narrative/architecture/deployment/configuration
@@ -137,7 +138,7 @@ Validate before rendering. If validation fails, do NOT render.
 Convert validated YAML to Markdown.
 
 1. Apply `overview-rendering.yaml`'s section templates in order (HDR, FEA, TRY, ARC, PLG, DEP,
-   CFG, DB, UPG, UPC, DOC, CTR), omitting any section whose top-level data is absent.
+   SDK, CFG, DB, UPG, UPC, DOC, CTR), omitting any section whose top-level data is absent.
 2. **Output**: `overview.md` (publication-ready)
 
 ## Consumer Repo Pattern

@@ -33,21 +33,29 @@ rules:
       CON-002:
         name: Feature Status Enum
         severity: error
-        applies_to: featureCoverage.features[*].status
-        enum: [supported, unsupported, planned]
+        applies_to: [featureCoverage.features[*].status, "featureCoverage.categories[*].items[*].status (unless the category sets hasStatusColumn: false)"]
+        enum: [supported, unsupported, planned, partial]
+
+      CON-002b:
+        name: No Partial Status From Release Signal
+        severity: error
+        condition: "item.provenance == release_signal"
+        rule: status must not be "partial" when provenance == release_signal
+        note: "release_signal only ever confirms a full ship (status → supported). 'partial' is a bootstrap/manual judgment call about a row that ships in stages — see overview-source-precedence.yaml's resolution_rule step 0."
 
       CON-003:
         name: Feature Transition Provenance
         severity: error
-        condition: featureCoverage.features[*].provenance == "release_signal"
+        applies_to: [featureCoverage.features[*], featureCoverage.categories[*].items[*]]
+        condition: provenance == "release_signal"
         requires: [sourceRelease, lastConfirmedDate]
-        note: "A status flip caused by the release-notes signal must always be traceable to the release that shipped it. This is the rule that keeps the incremental pipeline auditable — see overview-evidence-fields.yaml."
+        note: "A status flip caused by the release-notes signal must always be traceable to the release that shipped it, regardless of whether the row lives in the flat list or inside a named category. This is the rule that keeps the incremental pipeline auditable — see overview-evidence-fields.yaml."
 
       CON-004:
         name: No Duplicate Feature Listing
         severity: error
-        rule: a feature name must not appear in both upcomingFeatures.items and featureCoverage.features with status == supported simultaneously
-        note: "Catches a release_signal patch that added a featureCoverage row without also removing the matching upcomingFeatures entry (see evidence-to-overview-mapping.yaml's upcoming_features_removal rule)."
+        rule: a feature name must not appear in both upcomingFeatures.items and featureCoverage (either the flat features list or any category's items) with status == supported simultaneously
+        note: "Catches a release_signal patch that added a featureCoverage row without also removing the matching upcomingFeatures entry (see evidence-to-overview-mapping.yaml's upcoming_features_removal rule). Check across every category, not just the flat list."
 
     documentation:
       CON-005:
@@ -80,7 +88,7 @@ rules:
         applies_to: all content fields
         prohibited: [TBD, TODO, FIXME, WIP, "Coming Soon", "[UPDATE THIS]"]
         pattern: "\\{[A-Z_]+\\}"
-        note: "Also catches unresolved curly-brace template tokens carried over from overview-page.template.md (e.g. {PRODUCT_NAME})."
+        note: "Also catches unresolved curly-brace template tokens carried over from the retired _old/overview-page.template.md (e.g. {PRODUCT_NAME})."
 
     provenance:
       CON-010:

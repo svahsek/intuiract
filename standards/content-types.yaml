@@ -57,6 +57,7 @@ content_types:
       overview: "templates/overview/readme.md"
       examples:
         - "templates/overview/examples/minimal-overview.yaml"
+        - "templates/overview/examples/comprehensive-overview.yaml"
         - "templates/overview/examples/overview-evidence.sample.yaml"
     intended_consumers:
       - "Workspace-local agent skills"

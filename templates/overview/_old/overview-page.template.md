@@ -25,11 +25,29 @@ In particular, {PRODUCT_NAME} focuses on {SPECIFIC_ROLE} and provides the follow
 |:------------------------------------------------------------------------|:---------|
 | {FEATURE_1}                                                             | ✅        |
 | {FEATURE_2}                                                             | ✅        |
-| {FEATURE_3}                                                             | ✅        |
+| {FEATURE_3}                                                             | 🟡 Partial |
 | {FEATURE_4}                                                             | ❌        |
-| {FEATURE_5}                                                             | ❌        |
+| {FEATURE_5}                                                             | 🕓 Coming Soon |
 
-<!-- Add or remove features as needed. Use ✅ for supported and ❌ for unsupported -->
+<!-- Add or remove features as needed. Use ✅ Available, ❌ Unsupported, 🟡 Partial, or 🕓 Coming Soon -->
+
+<!--
+Optional: if the product's standards compliance spans several distinct groupings (data models,
+protocols, credential/data formats, encoding standards, crypto algorithms, etc.), split this into
+several subsections instead of one flat table — one H3 + table per grouping, with the broad
+Feature Coverage table (above) listed last. Not every grouping needs a Coverage column: a purely
+descriptive reference table (e.g. "which crypto algorithms are supported") can drop it.
+
+### {STANDARDS_CATEGORY_1_NAME}
+| {STANDARDS_CATEGORY_1_COLUMN_HEADER} | Description |
+|:--------------------------------------|:------------|
+| {ITEM_1}                              | {ITEM_1_DESCRIPTION} |
+
+### {STANDARDS_CATEGORY_2_NAME}
+| {STANDARDS_CATEGORY_2_COLUMN_HEADER} | Coverage | Description |
+|:---------------------------------------|:---------|:------------|
+| {ITEM_1}                                | ✅        | {ITEM_1_DESCRIPTION} |
+-->
 
 To know more about features available in {PRODUCT_NAME} please refer to [this documentation]({FEATURES_DOCUMENTATION_LINK}).
 
@@ -40,6 +58,12 @@ To know more about features available in {PRODUCT_NAME} please refer to [this do
 ## Architecture
 
 {BRIEF_ARCHITECTURE_DESCRIPTION}. It interacts with {EXTERNAL_SYSTEMS} via {INTERACTION_METHOD}.
+
+<!-- Optional: break down named internal building blocks with a one-line description each -->
+**Key Components:**
+
+* **{COMPONENT_1_NAME}**: {COMPONENT_1_DESCRIPTION}
+* **{COMPONENT_2_NAME}**: {COMPONENT_2_DESCRIPTION}
 
 For a detailed view of {PRODUCT_NAME}'s architecture and components, check this [link]({ARCHITECTURE_DOCUMENTATION_LINK}).
 
@@ -97,6 +121,31 @@ For advanced users, you can develop your own plugins by implementing the `{PLUGI
 <!-- Add custom plugin deployment instructions if applicable -->
 If you are creating your own custom plugin, you can refer to [this link]({CUSTOM_PLUGIN_K8S_LINK}) to know steps to deploy custom plugins using Kubernetes.
 
+<!-- Optional: tools/runtimes needed before following the deployment modes above -->
+**Prerequisites:**
+
+* {PREREQUISITE_1_NAME} ({PREREQUISITE_1_NOTE})
+* {PREREQUISITE_2_NAME}
+
+## SDK Integration [Optional]
+<!-- This section is optional. Include only if the product ships reusable SDK/library
+     components for OTHER applications to embed — distinct from Plugin Support above, which is
+     about the product's OWN extensibility via plugins it loads. -->
+
+{PRODUCT_NAME} SDK provides plug-and-play components that enable developers to integrate {CORE_FUNCTIONALITY} workflows into their own applications.
+
+### Available SDK Components
+
+| Component            | Description |
+|-----------------------|-------------|
+| {SDK_COMPONENT_1_NAME} | {SDK_COMPONENT_1_DESCRIPTION} |
+| {SDK_COMPONENT_2_NAME} | {SDK_COMPONENT_2_DESCRIPTION} |
+
+**SDK Documentation**: [{PRODUCT_NAME} SDK Integration Guide]({SDK_DOCUMENTATION_LINK})
+
+<!-- Optional distribution/packaging note, e.g. "Each component is distributed as an independent NPM module." -->
+{SDK_DISTRIBUTION_NOTE}
+
 ## Configurations
 
 In this section, you will find the key configurations required to enable specific features or to run the application.
@@ -117,6 +166,25 @@ To know more about this configuration please refer to [this link]({CONFIGURATION
 <!-- Add more configuration sections as needed -->
 
 {CONFIGURATION_SECTION_2_DESCRIPTION}. Refer [here]({CONFIGURATION_SECTION_2_LINK}) to know about the properties.
+
+<!--
+Not every configuration is a literal key=value properties file. When it isn't (e.g. a
+verification-method resolution list, a version-compatibility table), use freeform Markdown
+instead of a ```properties fence:
+
+### {CONFIGURATION_SECTION_3_NAME}
+
+{CONFIGURATION_SECTION_3_DESCRIPTION}:
+
+* {CONFIG_ITEM_1}
+* {CONFIG_ITEM_2}
+
+| {TABLE_COLUMN_1} | {TABLE_COLUMN_2} |
+|:------------------|:------------------|
+| {ROW_1_VALUE_1}   | {ROW_1_VALUE_2}   |
+
+**Note**: {CONFIGURATION_SECTION_3_NOTE}
+-->
 
 ## Databases
 

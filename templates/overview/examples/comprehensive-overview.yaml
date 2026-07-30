@@ -1,0 +1,218 @@
+# COMPREHENSIVE OVERVIEW EXAMPLE
+# =============================
+# Exercises every schema section the minimal example doesn't: categorized featureCoverage
+# (with and without a Status column), "partial" status, architecture.components,
+# deployment.prerequisites, flexible configurations.content, sdkIntegration, and a long
+# upcomingFeatures list. Adapted from a real, hand-authored Inji Verify overview page —
+# the source that drove the schema's categorized-featureCoverage/components/prerequisites/
+# sdkIntegration additions. Full reference: templates/overview/overview-schema.yaml
+
+metadata:
+  productName: "Inji Verify"
+  targetUsers:
+    - "verifiers"
+    - "relying parties"
+  coreFunctionality: "validate verifiable credentials encoded in QR codes and via OpenID4VP presentations"
+  primaryStandard: "OpenID for Verifiable Presentations (OpenID4VP)"
+  standardsReferenced:
+    - name: "W3C VC - Verifiable Credentials Overview"
+      url: "https://www.w3.org/TR/vc-overview/"
+    - name: "OpenID4VP - OpenID for Verifiable Presentations"
+      url: "https://openid.net/specs/openid-4-verifiable-presentations-1_0.html"
+  lastUpdated: "2026-07-30"
+  lastUpdateSource: "bootstrap_ingestion"
+
+overview:
+  narrative: |
+    Inji Verify enables verifiers and relying parties to validate Verifiable Credentials encoded
+    in QR codes through an intuitive web portal interface. It follows the standards of W3C
+    Verifiable Credentials Data Model 1.1 and 2.0, and OpenID4VP (OpenID for Verifiable
+    Presentations).
+
+    Inji Verify decodes QR code data using the PixelPass library and validates the credential's
+    authenticity using cryptographic verification methods. These credentials represent digitally
+    secured versions of both traditional paper and digital credentials, ensuring secure and
+    reliable verification across various industries and use cases.
+
+featureCoverage:
+  documentationLink: "https://docs.inji.io/inji-verify/overview/features"
+  categories:
+    - name: "Credential Data Models"
+      hasStatusColumn: false
+      items:
+        - name: "W3C Verifiable Credentials 1.1"
+          description: "Current international standard for digital credentials"
+        - name: "W3C Verifiable Credentials 2.0"
+          description: "Latest specification with enhanced features"
+
+    - name: "Verification Protocols"
+      hasStatusColumn: false
+      items:
+        - name: "OpenID4VP"
+          description: "Cross-device and same-device Verifiable Presentation flows"
+
+    - name: "Credential Formats"
+      hasStatusColumn: true
+      items:
+        - name: "JSON-LD"
+          description: "Linked Data credentials with semantic context"
+          status: "supported"
+          provenance: "bootstrap_ingestion"
+        - name: "SD-JWT"
+          description: "Selective Disclosure JWT with privacy-preserving claim sharing"
+          status: "supported"
+          provenance: "bootstrap_ingestion"
+        - name: "mDoc/mDL (ISO 18013-5/7)"
+          description: "Mobile document and driver's license format"
+          status: "planned"
+          provenance: "bootstrap_ingestion"
+
+    - name: "QR Code Encoding Standards"
+      hasStatusColumn: true
+      items:
+        - name: "Claim 169"
+          description: "MOSIP specification for compact CBOR-encoded QR credentials"
+          status: "supported"
+          provenance: "bootstrap_ingestion"
+        - name: "CBOR Encoding"
+          description: "Concise Binary Object Representation for efficient credential delivery"
+          status: "supported"
+          provenance: "bootstrap_ingestion"
+
+    - name: "Cryptographic Algorithms"
+      hasStatusColumn: false
+      items:
+        - name: "Ed25519 (2018 & 2020)"
+          description: "High-performance elliptic curve verification"
+        - name: "RSA (2018)"
+          description: "RSA signature verification for broad compatibility"
+
+  features:
+    - name: "QR Code Verification"
+      description: "Scan or upload QR codes (PDF, JPEG, JPG, PNG) including Claim 169 format"
+      status: "supported"
+      provenance: "bootstrap_ingestion"
+    - name: "OpenID4VP Verification"
+      description: "Cross-device and same-device Verifiable Presentation flows"
+      status: "supported"
+      provenance: "bootstrap_ingestion"
+    - name: "VC Format Verification"
+      description: "JSON-LD and SD-JWT supported; mDoc/mDL coming soon"
+      status: "partial"
+      provenance: "bootstrap_ingestion"
+    - name: "Credential Display"
+      description: "SVG rendering with multilingual support (11 languages)"
+      status: "supported"
+      provenance: "bootstrap_ingestion"
+    - name: "Revocation Checking"
+      description: "Real-time status verification against issuer registries"
+      status: "supported"
+      provenance: "bootstrap_ingestion"
+    - name: "Offline Verification"
+      description: "BLE-based verifiable presentation for offline scenarios"
+      status: "planned"
+      provenance: "bootstrap_ingestion"
+
+tryItOut:
+  moduleName: "Inji Verify"
+  sandboxLink: "https://collab.mosip.net/"
+
+architecture:
+  description: >-
+    Inji Verify serves as a verification platform for verifiable credentials, offering an
+    intuitive web portal designed to streamline the process of verifying VCs for users. The
+    platform consists of a React-based frontend and a Java Spring Boot backend service.
+  components:
+    - name: "Inji Verify UI"
+      description: "React-based web portal for scanning/uploading QR codes and displaying verification results"
+    - name: "Inji Verify Backend"
+      description: "Java Spring Boot service for server-side VC verification and OpenID4VP handling"
+    - name: "PixelPass Library"
+      description: "Decodes QR code data including CBOR-encoded credentials"
+    - name: "VC Verifier Library"
+      description: "Performs cryptographic verification of credentials"
+    - name: "PostgreSQL Database"
+      description: "Stores OpenID4VP presentation definitions and transaction data"
+  architectureDocumentationLink: "https://docs.inji.io/inji-verify/technical-overview/components"
+
+deployment:
+  modes:
+    - name: "Local Development Setup"
+      description: "Developer Setup with Docker Compose (full-featured) or Demo Setup (optimized for showcasing)."
+      link: "https://github.com/mosip/inji-verify/blob/release-0.12.x/README.md#developer-setup"
+      audience: "Developers, community members, country representatives"
+    - name: "Deployment with Kubernetes Cluster"
+      description: "Designed for production environments at scale."
+      link: "https://docs.inji.io/readme/setup/deploy#deploying-inji-verify"
+      audience: "Production operators"
+  prerequisites:
+    - name: "Node 18"
+      note: "install using nvm"
+    - name: "Java 21"
+      note: "install using sdkman"
+    - name: "Maven"
+    - name: "Docker 20.4 and above"
+
+sdkIntegration:
+  enabled: true
+  components:
+    - name: "OpenID4VP VP Verification"
+      description: "React component for cross-device and same-device VP verification flows"
+      status: "supported"
+    - name: "Scan/Upload"
+      description: "Component for embedding VC verification capabilities"
+      status: "planned"
+  documentationLink: "https://docs.inji.io/inji-verify/technical-overview/integration-guides/openid4vp-vp-verification-integration-guide"
+  note: "Each component is distributed as an independent NPM module."
+
+configurations:
+  - name: "Verification Method Resolution"
+    description: "Supported verification method formats"
+    content: |
+      * `did:web` with proofValue or JWS
+      * `https://` URL with proofValue or JWS
+
+  - name: "QR Code Compatibility"
+    description: "Supported QR code versions per feature"
+    content: |
+      | Feature | Supported Versions |
+      |---------|--------------------|
+      | **Scan Feature** | v22 and below (consistent), v23-v27 (variable) |
+      | **Upload Feature** | v32 and below |
+    note: "Camera requirements: 12+ megapixels, good lighting, no filters"
+
+upcomingFeatures:
+  items:
+    - name: "OpenID4VP Same-Device Flow with Web Wallets"
+    - name: "Server-Side ECC-R1 Verification"
+    - name: "Ability to verify mDoc and mDL"
+    - name: "Offline Verification SDK"
+      note: "BLE-based Verifiable Presentation"
+    - name: "BBS+ Support"
+    - name: "Native Android/iOS Apps"
+    - name: "Trust Registry Integration"
+      note: "KERI, DEDI protocols"
+  note: "Timelines subject to change."
+
+documentation:
+  apiDocumentation:
+    baseUrl: "https://mosip.stoplight.io/docs/inji-verify"
+    link: "https://mosip.stoplight.io/docs/inji-verify/branches/main/"
+  productDocumentation:
+    - title: "Overview | Inji Verify"
+      url: "https://docs.inji.io/inji-verify/overview"
+    - title: "Features | Inji Verify"
+      url: "https://docs.inji.io/inji-verify/overview/features"
+    - title: "Inji | Inji Stack"
+      url: "https://docs.inji.io/"
+
+contribution:
+  codeContributionLink: "https://docs.inji.io/readme/contribution/code-contribution"
+  communityLink: "https://community.mosip.io/"
+
+# ===== VALIDATION CHECKLIST =====
+# [ ] Every category's hasStatusColumn matches whether its items carry a status field
+# [ ] No item has status "partial" with provenance "release_signal" (CON-002b)
+# [ ] Every release_signal-provenance item has sourceRelease + lastConfirmedDate (CON-003)
+# [ ] No feature name duplicated across upcomingFeatures and any featureCoverage location (CON-004)
+# [ ] sdkIntegration is fully optional — omit entirely for products with no embeddable SDK

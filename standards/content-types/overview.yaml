@@ -25,7 +25,8 @@ entrypoints:
   overview_evidence_fields: "standards/overview-evidence-fields.yaml"
   confidence_rule: "rules/overview-evidence-confidence-rule.yaml"
   mapping: "templates/overview/evidence-to-overview-mapping.yaml"
-  legacy_manual_template: "templates/overview/overview-page.template.md"
+  legacy_manual_template: "templates/overview/_old/overview-page.template.md"
+  legacy_guideline: "templates/overview/_old/overview-page-guideline.md"
 
 upstream_dependency:
   content_type: "release-notes"
@@ -38,6 +39,7 @@ upstream_dependency:
 
 examples:
   minimal: "templates/overview/examples/minimal-overview.yaml"
+  comprehensive: "templates/overview/examples/comprehensive-overview.yaml"
   evidence_sample: "templates/overview/examples/overview-evidence.sample.yaml"
 
 consumer_usage:
@@ -59,4 +61,4 @@ consumer_usage:
     - "consumer_skill has no separate input file: per-product and per-run configuration is edited directly in its Step 0a Product Configuration block after copying."
     - "source_precedence, overview_evidence_fields, confidence_rule, and mapping are all required by the reconciliation and patch steps (Steps 4-5 of consumer_skill) — resolve them from this manifest the same way as schema/rendering, do not hardcode their paths."
     - "skill (skills/overview/SKILL.md) documents the full pipeline this manifest and consumer_skill implement — read it for the conceptual model, not for file paths, since every path it names is also an entrypoint above."
-    - "legacy_manual_template is the pre-existing hand-written Markdown template this schema formalizes. It is not part of the automated pipeline — kept only as a reference for anyone drafting overview content by hand instead of through the agent."
+    - "legacy_manual_template and legacy_guideline are the pre-existing hand-written Markdown template/guideline this schema formalized, moved to _old/ once the schema stabilized (same convention as templates/release-notes/_old/). They are historical reference only — not maintained in sync with schema changes, and not part of the automated pipeline. Use quick_reference for an up-to-date human-readable structure instead."

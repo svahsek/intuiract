@@ -51,32 +51,56 @@ bootstrap_mapping:
     overview.narrative: { source: "existing_overview_page", fallback: "drafted_from_features_page_plus_manual_input" }
     architecture.description: { source: "existing_overview_page" }
     architecture.externalSystems: { source: "existing_overview_page", cardinality: "optional" }
+    architecture.components: { source: "existing_overview_page", cardinality: "optional", note: "'Key Components' breakdown, if the existing page has one — bootstrap-only, see overview-source-precedence.yaml" }
     deployment.modes: { source: "existing_overview_page" }
+    deployment.prerequisites: { source: "existing_overview_page", cardinality: "optional", note: "bootstrap-only, see overview-source-precedence.yaml" }
     documentation.productDocumentation: { source: "existing_overview_page" }
     contribution.communityLink: { source: "existing_overview_page" }
     pluginSupport: { source: "existing_overview_page", cardinality: "optional", condition: "only if product has plugin architecture" }
+    sdkIntegration: { source: "existing_overview_page", cardinality: "optional", condition: "only if product ships embeddable SDK components for other applications — see the schema's distinction from pluginSupport", note: "bootstrap-only for now, see overview-source-precedence.yaml" }
     configurations: { source: "existing_overview_page", cardinality: "optional" }
     databases: { source: "existing_overview_page", cardinality: "optional" }
     upgrades: { source: "existing_overview_page", cardinality: "optional" }
 
   feature_coverage_mapping:
     filtering:
-      source: "features_page items, cross-checked against existing_overview_page table if one exists"
+      source: "features_page items, cross-checked against existing_overview_page table(s) if any exist"
+
+    shape_decision: |
+      If the existing overview page (or features_page) already organizes standards/spec
+      coverage into distinct named groupings (e.g. separate tables for data models, protocols,
+      formats, encoding standards, crypto algorithms, plus a broader feature-coverage table),
+      populate featureCoverage.categories — one category per grouping, preserving its name and
+      whether it carries a per-item status column (hasStatusColumn). Populate featureCoverage.features
+      only for the trailing broad "Feature Coverage" table (or as the sole output if the source
+      has no categorization at all — the common case for simpler products).
+      Never invent categories that don't exist in the source content just to look thorough.
+
     items:
       - source_field: "item.feature_name"
-        target_field: "featureCoverage.features[*].name"
+        target_field: "featureCoverage.categories[*].items[*].name  OR  featureCoverage.features[*].name"
       - source_field: "item.description"
-        target_field: "featureCoverage.features[*].description"
+        target_field: "featureCoverage.categories[*].items[*].description  OR  featureCoverage.features[*].description"
         cardinality: "optional"
       - source_field: "item.status"
-        target_field: "featureCoverage.features[*].status"
+        target_field: "featureCoverage.categories[*].items[*].status  OR  featureCoverage.features[*].status"
+        cardinality: "conditional — omit for a category whose hasStatusColumn == false"
+        transformation: "map_status"
+        mapping:
+          "Available": "supported"
+          "Partial": "partial"
+          "Coming Soon": "planned"
+          "Unsupported": "unsupported"
+          "(absent/blank)": "unsupported"
       - source_field: "item.provenance"
-        target_field: "featureCoverage.features[*].provenance"
+        target_field: "...[*].provenance"
         value: "bootstrap_ingestion"
+
     unmatched_existing_rows_rule: |
-      A row present in the existing overview page's table but absent from features_page is
-      NOT deleted — retained as-is and added to unresolved[] for one human confirmation pass,
-      per overview-source-precedence.yaml's resolution_rule for featureCoverage.features[*].name.
+      A row present in the existing overview page's table(s) but absent from features_page is
+      NOT deleted — retained as-is (in its original category) and added to unresolved[] for one
+      human confirmation pass, per overview-source-precedence.yaml's resolution_rule for
+      featureCoverage.features[*].name.
 
   upcoming_features_mapping:
     upcomingFeatures.items: { source: "existing_overview_page, cross-checked against features_page roadmap section if present" }
@@ -93,8 +117,9 @@ release_signal_mapping:
     standards/content-types/release-notes.yaml). Touches ONLY featureCoverage and
     upcomingFeatures. Every other schema section is read from the existing overview.yaml
     and written back unchanged — this mapping has no entries for metadata.productName,
-    overview.narrative, architecture, deployment, configurations, documentation, or
-    contribution, and that absence is intentional, not an oversight.
+    overview.narrative, architecture (including architecture.components), deployment
+    (including deployment.prerequisites), pluginSupport, sdkIntegration, configurations,
+    documentation, or contribution, and that absence is intentional, not an oversight.
 
   # Filter: which release-notes items are even candidates for an overview patch
   filtering:
@@ -104,30 +129,40 @@ release_signal_mapping:
 
   items:
     - source_field: "item.normalized_for_release_notes.feature_name"
-      target_field: "featureCoverage.features[*].name"
+      target_field: "featureCoverage.categories[*].items[*].name  OR  featureCoverage.features[*].name"
       matching_rule: |
-        Fuzzy-match against upcomingFeatures.items[*].name first (this is the expected common
-        case — a feature that was already on the roadmap just shipped). If no match, fuzzy-match
-        against existing featureCoverage.features[*].name (an unsupported → supported flip). If
-        neither matches, treat as a net-new row.
+        Search order across the ENTIRE existing overview.yaml, not just one list:
+        1. Fuzzy-match against upcomingFeatures.items[*].name (expected common case — a feature
+           that was already on the roadmap just shipped).
+        2. If no match, fuzzy-match against every existing row this product's overview.yaml has —
+           featureCoverage.categories[*].items[*].name across ALL categories, then
+           featureCoverage.features[*].name (an unsupported/partial → supported flip, wherever
+           that row happens to live).
+        3. If neither matches, treat as net-new. Net-new rows are inserted into
+           featureCoverage.features (the flat/trailing list), never into an existing named
+           category — creating or guessing which category a net-new shipped feature belongs in
+           is a bootstrap/full-refresh judgment call, not something a release-signal patch makes.
+        A matched row is patched in place, in whichever category or flat list it was found in —
+        this mapping never moves a row between categories.
 
     - source_field: "item.normalized_for_release_notes.feature_description"
-      target_field: "featureCoverage.features[*].description"
+      target_field: "...[*].description (same row matched above)"
       cardinality: "optional"
       rule: "Only overwrite an existing description if the row is net-new or the existing description is empty. Never overwrite operator-refined prose on an existing row."
 
     - source_field: "computed"
-      target_field: "featureCoverage.features[*].status"
+      target_field: "...[*].status (same row matched above)"
       value: "supported"
+      note: "Applies whether the row's prior status was unsupported, planned, or partial — any of the three transition to supported once release-notes confirms it shipped. A release_signal run never sets partial; only bootstrap_ingestion or manual_edit can assert partial support."
 
     - source_field: "release.version (from the release-notes evidence's own metadata)"
-      target_field: "featureCoverage.features[*].sourceRelease"
+      target_field: "...[*].sourceRelease (same row matched above)"
 
     - source_field: "release.release_date"
-      target_field: "featureCoverage.features[*].lastConfirmedDate"
+      target_field: "...[*].lastConfirmedDate (same row matched above)"
 
     - source_field: "computed"
-      target_field: "featureCoverage.features[*].provenance"
+      target_field: "...[*].provenance (same row matched above)"
       value: "release_signal"
 
   upcoming_features_removal:
@@ -162,10 +197,11 @@ implementation:
   1. "Mapping is a YAML file that agents/tools read — no hardcoded field names in generation logic."
   2. "release_signal mapping is a strict subset of bootstrap_mapping's field surface — any field
      not listed under release_signal_mapping.items must never be touched by a release_signal run."
-  3. "Fuzzy matching (feature name against upcomingFeatures/featureCoverage) should prefer exact
-     match, then case-insensitive match, then substring containment, in that order, before
-     falling back to 'treat as net-new' — never silently merge two different features because
-     their names loosely overlap."
+  3. "Fuzzy matching (feature name against upcomingFeatures, then every featureCoverage category's
+     items, then featureCoverage.features) should prefer exact match, then case-insensitive match,
+     then substring containment, in that order, before falling back to 'treat as net-new' — never
+     silently merge two different features because their names loosely overlap. Search ALL
+     categories, not just the first one, before concluding no match exists."
   4. "Validation happens AFTER mapping, BEFORE writing overview.yaml."
 
   process pseudocode: |

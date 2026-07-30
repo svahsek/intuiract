@@ -1,7 +1,7 @@
 # Overview Schema (YAML)
 # ========================================
 # Strict, agent-friendly schema for product/component overview pages
-# Reference: existing templates/overview/overview-page.template.md (canonical section order)
+# Reference: templates/overview/_old/overview-page.template.md (retired; canonical section order)
 # Format: YAML → Markdown conversion for publishing
 # Agent Mode: Deterministic field validation before markdown generation
 #
@@ -130,20 +130,65 @@ properties:
 # ========================================
   featureCoverage:
     type: "object"
-    description: "Standards/spec feature-coverage table. This is the primary target of incremental patches."
+    description: >-
+      Standards/spec feature-coverage. This is the primary target of incremental patches.
+      Two shapes are supported: a flat `features` list (simple products — one table titled
+      "Feature Coverage") or a `categories` list (products whose standards compliance spans
+      several distinct groupings — e.g. data models, protocols, formats, encoding standards,
+      crypto algorithms — each rendered as its own subsection with its own table). Both can
+      coexist: `features` renders as an implicit trailing "Feature Coverage" category after any
+      named categories. At least one of the two should be non-empty if this section is present.
     properties:
       documentationLink:
         type: "string"
         format: "uri"
         description: "Link to the full features documentation page"
 
-      features:
+      categories:
         type: "array"
+        description: "Named groupings of standards/spec coverage, each rendered as its own H3 + table"
         items:
           type: "object"
           required:
             - name
-            - status
+            - items
+          properties:
+            name:
+              type: "string"
+              description: "Category heading, e.g. 'Credential Data Models', 'Verification Protocols', 'Credential Formats', 'QR Code Encoding Standards', 'Cryptographic Algorithms'"
+
+            hasStatusColumn:
+              type: "boolean"
+              default: true
+              description: "Set false for purely descriptive reference tables (e.g. a list of supported crypto algorithms with no per-item shipped/unshipped status) — omits the Status column and status field requirement for this category's items"
+
+            items:
+              type: "array"
+              minItems: 1
+              description: "Same item shape as featureCoverage.features[*] below (name/description/status/lastConfirmedVersion/lastConfirmedDate/sourceRelease/provenance) — kept inline here rather than cross-referenced, since this file is read directly by agents, not run through a schema validator."
+              items:
+                type: "object"
+                required:
+                  - name
+                properties:
+                  name: { type: "string", minLength: 3, maxLength: 150 }
+                  description: { type: "string", maxLength: 300 }
+                  status:
+                    type: "string"
+                    enum: ["supported", "unsupported", "planned", "partial"]
+                    description: "Required unless this category sets hasStatusColumn: false"
+                  lastConfirmedVersion: { type: "string", example: "0.14.0" }
+                  lastConfirmedDate: { type: "string", format: "date", pattern: "^\\d{4}-\\d{2}-\\d{2}$" }
+                  sourceRelease: { type: "string", description: "Required when provenance == release_signal (see CON-003)" }
+                  provenance: { type: "string", enum: ["bootstrap_ingestion", "release_signal", "manual_edit"] }
+
+      features:
+        type: "array"
+        description: "Flat feature-coverage list, used directly or as the implicit trailing 'Feature Coverage' category when `categories` is also present"
+        items:
+          type: "object"
+          required:
+            - name
           properties:
             name:
               type: "string"
@@ -162,7 +207,8 @@ properties:
                 - "supported"
                 - "unsupported"
                 - "planned"
-              description: "supported → ✅, unsupported → ❌, planned → shown but flagged not-yet-shipped"
+                - "partial"
+              description: "supported → ✅ Available, unsupported → ❌, planned → 🕓 Coming Soon, partial → 🟡 Partial (some but not all sub-capabilities shipped). Required unless the item's category sets hasStatusColumn: false."
 
             lastConfirmedVersion:
               type: "string"
@@ -176,7 +222,7 @@ properties:
 
             sourceRelease:
               type: "string"
-              description: "Release version whose release-notes evidence caused status == supported. Required when provenance == release_signal (see CON-003)."
+              description: "Release version whose release-notes evidence caused this status change. Required when provenance == release_signal (see CON-003)."
 
             provenance:
               type: "string"
@@ -233,6 +279,16 @@ properties:
         validation:
           - rule: "CON-005: Architecture section should link to detailed architecture docs"
             severity: "WARNING"
+
+      components:
+        type: "array"
+        description: "Optional 'Key Components' breakdown — named internal building blocks (UI, backend service, key libraries, datastore) each with a one-line description. Bootstrap-only field; never touched by a release_signal patch."
+        items:
+          type: "object"
+          required: [name, description]
+          properties:
+            name: { type: "string", example: "Inji Verify Backend" }
+            description: { type: "string", maxLength: 200, example: "Java Spring Boot service for server-side VC verification and OpenID4VP handling" }
 
 # ========================================
 # PLUGIN SUPPORT SECTION (Optional)
@@ -308,6 +364,48 @@ properties:
         format: "uri"
         description: "Only relevant if pluginSupport.enabled == true"
 
+      prerequisites:
+        type: "array"
+        description: "Tools/runtimes needed before following the deployment modes above (e.g. Node version, JDK version, Docker). Bootstrap-only field; never touched by a release_signal patch."
+        items:
+          type: "object"
+          required: [name]
+          properties:
+            name: { type: "string", example: "Node 18" }
+            note: { type: "string", example: "install using nvm" }
+
+# ========================================
+# SDK INTEGRATION SECTION (Optional — conditional)
+# ========================================
+# Only include for products that expose reusable SDK/library components for OTHER
+# applications to embed. This is distinct from pluginSupport, which is about the product's
+# OWN extensibility via plugins it loads. Not every product has this; when absent, the
+# rendering layer omits the section entirely (see SDK-* rules in overview-rendering.yaml).
+  sdkIntegration:
+    type: "object"
+    description: "Optional. Only present for products that ship embeddable SDK components (e.g. NPM modules) for relying-party/integrator applications to consume."
+    properties:
+      enabled:
+        type: "boolean"
+      components:
+        type: "array"
+        items:
+          type: "object"
+          required: [name, description]
+          properties:
+            name: { type: "string", example: "OpenID4VP VP Verification" }
+            description: { type: "string" }
+            status:
+              type: "string"
+              enum: ["supported", "unsupported", "planned", "partial"]
+              description: "Optional — some SDK components ship ahead of/behind others"
+      documentationLink:
+        type: "string"
+        format: "uri"
+      note:
+        type: "string"
+        description: "e.g. distribution/packaging note such as 'Each component is distributed as an independent NPM module'"
+
 # ========================================
 # CONFIGURATIONS SECTION (Optional)
 # ========================================
@@ -320,6 +418,9 @@ properties:
       properties:
         name: { type: "string" }
         description: { type: "string" }
+        content:
+          type: "string"
+          description: "Freeform Markdown block (tables, bullet lists) rendered as-is beneath the description — use this instead of `properties` when the configuration isn't a literal key=value properties file (e.g. a version-compatibility table, a resolution-method list)."
         properties:
           type: "string"
           description: "Raw properties block, rendered inside a ```properties fence"
@@ -426,18 +527,26 @@ validation:
       validation: "No unresolved template placeholders (curly-brace tokens) may remain in any field"
       rules_file: "rules/overview/overview-rule.yaml"
 
+    - rule_id: "CON-002b"
+      name: "No Partial Status From Release Signal"
+      check_type: "conditional"
+      condition: "item.provenance == 'release_signal'"
+      requirement: "status must not be 'partial'"
+      validation: "release_signal only ever confirms a full ship; 'partial' is a bootstrap/manual judgment call"
+      rules_file: "rules/overview/overview-rule.yaml"
+
     - rule_id: "CON-003"
       name: "Feature Transition Provenance"
       check_type: "conditional"
-      condition: "featureCoverage.features[*].provenance == 'release_signal'"
+      condition: "provenance == 'release_signal', checked across featureCoverage.features[*] AND featureCoverage.categories[*].items[*]"
       requirement: "sourceRelease and lastConfirmedDate must both be populated"
-      validation: "Every status flip caused by the release-notes signal must be traceable to the release that shipped it"
+      validation: "Every status flip caused by the release-notes signal must be traceable to the release that shipped it, wherever the row lives"
       rules_file: "rules/overview/overview-rule.yaml"
 
     - rule_id: "CON-004"
       name: "No Duplicate Feature Listing"
       check_type: "cross-section"
-      validation: "A feature name must not appear in both upcomingFeatures.items and featureCoverage.features with status == supported at the same time"
+      validation: "A feature name must not appear in both upcomingFeatures.items and featureCoverage (the flat features list OR any category's items) with status == supported at the same time"
       rules_file: "rules/overview/overview-rule.yaml"
 
   agent_instructions:

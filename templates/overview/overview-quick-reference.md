@@ -20,14 +20,18 @@ overview:                # REQUIRED
 
 featureCoverage:          # optional, but this is what the incremental pipeline maintains
   documentationLink:
-  features:
+  categories:               # optional — named groupings, each its own H3 + table
+    - name:                    # REQUIRED, e.g. "Credential Data Models", "Verification Protocols"
+      hasStatusColumn:            # default true; set false for purely descriptive reference tables
+      items: [{name, description, status, lastConfirmedVersion, lastConfirmedDate, sourceRelease, provenance}]
+  features:                 # optional — flat list, or the trailing "Feature Coverage" table if categories is also set
     - name:                 # REQUIRED
       description:           # optional
-      status:                  # REQUIRED: supported | unsupported | planned
+      status:                  # REQUIRED (unless category has hasStatusColumn: false): supported | unsupported | planned | partial
       lastConfirmedVersion:
       lastConfirmedDate:
       sourceRelease:            # required if provenance == release_signal
-      provenance:                # bootstrap_ingestion | release_signal | manual_edit
+      provenance:                # bootstrap_ingestion | release_signal | manual_edit — "partial" can never come from release_signal
 
 tryItOut:                 # optional
   moduleName:
@@ -38,6 +42,7 @@ architecture:              # REQUIRED
   description:               # REQUIRED
   externalSystems:
   interactionMethod:
+  components:                  # optional — "Key Components" bullets: [{name, description}]. Bootstrap-only.
   architectureDocumentationLink:
 
 pluginSupport:              # optional — only if product has plugin architecture
@@ -50,8 +55,16 @@ pluginSupport:              # optional — only if product has plugin architectu
 deployment:                  # REQUIRED
   modes:                      # REQUIRED: [{name, description, link, audience}]
   customPluginDeploymentLink:
+  prerequisites:                 # optional: [{name, note}]. Bootstrap-only.
 
-configurations:                # optional: [{name, description, properties, note, documentationLink}]
+sdkIntegration:                # optional, conditional — only for products shipping embeddable SDK components
+  enabled:
+  components: [{name, description, status}]
+  documentationLink:
+  note:
+
+configurations:                # optional: [{name, description, content OR properties, note, documentationLink}]
+                                # use `content` (freeform Markdown) for tables/lists; `properties` only for literal properties-file blocks
 
 databases:                      # optional: {scriptsLink, note}
 
@@ -99,8 +112,9 @@ There is **no per-run YAML**. `overview.yaml` is a single long-lived file per pr
   back byte-for-byte unchanged.
 
 If you find yourself about to rewrite `overview.narrative`, `architecture.description`,
-`deployment`, `configurations`, or `documentation` during a release_signal run — stop. That is
-not this pipeline's job on an ongoing run; see `overview-source-precedence.yaml`'s
+`architecture.components`, `deployment` (including `deployment.prerequisites`), `pluginSupport`,
+`sdkIntegration`, `configurations`, or `documentation` during a release_signal run — stop. That
+is not this pipeline's job on an ongoing run; see `overview-source-precedence.yaml`'s
 `excluded_sources` for each field.
 
 ---
@@ -129,6 +143,20 @@ upcomingFeatures:
   items: []   # entry removed — this happens atomically with the featureCoverage write
 ```
 
+**If the product uses categorized `featureCoverage.categories` instead of (or alongside) the
+flat `features` list**: the release_signal match search still checks `upcomingFeatures` first,
+then walks every category's `items` plus the flat `features` list before concluding "net-new."
+A matched row is patched in place, in whatever category it already lives in — a release_signal
+patch never moves a row between categories, and never creates a new category. A **net-new**
+shipped feature always lands in the flat `features` list, never invented into an existing
+category, since picking a category is a bootstrap-time judgment call.
+
+`partial` status (e.g. "JSON-LD and SD-JWT supported; mDoc/mDL not yet") can only be asserted
+by `bootstrap_ingestion` or `manual_edit` — `release_signal` only ever flips a row to `supported`
+(CON-002b). Whether a release that ships one of several sub-capabilities behind a `partial` row
+means the row is now fully `supported` or still `partial` is a call for the next bootstrap pass,
+not the automatic patch.
+
 ---
 
 ## VALIDATION RULES (Deterministic Checks)
@@ -137,9 +165,10 @@ upcomingFeatures:
 - ❌ STR-001: Missing a required section (metadata, overview, architecture, deployment, documentation, contribution)
 - ❌ STR-003: `metadata.lastUpdated` not in `YYYY-MM-DD` format
 - ❌ CON-001: Missing or too-short `overview.narrative`
-- ❌ CON-002: `featureCoverage.features[*].status` not one of `supported|unsupported|planned`
-- ❌ CON-003: A `release_signal`-provenance feature row is missing `sourceRelease` or `lastConfirmedDate`
-- ❌ CON-004: Same feature name appears in both `upcomingFeatures.items` and `featureCoverage.features` (status supported)
+- ❌ CON-002: A feature status (flat list or any category's items) not one of `supported|unsupported|planned|partial`
+- ❌ CON-002b: A `release_signal`-provenance row has status `partial` (release_signal may only set `supported`)
+- ❌ CON-003: A `release_signal`-provenance feature row (flat or categorized) is missing `sourceRelease` or `lastConfirmedDate`
+- ❌ CON-004: Same feature name appears in both `upcomingFeatures.items` and featureCoverage (flat list or any category) with status supported
 - ❌ CON-005: `documentation.productDocumentation` empty
 - ❌ CON-007: `deployment.modes` empty
 - ❌ CON-009: Unresolved placeholder text (`TBD`, `{PRODUCT_NAME}`, etc.)
@@ -181,6 +210,8 @@ upcomingFeatures:
 | Silent status flip | Flipping `status` to `supported` with no `sourceRelease` | Always set `sourceRelease` + `lastConfirmedDate` when `provenance == release_signal` (CON-003) |
 | Deleting unmatched rows during bootstrap | Removing a feature row because `features_page` doesn't mention it | Retain it and flag to `unresolved[]` for human confirmation instead |
 | Placeholder leftovers | `{PRODUCT_NAME}`, `TBD` in shipped output | Resolve every placeholder before rendering (CON-009) |
+| Inventing a category | Guessing which named category a net-new shipped feature belongs in during a release_signal run | Net-new rows always land in the flat `features` list; category assignment is bootstrap-only |
+| Asserting `partial` from a release signal | Setting `status: partial` with `provenance: release_signal` | Only `bootstrap_ingestion`/`manual_edit` may assert `partial` (CON-002b) |
 
 ---
 
@@ -195,7 +226,8 @@ upcomingFeatures:
 | `standards/overview-evidence-fields.yaml` | `overview-evidence.yaml` field glossary |
 | `rules/overview-evidence-confidence-rule.yaml` | Confidence scoring for feature-status patches |
 | `rules/overview/overview-rule.yaml` | Deterministic validation rules (STR/CON/SEC/PRO) |
-| `templates/overview/examples/minimal-overview.yaml` | Minimal valid example |
+| `templates/overview/examples/minimal-overview.yaml` | Minimal valid example (flat featureCoverage only) |
+| `templates/overview/examples/comprehensive-overview.yaml` | Full example: categorized featureCoverage, partial status, components, prerequisites, sdkIntegration |
 | `templates/overview/examples/overview-evidence.sample.yaml` | Sample normalized evidence file |
 
 ---

@@ -73,14 +73,22 @@ item.status:
   description: "Coverage status this item asserts"
   cardinality: "required"
   type: "string"
-  enum: ["supported", "unsupported", "planned"]
+  enum: ["supported", "unsupported", "planned", "partial"]
+  note: "'partial' may only be asserted when item.source is features_page or existing_overview_page. An item with item.source == release_notes_evidence must never assert 'partial' — release signal only ever confirms a full ship (see overview-source-precedence.yaml's resolution_rule step 0 for featureCoverage status)."
 
 item.matched_existing_row:
-  description: "Whether this item matches an existing row in featureCoverage.features or upcomingFeatures.items"
+  description: "Whether this item matches an existing row in featureCoverage (a category, or the flat features list) or upcomingFeatures.items"
   cardinality: "required"
   type: "string"
   enum: ["featureCoverage", "upcomingFeatures", "none"]
-  note: "Drives whether reconciliation is an update-in-place, a move (upcoming → coverage), or a net-new insert."
+  note: "Drives whether reconciliation is an update-in-place, a move (upcoming → coverage), or a net-new insert. Does not by itself say WHICH category a featureCoverage match landed in — see item.matched_category_name below."
+
+item.matched_category_name:
+  description: "If matched_existing_row == featureCoverage and the product's overview.yaml uses featureCoverage.categories, which category the matched row lives in. Empty if the match was against the flat featureCoverage.features list, or if matched_existing_row != featureCoverage."
+  cardinality: "conditional"
+  type: "string"
+  example: "Credential Formats"
+  note: "Net-new items (matched_existing_row == none) never populate this field — they always land in featureCoverage.features, never in an existing category. See evidence-to-overview-mapping.yaml."
 
 item.source:
   description: "Which input produced this item"
