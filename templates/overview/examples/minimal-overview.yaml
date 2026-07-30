@@ -1,0 +1,93 @@
+# MINIMAL OVERVIEW EXAMPLE
+# =============================
+# Bare minimum valid overview.yaml — required sections only, plus featureCoverage/
+# upcomingFeatures populated to show the transition mechanic the incremental pipeline exists
+# to maintain. Full reference: templates/overview/overview-schema.yaml
+
+metadata:
+  productName: "Inji Certify"
+  targetUsers:
+    - "issuers"
+    - "verifiers"
+  coreFunctionality: "issue verifiable credentials in multiple formats (VC, mDoc, SD-JWT)"
+  primaryStandard: "OpenID for Verifiable Credential Issuance (OID4VCI)"
+  lastUpdated: "2026-07-30"
+  lastUpdateSource: "release_signal"
+
+overview:
+  narrative: |
+    Inji Certify enables issuers to generate and issue verifiable credentials to holders in
+    multiple formats. It follows the OpenID for Verifiable Credential Issuance (OID4VCI)
+    standard, giving issuing authorities a standards-compliant way to bring digital credentials
+    online without building an issuance stack from scratch.
+
+featureCoverage:
+  documentationLink: "https://docs.mosip.io/inji/certify/features"
+  features:
+    - name: "VC Issuance (JSON-LD)"
+      status: "supported"
+      lastConfirmedVersion: "0.12.0"
+      provenance: "bootstrap_ingestion"
+    - name: "mDoc Issuance"
+      status: "supported"
+      lastConfirmedVersion: "0.13.0"
+      provenance: "bootstrap_ingestion"
+    - name: "SD-JWT VC Issuance Support"
+      status: "supported"
+      sourceRelease: "0.15.0"
+      lastConfirmedDate: "2026-07-30"
+      provenance: "release_signal"
+
+architecture:
+  description: "Inji Certify runs as a standalone credential issuance service backed by a plugin architecture for identity data sourcing."
+  externalSystems:
+    - "MOSIP eSignet"
+    - "National ID Repository"
+  interactionMethod: "REST APIs"
+  architectureDocumentationLink: "https://docs.mosip.io/inji/certify/architecture"
+
+deployment:
+  modes:
+    - name: "Local Development Setup"
+      description: "Recommended for developers exploring the codebase or running proof-of-concepts."
+      link: "https://docs.mosip.io/inji/certify/deploy/local"
+      audience: "Developers, community contributors"
+    - name: "Deployment with Kubernetes cluster"
+      description: "Designed for production environments at scale."
+      link: "https://docs.mosip.io/inji/certify/deploy/k8s"
+      audience: "Production operators"
+
+upcomingFeatures:
+  items:
+    - name: "Batch Credential Issuance"
+      note: "Bulk-issue credentials for large-scale onboarding events"
+      targetRelease: "0.16.0"
+  note: "Timelines subject to change."
+
+documentation:
+  apiDocumentation:
+    baseUrl: "https://api.inji.io/certify/v1"
+    link: "https://docs.mosip.io/inji/certify/api"
+  productDocumentation:
+    - title: "Overview | Inji Certify"
+      url: "https://docs.mosip.io/inji/certify/overview"
+    - title: "Inji | Inji Stack"
+      url: "https://docs.mosip.io/inji/stack"
+
+contribution:
+  codeContributionLink: "https://github.com/mosip/inji-certify/blob/main/CONTRIBUTING.md"
+  communityLink: "https://community.mosip.io"
+
+# ===== VALIDATION CHECKLIST =====
+# Before rendering to Markdown, verify:
+#
+# [ ] metadata.lastUpdated is YYYY-MM-DD
+# [ ] overview.narrative is 50+ characters, no placeholder text
+# [ ] every featureCoverage.features[*].status is supported|unsupported|planned
+# [ ] every release_signal-provenance feature has sourceRelease + lastConfirmedDate (CON-003)
+# [ ] no feature name appears in both upcomingFeatures and featureCoverage (CON-004)
+# [ ] documentation.productDocumentation has at least one entry
+# [ ] deployment.modes has at least one entry
+# [ ] no unresolved {PLACEHOLDER} tokens anywhere
+#
+# If all checks pass, render using overview-rendering.yaml.

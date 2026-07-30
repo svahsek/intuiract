@@ -1,0 +1,346 @@
+# Overview: YAML → Markdown Rendering Rules
+# ================================================
+# Converts overview.yaml (per overview-schema.yaml) into the same section structure as the
+# pre-existing templates/overview/overview-page.template.md, so rendered output matches the
+# established MOSIP/Inji overview page shape.
+
+renderingRules:
+  overview: |
+    Source: overview-schema.yaml (agent authority)
+    Output: overview.md (published version)
+    Process: Deterministic rendering with embedded formatting rules
+    Reference: existing templates/overview/overview-page.template.md section order
+
+sections:
+
+# ================================
+# SECTION 1: STANDARDS CALLOUT + OVERVIEW
+# ================================
+  header:
+    _meta: {prefix: HDR, description: Title, standards callout, opening overview paragraph}
+    template: |
+      ---
+      title: {metadata.productName}
+      description: {metadata.coreFunctionality}
+      ---
+
+      # {metadata.productName}
+
+      {if metadata.standardsReferenced}
+      > ❗ **Important!** Before you proceed, you should be aware of the relevant standards. Please read the following before proceeding:
+      >
+      {renderStandardsList(metadata.standardsReferenced)}
+      {/if}
+
+      ## Overview
+
+      {overview.narrative}
+    rules:
+      - rule_id: "HDR-001"
+        name: "Standards Callout Conditional"
+        description: "Only render the ❗ Important callout block if metadata.standardsReferenced is non-empty"
+      - rule_id: "HDR-002"
+        name: "Standards List Format"
+        template: "  * [{name}]({url})"
+
+# ================================
+# SECTION 2: FEATURE COVERAGE
+# ================================
+  featureCoverage:
+    _meta: {prefix: FEA, description: Standards/spec feature-coverage table}
+    template: |
+      {if featureCoverage.features}
+      ## Standards, Specifications, and Compliance
+
+      In particular, {metadata.productName} focuses on {metadata.primaryStandard} and provides the following features:
+
+      | Feature | Coverage |
+      |:--------|:---------|
+      {renderFeatureRows(featureCoverage.features)}
+
+      {if featureCoverage.documentationLink}
+      To know more about features available in {metadata.productName} please refer to [this documentation]({featureCoverage.documentationLink}).
+      {/if}
+      {/if}
+    rowTemplate: |
+      | {feature.name} | {formatStatusBadge(feature.status)} |
+    rules:
+      - rule_id: "FEA-001"
+        name: "Status Badge Mapping"
+        mapping:
+          supported: "✅"
+          unsupported: "❌"
+          planned: "🕓 Planned"
+      - rule_id: "FEA-002"
+        name: "Section Omitted When Empty"
+        description: "If featureCoverage.features is empty/absent, omit the whole '## Standards, Specifications, and Compliance' heading rather than rendering an empty table"
+
+# ================================
+# SECTION 3: TRY IT OUT
+# ================================
+  tryItOut:
+    _meta: {prefix: TRY, description: Optional sandbox/collab pointer}
+    template: |
+      {if tryItOut}
+      ## Try It Out
+
+      [{tryItOut.moduleName} Collab Guide]({tryItOut.collabGuideLink}) helps you with exploring {tryItOut.moduleName} in our [Sandbox Collab Environment]({tryItOut.sandboxLink}).
+      {/if}
+
+# ================================
+# SECTION 4: ARCHITECTURE
+# ================================
+  architecture:
+    _meta: {prefix: ARC, description: Architecture description and link}
+    template: |
+      ## Architecture
+
+      {architecture.description}
+      {if architecture.externalSystems}
+      It interacts with {join(architecture.externalSystems, ", ")} via {architecture.interactionMethod}.
+      {/if}
+
+      {if architecture.architectureDocumentationLink}
+      For a detailed view of {metadata.productName}'s architecture and components, check this [link]({architecture.architectureDocumentationLink}).
+      {/if}
+
+# ================================
+# SECTION 5: PLUGIN SUPPORT
+# ================================
+  pluginSupport:
+    _meta: {prefix: PLG, description: Optional plugin architecture section}
+    template: |
+      {if pluginSupport and pluginSupport.enabled}
+      ## Plugin Support
+
+      {metadata.productName} provides a **plugin-based architecture** that enables modular, extensible, and customizable workflows.
+
+      ### Types of Plugins
+
+      {renderPluginTypes(pluginSupport.pluginTypes)}
+      {if pluginSupport.supportedIntegrations}
+        * Currently supported integrations: {join(pluginSupport.supportedIntegrations, ", ")}.
+      {/if}
+
+      ### How to Use Plugins
+
+      {renderHowToUse(pluginSupport.howToUse)}
+
+      {if pluginSupport.customPlugin}
+      ### Advanced: Creating Custom Plugins
+
+      For advanced users, you can develop your own plugins by implementing the `{pluginSupport.customPlugin.interfaceName}` interface:
+
+      ```{pluginSupport.customPlugin.language}
+      {pluginSupport.customPlugin.codeSnippet}
+      ```
+
+      * **Reference Implementation:** [{pluginSupport.customPlugin.referenceImplementation.name}]({pluginSupport.customPlugin.referenceImplementation.link})
+      * Once a custom plugin has been developed refer to this [document]({pluginSupport.customPlugin.deploymentGuideLink}) to deploy the plugin.
+      {/if}
+      {/if}
+    pluginTypeTemplate: |
+      * **{type.name}**
+        {type.description}
+    howToUseTemplate: |
+      * **[{item.title}]({item.link})** – {item.description}
+
+# ================================
+# SECTION 6: DEPLOYMENT
+# ================================
+  deployment:
+    _meta: {prefix: DEP, description: Deployment modes}
+    template: |
+      ## Deployment
+
+      {metadata.productName} supports the following modes of deployment:
+
+      {renderDeploymentModes(deployment.modes)}
+
+      {if pluginSupport and pluginSupport.enabled and deployment.customPluginDeploymentLink}
+      If you are creating your own custom plugin, you can refer to [this link]({deployment.customPluginDeploymentLink}) to know steps to deploy custom plugins.
+      {/if}
+    modeTemplate: |
+      {index}. **{mode.name}**
+
+          * {mode.description}
+          {if mode.link}
+          * Refer to [this guide]({mode.link}) to try this mode of setup.
+          {/if}
+    rules:
+      - rule_id: "DEP-001"
+        name: "Numbered Deployment Modes"
+        description: "Render deployment.modes as a numbered list, preserving array order"
+
+# ================================
+# SECTION 7: CONFIGURATIONS
+# ================================
+  configurations:
+    _meta: {prefix: CFG, description: Configuration blocks}
+    template: |
+      {if configurations}
+      ## Configurations
+
+      In this section, you will find the key configurations required to enable specific features or to run the application.
+
+      {renderConfigSections(configurations)}
+      {/if}
+    configTemplate: |
+      ### {config.name}
+
+      {config.description}:
+
+      ```properties
+      {config.properties}
+      ```
+
+      {if config.note}
+      **Note**: {config.note}
+      {/if}
+
+      {if config.documentationLink}
+      To know more about this configuration please refer to [this link]({config.documentationLink}).
+      {/if}
+
+# ================================
+# SECTION 8: DATABASES
+# ================================
+  databases:
+    _meta: {prefix: DB, description: Database scripts pointer}
+    template: |
+      {if databases}
+      ## Databases
+
+      Refer to [SQL scripts]({databases.scriptsLink}) and go through its README.
+      {if databases.note}
+      {databases.note}
+      {/if}
+      {/if}
+
+# ================================
+# SECTION 9: UPGRADES
+# ================================
+  upgrades:
+    _meta: {prefix: UPG, description: Upgrade/migration guides}
+    template: |
+      {if upgrades}
+      ## Upgrades
+
+      {renderUpgrades(upgrades)}
+      {/if}
+    upgradeTemplate: |
+      ### Upgrade from {upgrade.fromVersion} to {upgrade.toVersion}
+
+      Please refer to step-by-step [migration guide]({upgrade.migrationGuideLink}) for upgrade from {upgrade.fromVersion} to {upgrade.toVersion}.
+
+# ================================
+# SECTION 10: UPCOMING FEATURES
+# ================================
+  upcomingFeatures:
+    _meta: {prefix: UPC, description: Roadmap list — the mirror image of featureCoverage}
+    template: |
+      {if upcomingFeatures and upcomingFeatures.items}
+      ## Upcoming Features
+
+      {renderUpcomingItems(upcomingFeatures.items)}
+
+      {if upcomingFeatures.note}
+      **Note**: {upcomingFeatures.note}
+      {/if}
+      {/if}
+    itemTemplate: |
+      * {item.name}{if item.targetRelease} (targeted for {item.targetRelease}){/if}{if item.note} — {item.note}{/if}
+    rules:
+      - rule_id: "UPC-001"
+        name: "Auto-Sync With Feature Coverage"
+        description: "This list should never contain an item whose name also appears in featureCoverage.features with status == supported — CON-004 in overview-rule.yaml catches this at validation time, not at render time, so a render-time inconsistency means validation was skipped."
+
+# ================================
+# SECTION 11: DOCUMENTATION
+# ================================
+  documentation:
+    _meta: {prefix: DOC, description: API and product documentation links}
+    template: |
+      ## Documentation
+
+      {if documentation.apiDocumentation}
+      * **API Documentation:**
+        API endpoints, base URL (`{documentation.apiDocumentation.baseUrl}`), and documentation are available: [{metadata.productName} API Documentation]({documentation.apiDocumentation.link}).
+      {/if}
+
+      * **Product Documentation:**
+
+      {renderProductDocs(documentation.productDocumentation)}
+    productDocTemplate: |
+        * [{doc.title}]({doc.url})
+
+# ================================
+# SECTION 12: CONTRIBUTION & COMMUNITY
+# ================================
+  contribution:
+    _meta: {prefix: CTR, description: Contribution and community links}
+    template: |
+      ## Contribution & Community
+
+      We welcome contributions from everyone!
+
+      {if contribution.codeContributionLink}
+      * [Check here]({contribution.codeContributionLink}) to learn how you can contribute code to this application.
+      {/if}
+      * If you have any questions or run into issues while trying out the application, feel free to post them in the [Community]({contribution.communityLink}) — we'll be happy to help you out.
+
+# ================================
+# GLOBAL FORMATTING RULES
+# ================================
+globalRules:
+  formatting:
+    - rule_id: "RENDER-001"
+      name: "Headings Hierarchy"
+      template: |
+        # Product Title
+        ## Major Sections (Overview, Architecture, Deployment, etc.)
+        ### Subsections (Configuration blocks, Upgrade paths, etc.)
+      reasoning: "Consistent hierarchy enables automatic TOC generation"
+
+    - rule_id: "RENDER-002"
+      name: "Links Must Be Clickable"
+      description: "All URLs must be absolute and verified before publication"
+
+    - rule_id: "RENDER-003"
+      name: "Section Omission Over Empty Headings"
+      description: "Any optional section with no data is omitted entirely — never render a heading with an empty body underneath it"
+
+    - rule_id: "RENDER-004"
+      name: "Status Badge Consistency"
+      description: "Use the same ✅/❌/🕓 mapping wherever feature status is rendered (see FEA-001)"
+
+  style:
+    - rule_id: "RENDER-005"
+      name: "Clarity Over Cleverness"
+      description: "Plain, factual language — no marketing superlatives, consistent with release-notes' PRO-001"
+      reference: "Microsoft Style Guide — Word Choice"
+
+# ================================
+# AGENT WORKFLOW
+# ================================
+agentWorkflow: |
+  Step 1: Read overview-schema.yaml, load overview.yaml
+  Step 2: Validate against overview-rule.yaml
+  Step 3: For each section in rendering.sections, in the order listed above (HDR, FEA, TRY,
+          ARC, PLG, DEP, CFG, DB, UPG, UPC, DOC, CTR):
+    a) Extract data from overview.yaml
+    b) Skip the section entirely if its top-level data is absent (see RENDER-003)
+    c) Apply formatting rules (globalRules.formatting + globalRules.style)
+    d) Render markdown using the section's template
+  Step 4: Concatenate sections into overview.md
+  Step 5: Output:
+    - YAML version (source: overview.yaml)
+    - Markdown version (output: overview.md)
+    - Validation report (any warnings/errors)
+
+# ================================
+# EXAMPLE OUTPUT
+# ================================
+exampleOutput:
+  file: "templates/overview/examples/minimal-overview.yaml"
+  description: "See this file for a minimal example of how YAML renders to Markdown"

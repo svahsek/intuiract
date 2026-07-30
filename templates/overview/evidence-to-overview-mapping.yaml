@@ -1,0 +1,217 @@
+# Evidence to Overview Mapping
+
+## Purpose
+
+Define how fields from normalized overview evidence (`overview-evidence.yaml`) map to
+overview schema fields (`overview-schema.yaml`), for **both** evidence sources the single
+incremental pipeline accepts:
+
+- `bootstrap_ingestion` — populates the full document the first time (or on a deliberate refresh)
+- `release_signal` — patches only `featureCoverage` and `upcomingFeatures`
+
+This is the bridge between:
+- **Source**: `overview-evidence.yaml` (normalized, scored, per `overview-evidence-fields.yaml`)
+- **Target**: `overview.yaml` (per `overview-schema.yaml`)
+
+Unlike `evidence-to-release-notes-mapping.yaml`, which generates a brand-new file every run,
+this mapping is almost always an **upsert against an existing file** — read the current
+`overview.yaml`, apply only the field group each evidence source is allowed to touch, and
+carry every untouched field forward unchanged.
+
+## Mapping Rules
+
+```yaml
+version: "1.0.0"
+last_updated: "2026-07-30"
+description: "Map overview-evidence items to overview-schema.yaml fields, source-scoped"
+
+# ====================================
+# BOOTSTRAP_INGESTION MAPPING (first run, or a deliberate full refresh)
+# ====================================
+
+bootstrap_mapping:
+
+  description: >-
+    Runs once per product to populate a nonexistent overview.yaml, or when the operator
+    explicitly requests a full refresh. Reads the existing overview.md (if migrating an
+    already-hand-written page) and the features page. Populates every schema section.
+    Code-repo ingestion is a deferred third input — leave sourceRepository empty and skip
+    any repo-derived fields until that capability exists; do not block bootstrap on it.
+
+  metadata_mapping:
+    metadata.productName: { source: "existing_overview_page or manual_input", cardinality: "1" }
+    metadata.targetUsers: { source: "existing_overview_page or manual_input", transformation: "array_of_strings" }
+    metadata.coreFunctionality: { source: "existing_overview_page or manual_input" }
+    metadata.primaryStandard: { source: "existing_overview_page", cardinality: "optional" }
+    metadata.standardsReferenced: { source: "existing_overview_page", cardinality: "optional" }
+    metadata.lastUpdated: { source: "generated", transformation: "today" }
+    metadata.lastUpdateSource: { source: "generated", value: "bootstrap_ingestion" }
+
+  narrative_mapping:
+    overview.narrative: { source: "existing_overview_page", fallback: "drafted_from_features_page_plus_manual_input" }
+    architecture.description: { source: "existing_overview_page" }
+    architecture.externalSystems: { source: "existing_overview_page", cardinality: "optional" }
+    deployment.modes: { source: "existing_overview_page" }
+    documentation.productDocumentation: { source: "existing_overview_page" }
+    contribution.communityLink: { source: "existing_overview_page" }
+    pluginSupport: { source: "existing_overview_page", cardinality: "optional", condition: "only if product has plugin architecture" }
+    configurations: { source: "existing_overview_page", cardinality: "optional" }
+    databases: { source: "existing_overview_page", cardinality: "optional" }
+    upgrades: { source: "existing_overview_page", cardinality: "optional" }
+
+  feature_coverage_mapping:
+    filtering:
+      source: "features_page items, cross-checked against existing_overview_page table if one exists"
+    items:
+      - source_field: "item.feature_name"
+        target_field: "featureCoverage.features[*].name"
+      - source_field: "item.description"
+        target_field: "featureCoverage.features[*].description"
+        cardinality: "optional"
+      - source_field: "item.status"
+        target_field: "featureCoverage.features[*].status"
+      - source_field: "item.provenance"
+        target_field: "featureCoverage.features[*].provenance"
+        value: "bootstrap_ingestion"
+    unmatched_existing_rows_rule: |
+      A row present in the existing overview page's table but absent from features_page is
+      NOT deleted — retained as-is and added to unresolved[] for one human confirmation pass,
+      per overview-source-precedence.yaml's resolution_rule for featureCoverage.features[*].name.
+
+  upcoming_features_mapping:
+    upcomingFeatures.items: { source: "existing_overview_page, cross-checked against features_page roadmap section if present" }
+
+# ====================================
+# RELEASE_SIGNAL MAPPING (every ongoing run — patch only)
+# ====================================
+
+release_signal_mapping:
+
+  description: >-
+    Consumes a single release's output from the release-notes pipeline
+    (release-notes.yaml and/or release-evidence.yaml, resolved via
+    standards/content-types/release-notes.yaml). Touches ONLY featureCoverage and
+    upcomingFeatures. Every other schema section is read from the existing overview.yaml
+    and written back unchanged — this mapping has no entries for metadata.productName,
+    overview.narrative, architecture, deployment, configurations, documentation, or
+    contribution, and that absence is intentional, not an oversight.
+
+  # Filter: which release-notes items are even candidates for an overview patch
+  filtering:
+    change_type: "feature"
+    shipped: true
+    confidence_threshold: 60  # per rules/release-evidence-confidence-rule.yaml, the release-notes-side gate
+
+  items:
+    - source_field: "item.normalized_for_release_notes.feature_name"
+      target_field: "featureCoverage.features[*].name"
+      matching_rule: |
+        Fuzzy-match against upcomingFeatures.items[*].name first (this is the expected common
+        case — a feature that was already on the roadmap just shipped). If no match, fuzzy-match
+        against existing featureCoverage.features[*].name (an unsupported → supported flip). If
+        neither matches, treat as a net-new row.
+
+    - source_field: "item.normalized_for_release_notes.feature_description"
+      target_field: "featureCoverage.features[*].description"
+      cardinality: "optional"
+      rule: "Only overwrite an existing description if the row is net-new or the existing description is empty. Never overwrite operator-refined prose on an existing row."
+
+    - source_field: "computed"
+      target_field: "featureCoverage.features[*].status"
+      value: "supported"
+
+    - source_field: "release.version (from the release-notes evidence's own metadata)"
+      target_field: "featureCoverage.features[*].sourceRelease"
+
+    - source_field: "release.release_date"
+      target_field: "featureCoverage.features[*].lastConfirmedDate"
+
+    - source_field: "computed"
+      target_field: "featureCoverage.features[*].provenance"
+      value: "release_signal"
+
+  upcoming_features_removal:
+    rule: |
+      For every item successfully mapped into featureCoverage above, remove the matching entry
+      (if any) from upcomingFeatures.items. This is not a separate mapping decision — it is the
+      other half of the same transition and must happen atomically with the featureCoverage write.
+
+# ====================================
+# VALIDATION GATE (applies to both mappings)
+# ====================================
+
+validation_before_mapping:
+  - rule: "release_signal items must have shipped == true"
+    failure_action: "exclude from patch"
+    severity: "error"
+  - rule: "release_signal items below confidence 50 (overview-evidence-confidence-rule.yaml) are not applied"
+    failure_action: "move to unresolved[], leave overview.yaml row untouched"
+    severity: "warning"
+  - rule: "No placeholder text in any mapped field"
+    failure_action: "block that field's patch"
+    severity: "error"
+  - rule: "bootstrap_ingestion must not overwrite a field that already has non-empty content in an existing overview.yaml unless the operator explicitly requested a full refresh"
+    failure_action: "skip field, log as retained"
+    severity: "warning"
+
+# ====================================
+# IMPLEMENTATION NOTES
+# ====================================
+
+implementation:
+  1. "Mapping is a YAML file that agents/tools read — no hardcoded field names in generation logic."
+  2. "release_signal mapping is a strict subset of bootstrap_mapping's field surface — any field
+     not listed under release_signal_mapping.items must never be touched by a release_signal run."
+  3. "Fuzzy matching (feature name against upcomingFeatures/featureCoverage) should prefer exact
+     match, then case-insensitive match, then substring containment, in that order, before
+     falling back to 'treat as net-new' — never silently merge two different features because
+     their names loosely overlap."
+  4. "Validation happens AFTER mapping, BEFORE writing overview.yaml."
+
+  process pseudocode: |
+    def patch_overview(overview_yaml_path, evidence_file, mapping_file):
+        overview = load_yaml(overview_yaml_path) if exists(overview_yaml_path) else {}
+        evidence = load_yaml(evidence_file)
+        mapping = load_yaml(mapping_file)
+
+        if evidence.evidence_source == "bootstrap_ingestion":
+            overview = apply_bootstrap_mapping(overview, evidence, mapping.bootstrap_mapping)
+        else:  # release_signal
+            overview = apply_release_signal_mapping(overview, evidence, mapping.release_signal_mapping)
+            # only featureCoverage + upcomingFeatures touched; everything else passed through
+
+        if not validate(overview, schema="overview-schema.yaml"):
+            raise ValidationError("overview.yaml failed schema validation")
+
+        return overview
+
+# ====================================
+# VERSION HISTORY
+# ====================================
+
+version_history:
+  - version: "1.0.0"
+    date: "2026-07-30"
+    changes: "Initial mapping for the overview content type's single incremental pipeline"
+```
+
+## Integration with Skill Workflow
+
+```
+Bootstrap run:                          Ongoing run:
+existing overview.md + features_page    release-notes.yaml / release-evidence.yaml
+              ↓                                       ↓
+       overview-evidence.yaml  ←──── same evidence shape ────→  overview-evidence.yaml
+                                    ↓
+                          [This Mapping — source-scoped]
+                                    ↓
+                    Patched overview.yaml (existing sections preserved)
+                                    ↓
+                Schema Validation (overview-schema.yaml)
+                                    ↓
+                  Policy Rules Validation (overview-rule.yaml)
+                                    ↓
+                            Render to Markdown
+```
+
+See [../../skills/overview/SKILL.md](../../skills/overview/SKILL.md) for the full workflow.

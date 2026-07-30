@@ -1,0 +1,467 @@
+# Overview Schema (YAML)
+# ========================================
+# Strict, agent-friendly schema for product/component overview pages
+# Reference: existing templates/overview/overview-page.template.md (canonical section order)
+# Format: YAML → Markdown conversion for publishing
+# Agent Mode: Deterministic field validation before markdown generation
+#
+# Unlike release-notes-schema.yaml (one YAML per release, generated fresh each time),
+# overview.yaml is a single long-lived file per product. It is never regenerated wholesale —
+# it is created once (bootstrap ingestion) and then patched (incremental updates driven by
+# the release-notes pipeline). See evidence-to-overview-mapping.yaml for which fields each
+# evidence source is allowed to touch.
+
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://github.com/intuiract/intuiract/templates/overview/schema/v1"
+title: "Product Overview"
+description: "Strict YAML schema for product/component overview page content generation by agents"
+type: "object"
+required:
+  - metadata
+  - overview
+  - architecture
+  - deployment
+  - documentation
+  - contribution
+
+# ========================================
+# METADATA SECTION (Required)
+# ========================================
+properties:
+  metadata:
+    type: "object"
+    description: "Product identity and page provenance"
+    required:
+      - productName
+      - targetUsers
+      - coreFunctionality
+    properties:
+      productName:
+        type: "string"
+        minLength: 1
+        maxLength: 100
+        description: "Name of the product/module this overview page describes"
+        example: "Inji Certify"
+
+      productNameAbbr:
+        type: "string"
+        maxLength: 15
+        description: "Short abbreviation for cross-references"
+        example: "INJICERT"
+
+      targetUsers:
+        type: "array"
+        items:
+          type: "string"
+        minItems: 1
+        description: "Who this product is for"
+        example:
+          - "issuers"
+          - "verifiers"
+          - "holders"
+
+      coreFunctionality:
+        type: "string"
+        minLength: 10
+        maxLength: 200
+        description: "One-sentence statement of what the product does"
+        example: "issue verifiable credentials in multiple formats (VC, mDoc, SD-JWT)"
+
+      primaryStandard:
+        type: "string"
+        description: "The primary open standard this product implements, if any"
+        example: "OpenID for Verifiable Credential Issuance (OID4VCI)"
+
+      additionalContext:
+        type: "string"
+        maxLength: 500
+        description: "Optional extra framing sentence(s) after the core overview statement"
+
+      standardsReferenced:
+        type: "array"
+        description: "Standards/specifications a reader must know before proceeding (rendered as the '❗ Important' callout)"
+        items:
+          type: "object"
+          required: [name, url]
+          properties:
+            name: { type: "string" }
+            url: { type: "string", format: "uri" }
+
+      sourceRepository:
+        type: "string"
+        format: "uri"
+        description: "Link to the code repository. Populated when code-repo ingestion runs (deferred to a later pipeline iteration); absent is normal until then."
+
+      lastUpdated:
+        type: "string"
+        format: "date"
+        pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+        description: "Date this overview.yaml was last created or patched"
+
+      lastUpdateSource:
+        type: "string"
+        enum:
+          - "bootstrap_ingestion"
+          - "release_signal"
+          - "manual_edit"
+        description: "What triggered the most recent patch — for audit trail, mirrors provenance tracking in release-evidence.yaml"
+
+# ========================================
+# OVERVIEW SECTION (Required)
+# ========================================
+  overview:
+    type: "object"
+    description: "The opening narrative paragraph(s). Human-authored prose — never touched by the release-notes signal path."
+    required:
+      - narrative
+    properties:
+      narrative:
+        type: "string"
+        minLength: 50
+        maxLength: 800
+        description: "'{productName} enables {targetUsers} to {coreFunctionality}...' paragraph"
+        validation:
+          - rule: "CON-001: Must not contain unresolved template placeholders"
+            severity: "ERROR"
+
+# ========================================
+# FEATURE COVERAGE SECTION (Optional, but this is the section the
+# incremental/release-notes-driven pipeline exists to maintain)
+# ========================================
+  featureCoverage:
+    type: "object"
+    description: "Standards/spec feature-coverage table. This is the primary target of incremental patches."
+    properties:
+      documentationLink:
+        type: "string"
+        format: "uri"
+        description: "Link to the full features documentation page"
+
+      features:
+        type: "array"
+        items:
+          type: "object"
+          required:
+            - name
+            - status
+          properties:
+            name:
+              type: "string"
+              minLength: 3
+              maxLength: 150
+              description: "Feature or capability name"
+
+            description:
+              type: "string"
+              maxLength: 300
+              description: "Optional brief description shown alongside the coverage row"
+
+            status:
+              type: "string"
+              enum:
+                - "supported"
+                - "unsupported"
+                - "planned"
+              description: "supported → ✅, unsupported → ❌, planned → shown but flagged not-yet-shipped"
+
+            lastConfirmedVersion:
+              type: "string"
+              description: "Product version this status was last confirmed against"
+              example: "0.14.0"
+
+            lastConfirmedDate:
+              type: "string"
+              format: "date"
+              pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+
+            sourceRelease:
+              type: "string"
+              description: "Release version whose release-notes evidence caused status == supported. Required when provenance == release_signal (see CON-003)."
+
+            provenance:
+              type: "string"
+              enum:
+                - "bootstrap_ingestion"
+                - "release_signal"
+                - "manual_edit"
+              description: "Which pipeline path last set this row's status"
+
+# ========================================
+# TRY IT OUT SECTION (Optional)
+# ========================================
+  tryItOut:
+    type: "object"
+    description: "Sandbox/collab environment pointer"
+    properties:
+      moduleName:
+        type: "string"
+      collabGuideLink:
+        type: "string"
+        format: "uri"
+      sandboxLink:
+        type: "string"
+        format: "uri"
+        example: "https://collab.mosip.net/"
+
+# ========================================
+# ARCHITECTURE SECTION (Required)
+# ========================================
+  architecture:
+    type: "object"
+    required:
+      - description
+    properties:
+      description:
+        type: "string"
+        minLength: 20
+        maxLength: 600
+        description: "Brief architecture description"
+
+      externalSystems:
+        type: "array"
+        items:
+          type: "string"
+        description: "External systems this product interacts with"
+
+      interactionMethod:
+        type: "string"
+        description: "How it interacts with external systems (API, event bus, etc.)"
+
+      architectureDocumentationLink:
+        type: "string"
+        format: "uri"
+        validation:
+          - rule: "CON-005: Architecture section should link to detailed architecture docs"
+            severity: "WARNING"
+
+# ========================================
+# PLUGIN SUPPORT SECTION (Optional)
+# ========================================
+  pluginSupport:
+    type: "object"
+    description: "Only include if the product has a plugin-based architecture"
+    properties:
+      enabled:
+        type: "boolean"
+      pluginTypes:
+        type: "array"
+        items:
+          type: "object"
+          required: [name, description]
+          properties:
+            name: { type: "string" }
+            description: { type: "string" }
+      supportedIntegrations:
+        type: "array"
+        items:
+          type: "string"
+      howToUse:
+        type: "array"
+        items:
+          type: "object"
+          required: [title, link]
+          properties:
+            title: { type: "string" }
+            link: { type: "string", format: "uri" }
+            description: { type: "string" }
+      customPlugin:
+        type: "object"
+        properties:
+          interfaceName: { type: "string" }
+          language: { type: "string" }
+          codeSnippet: { type: "string" }
+          referenceImplementation:
+            type: "object"
+            properties:
+              name: { type: "string" }
+              link: { type: "string", format: "uri" }
+          deploymentGuideLink: { type: "string", format: "uri" }
+
+# ========================================
+# DEPLOYMENT SECTION (Required)
+# ========================================
+  deployment:
+    type: "object"
+    required:
+      - modes
+    properties:
+      modes:
+        type: "array"
+        minItems: 1
+        items:
+          type: "object"
+          required: [name, description]
+          properties:
+            name:
+              type: "string"
+              example: "Local Development Setup"
+            description:
+              type: "string"
+            link:
+              type: "string"
+              format: "uri"
+            audience:
+              type: "string"
+              description: "Who this deployment mode is intended for"
+      customPluginDeploymentLink:
+        type: "string"
+        format: "uri"
+        description: "Only relevant if pluginSupport.enabled == true"
+
+# ========================================
+# CONFIGURATIONS SECTION (Optional)
+# ========================================
+  configurations:
+    type: "array"
+    description: "Key configuration blocks required to enable specific features"
+    items:
+      type: "object"
+      required: [name, description]
+      properties:
+        name: { type: "string" }
+        description: { type: "string" }
+        properties:
+          type: "string"
+          description: "Raw properties block, rendered inside a ```properties fence"
+        note: { type: "string" }
+        documentationLink: { type: "string", format: "uri" }
+
+# ========================================
+# DATABASES SECTION (Optional)
+# ========================================
+  databases:
+    type: "object"
+    properties:
+      scriptsLink: { type: "string", format: "uri" }
+      note: { type: "string" }
+
+# ========================================
+# UPGRADES SECTION (Optional)
+# ========================================
+  upgrades:
+    type: "array"
+    items:
+      type: "object"
+      required: [fromVersion, toVersion, migrationGuideLink]
+      properties:
+        fromVersion: { type: "string" }
+        toVersion: { type: "string" }
+        migrationGuideLink: { type: "string", format: "uri" }
+
+# ========================================
+# UPCOMING FEATURES SECTION (Optional — the mirror image of featureCoverage;
+# items move OUT of here and INTO featureCoverage as they ship)
+# ========================================
+  upcomingFeatures:
+    type: "object"
+    properties:
+      items:
+        type: "array"
+        items:
+          type: "object"
+          required: [name]
+          properties:
+            name: { type: "string" }
+            note: { type: "string" }
+            targetRelease:
+              type: "string"
+              description: "Expected/planned release version, if known"
+      note:
+        type: "string"
+        description: "Free-text caveat, e.g. 'Timelines subject to change'"
+
+# ========================================
+# DOCUMENTATION SECTION (Required)
+# ========================================
+  documentation:
+    type: "object"
+    required:
+      - productDocumentation
+    properties:
+      apiDocumentation:
+        type: "object"
+        properties:
+          baseUrl: { type: "string" }
+          link: { type: "string", format: "uri" }
+      productDocumentation:
+        type: "array"
+        minItems: 1
+        items:
+          type: "object"
+          required: [title, url]
+          properties:
+            title: { type: "string" }
+            url: { type: "string", format: "uri" }
+
+# ========================================
+# CONTRIBUTION & COMMUNITY SECTION (Required)
+# ========================================
+  contribution:
+    type: "object"
+    required:
+      - communityLink
+    properties:
+      codeContributionLink:
+        type: "string"
+        format: "uri"
+      communityLink:
+        type: "string"
+        format: "uri"
+
+# ========================================
+# VALIDATION & REFERENCES
+# ========================================
+validation:
+  deterministic_checks:
+    - rule_id: "STR-001"
+      name: "Required Sections"
+      check_type: "presence"
+      validation: "metadata, overview, architecture, deployment, documentation, contribution must all be present"
+      rules_file: "rules/overview/overview-rule.yaml"
+
+    - rule_id: "CON-001"
+      name: "No Placeholder Text"
+      check_type: "content"
+      prohibited_patterns: ["TBD", "TODO", "FIXME", "WIP", "Coming Soon", "{PRODUCT_NAME}", "{FEATURE_"]
+      validation: "No unresolved template placeholders (curly-brace tokens) may remain in any field"
+      rules_file: "rules/overview/overview-rule.yaml"
+
+    - rule_id: "CON-003"
+      name: "Feature Transition Provenance"
+      check_type: "conditional"
+      condition: "featureCoverage.features[*].provenance == 'release_signal'"
+      requirement: "sourceRelease and lastConfirmedDate must both be populated"
+      validation: "Every status flip caused by the release-notes signal must be traceable to the release that shipped it"
+      rules_file: "rules/overview/overview-rule.yaml"
+
+    - rule_id: "CON-004"
+      name: "No Duplicate Feature Listing"
+      check_type: "cross-section"
+      validation: "A feature name must not appear in both upcomingFeatures.items and featureCoverage.features with status == supported at the same time"
+      rules_file: "rules/overview/overview-rule.yaml"
+
+  agent_instructions:
+    - |
+      Step 1: Parse this YAML schema
+      Step 2: Verify all 'required' fields are populated with non-empty values
+      Step 3: Check field types match schema constraints
+      Step 4: Run all deterministic checks from validation.deterministic_checks
+             (Full rule definitions: rules/overview/overview-rule.yaml)
+      Step 5: If violations found, report by rule ID (STR-*, CON-*, SEC-*, PRO-*) with fix suggestions
+      Step 6: Convert YAML to Markdown using the rendering rules in overview-rendering.yaml
+      Step 7: Return both YAML (source of truth) and Markdown (rendered output)
+
+# ========================================
+# EXAMPLE DATA (Agent Reference)
+# ========================================
+examples:
+  minimal:
+    description: "Minimal valid overview.yaml (required sections only)"
+    url: "templates/overview/examples/minimal-overview.yaml"
+
+# ========================================
+# RENDERING RULES
+# ========================================
+rendering:
+  description: "How to convert this YAML structure to Markdown for publishing"
+  file: "templates/overview/overview-rendering.yaml"

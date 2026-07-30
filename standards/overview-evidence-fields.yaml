@@ -1,0 +1,180 @@
+# Overview Evidence Fields Glossary
+
+## Purpose
+
+Define all fields used in `overview-evidence.yaml`, the normalized intermediate output produced
+during reconciliation — same role as `release-evidence-fields.yaml` plays for release-notes.
+This is the canonical evidence contract for the overview content type; there is no separate
+contract document, this glossary is the authority.
+
+## Format
+
+- **YAML structure**: Fields organized by section (Product, Feature Item, Unresolved, Metadata).
+- **Cardinality**: required|optional|conditional
+- **Type**: string|number|boolean|array|object|date|uri|enum
+
+## Global Fields
+
+```yaml
+version:
+  description: "Schema version of this evidence file"
+  cardinality: "required"
+  type: "string"
+  example: "1.0.0"
+
+product.name:
+  cardinality: "required"
+  type: "string"
+  example: "Inji Certify"
+
+product.overview_yaml_path:
+  description: "Path to the overview.yaml being patched (empty on the very first bootstrap run)"
+  cardinality: "optional"
+  type: "string"
+
+evidence_source:
+  description: "Which pipeline path produced this evidence file"
+  cardinality: "required"
+  type: "string"
+  enum: ["bootstrap_ingestion", "release_signal"]
+
+evidence_source_detail:
+  description: "For release_signal: the release version. For bootstrap_ingestion: the input paths consulted."
+  cardinality: "required"
+  type: "object"
+  properties:
+    release_version: { type: "string", example: "0.15.0", note: "Required if evidence_source == release_signal" }
+    release_evidence_path: { type: "string", note: "Path to the release-notes pipeline's release-evidence.yaml or release-notes.yaml consumed" }
+    existing_overview_path: { type: "string", note: "Required if evidence_source == bootstrap_ingestion" }
+    features_page_path: { type: "string" }
+    code_repo_path: { type: "string", note: "Deferred capability — populated only once code-repo ingestion is implemented" }
+```
+
+## Feature Item Fields
+
+```yaml
+item.item_id:
+  description: "Unique identifier for this evidence item within the run"
+  cardinality: "required"
+  type: "string"
+  pattern: "^OVW-\\d+$"
+  example: "OVW-001"
+
+item.feature_name:
+  cardinality: "required"
+  type: "string"
+  example: "SD-JWT VC Issuance Support"
+
+item.description:
+  cardinality: "optional"
+  type: "string"
+
+item.status:
+  description: "Coverage status this item asserts"
+  cardinality: "required"
+  type: "string"
+  enum: ["supported", "unsupported", "planned"]
+
+item.matched_existing_row:
+  description: "Whether this item matches an existing row in featureCoverage.features or upcomingFeatures.items"
+  cardinality: "required"
+  type: "string"
+  enum: ["featureCoverage", "upcomingFeatures", "none"]
+  note: "Drives whether reconciliation is an update-in-place, a move (upcoming → coverage), or a net-new insert."
+
+item.source:
+  description: "Which input produced this item"
+  cardinality: "required"
+  type: "string"
+  enum: ["features_page", "existing_overview_page", "release_notes_evidence"]
+
+item.source_release_version:
+  description: "If source == release_notes_evidence: the shipped release version"
+  cardinality: "conditional"
+  type: "string"
+  cardinality_rule: "Required if item.source == release_notes_evidence"
+
+item.shipped_status:
+  description: "Copied verbatim from release-notes evidence's shipped.included_in_release field, when source == release_notes_evidence"
+  cardinality: "conditional"
+  type: "boolean"
+
+item.confidence.score:
+  description: "0-100 confidence this status assertion is correct"
+  cardinality: "required"
+  type: "integer"
+  min: 0
+  max: 100
+  scoring_rule: |
+    >= 80: Auto-apply
+    50-79: Apply with warning
+    < 50: Manual review required
+    Full model: rules/overview-evidence-confidence-rule.yaml
+
+item.confidence.score_breakdown:
+  cardinality: "required"
+  type: "object"
+  properties:
+    doc_presence: { type: "integer", example: 40 }
+    release_confirmation: { type: "integer", example: 40 }
+    consistency: { type: "integer", example: 20 }
+
+item.provenance:
+  description: "Tag carried forward into overview.yaml's featureCoverage.features[*].provenance"
+  cardinality: "required"
+  type: "string"
+  enum: ["bootstrap_ingestion", "release_signal", "manual_edit"]
+```
+
+## Unresolved Item Fields
+
+```yaml
+unresolved.item_id:
+  cardinality: "required"
+  type: "string"
+
+unresolved.reason:
+  cardinality: "required"
+  type: "string"
+  example: "features_page lists 'Selective Disclosure' as supported; existing overview page table marks it unsupported"
+
+unresolved.severity:
+  cardinality: "required"
+  type: "string"
+  enum: ["warning", "error"]
+  note: "Error blocks the patch for that item only (item is skipped, not the whole run); Warning allows it through flagged."
+
+unresolved.resolution_action:
+  cardinality: "required"
+  type: "string"
+```
+
+## Metadata Fields
+
+```yaml
+metadata.extraction_timestamp:
+  cardinality: "required"
+  type: "date-time"
+
+metadata.reconciliation_timestamp:
+  cardinality: "required"
+  type: "date-time"
+
+metadata.generated_by:
+  cardinality: "required"
+  type: "string"
+```
+
+## Validation Rules
+
+1. **Required fields**: All `cardinality: required` fields must be populated.
+2. **release_signal items** must carry `source_release_version` and `shipped_status == true` —
+   a release-notes item with `shipped == false` must never reach this evidence file at all
+   (filter it out during extraction, don't rely on reconciliation to catch it).
+3. **No placeholder text**: No field may contain TBD, TODO, FIXME, `[UPDATE THIS]`.
+4. **Provenance is mandatory on every item** — this is what makes an incremental-only pipeline
+   auditable instead of a black box.
+
+## Version History
+
+- **v1.0.0** (2026-07-30): Initial field glossary for the overview evidence contract.

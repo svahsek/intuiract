@@ -1,0 +1,113 @@
+rules:
+
+  structure:
+    _meta: {prefix: STR, description: Structural and required-section rules}
+
+    header:
+      STR-001:
+        name: Required Sections
+        severity: error
+        checks: [metadata_present, overview_present, architecture_present, deployment_present, documentation_present, contribution_present]
+        note: "All six required top-level sections must be present with non-empty required fields."
+      STR-002:
+        name: Product Name Consistency
+        severity: error
+        rule: metadata.productName must be non-empty and identical everywhere it is referenced in rendered output
+      STR-003:
+        name: Last Updated Format
+        severity: error
+        pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+        field: metadata.lastUpdated
+
+  content:
+    _meta: {prefix: CON, description: Content completeness and quality}
+
+    overview:
+      CON-001:
+        name: Overview Narrative Required
+        severity: error
+        rule: overview.narrative must be present, min 50 characters
+        note: "Every overview page opens with a narrative paragraph before any tables or links."
+
+    feature_coverage:
+      CON-002:
+        name: Feature Status Enum
+        severity: error
+        applies_to: featureCoverage.features[*].status
+        enum: [supported, unsupported, planned]
+
+      CON-003:
+        name: Feature Transition Provenance
+        severity: error
+        condition: featureCoverage.features[*].provenance == "release_signal"
+        requires: [sourceRelease, lastConfirmedDate]
+        note: "A status flip caused by the release-notes signal must always be traceable to the release that shipped it. This is the rule that keeps the incremental pipeline auditable — see overview-evidence-fields.yaml."
+
+      CON-004:
+        name: No Duplicate Feature Listing
+        severity: error
+        rule: a feature name must not appear in both upcomingFeatures.items and featureCoverage.features with status == supported simultaneously
+        note: "Catches a release_signal patch that added a featureCoverage row without also removing the matching upcomingFeatures entry (see evidence-to-overview-mapping.yaml's upcoming_features_removal rule)."
+
+    documentation:
+      CON-005:
+        name: Documentation Section Required
+        severity: error
+        rule: documentation.productDocumentation must contain at least one entry
+      CON-006:
+        name: Architecture Documentation Link Recommended
+        severity: warning
+        rule: architecture.architectureDocumentationLink should be present
+
+    deployment:
+      CON-007:
+        name: At Least One Deployment Mode
+        severity: error
+        rule: deployment.modes must contain at least one entry
+
+    plugin_consistency:
+      CON-008:
+        name: Custom Plugin Deployment Link Requires Plugin Support
+        severity: warning
+        condition: deployment.customPluginDeploymentLink is present
+        requires: pluginSupport.enabled == true
+        note: "A custom-plugin deployment link with no plugin support section is a likely leftover from copying another product's page."
+
+    placeholders:
+      CON-009:
+        name: No Placeholder Text in Field Values
+        severity: error
+        applies_to: all content fields
+        prohibited: [TBD, TODO, FIXME, WIP, "Coming Soon", "[UPDATE THIS]"]
+        pattern: "\\{[A-Z_]+\\}"
+        note: "Also catches unresolved curly-brace template tokens carried over from overview-page.template.md (e.g. {PRODUCT_NAME})."
+
+    provenance:
+      CON-010:
+        name: Provenance Tag Required
+        severity: warning
+        applies_to: featureCoverage.features[*].provenance
+        rule: every feature row should carry a provenance tag
+        note: "Downgraded to warning (not error) for rows created before this pipeline existed, to avoid blocking on historical backfill."
+
+  security:
+    _meta: {prefix: SEC, description: Security and access rules}
+
+    prohibited:
+      SEC-001:
+        name: No Internal Content
+        severity: error
+        prohibited: [internal team names, personal developer names, internal ticket URLs without public context]
+      SEC-002:
+        name: No Comparative Marketing
+        severity: warning
+        prohibited: [better than, unlike competitors, industry-leading]
+
+  prose:
+    _meta: {prefix: PRO, description: Applied via Vale styles on rendered Markdown}
+
+    tone:
+      PRO-001: {vale_style: Overview/NoMarketing.yml}
+      PRO-002: {vale_style: Overview/ConsistentTense.yml}
+    prohibited:
+      PRO-003: {vale_style: Overview/ProhibitedTerms.yml}

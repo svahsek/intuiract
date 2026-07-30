@@ -1,0 +1,96 @@
+# Sample Overview Evidence
+
+## Purpose
+
+A minimal but complete example of a normalized `overview-evidence.yaml`, in the shape defined
+by `standards/overview-evidence-fields.yaml`. This one models the **release_signal** run that
+produced the `SD-JWT VC Issuance Support` row in `examples/minimal-overview.yaml` — i.e. this is
+the intermediate file the pipeline generates *before* patching that overview.yaml.
+
+## Run Context
+
+- **Product**: Inji Certify
+- **Evidence source**: `release_signal`
+- **Triggering release**: v0.15.0 (from the release-notes pipeline's own output)
+- **Items**: 2 (one clean match against `upcomingFeatures`, one net-new)
+
+```yaml
+version: "1.0.0"
+
+product:
+  name: "Inji Certify"
+  overview_yaml_path: "docs/overview/inji-certify-overview.yaml"
+
+evidence_source: "release_signal"
+evidence_source_detail:
+  release_version: "0.15.0"
+  release_evidence_path: "docs/releases/0.15.0-release-evidence.yaml"
+
+items:
+
+  # === OVW-001: matched an existing upcomingFeatures entry, ships this release ===
+  - item_id: "OVW-001"
+    feature_name: "SD-JWT VC Issuance Support"
+    description: "Issue credentials as SD-JWT VCs with selective disclosure of individual claims."
+    status: "supported"
+    matched_existing_row: "upcomingFeatures"
+    source: "release_notes_evidence"
+    source_release_version: "0.15.0"
+    shipped_status: true
+
+    confidence:
+      score: 90
+      score_breakdown:
+        doc_presence: 35        # release_notes_feature_entry
+        release_confirmation: 40 # shipped_release_signal
+        consistency: 15          # no_prior_claim_net_new_row (treated as new row in featureCoverage even though it existed in upcomingFeatures)
+
+    provenance: "release_signal"
+
+  # === OVW-002: net-new, no prior mention anywhere on the overview page ===
+  - item_id: "OVW-002"
+    feature_name: "Credential Status List (Revocation)"
+    description: "Publish and check a StatusList2021 credential status list for issued VCs."
+    status: "supported"
+    matched_existing_row: "none"
+    source: "release_notes_evidence"
+    source_release_version: "0.15.0"
+    shipped_status: true
+
+    confidence:
+      score: 85
+      score_breakdown:
+        doc_presence: 35
+        release_confirmation: 40
+        consistency: 15
+
+    provenance: "release_signal"
+
+unresolved: []
+
+metadata:
+  extraction_timestamp: "2026-07-30T09:00:00Z"
+  reconciliation_timestamp: "2026-07-30T09:05:00Z"
+  generated_by: "overview-skill v1"
+```
+
+## Usage
+
+1. **Reference**: Copy this structure when building overview extractors/reconcilers.
+2. **Test Fixture**: Use this YAML to test the `release_signal` patch path without a live
+   release-notes run.
+3. **Mapping**: Feed this into `evidence-to-overview-mapping.yaml`'s `release_signal_mapping`
+   to produce the `featureCoverage` rows shown in `examples/minimal-overview.yaml`.
+
+## Key Observations from Sample
+
+1. **Two provenance paths, one shape**: OVW-001 (matched an `upcomingFeatures` entry) and
+   OVW-002 (net-new) both flow through the identical evidence structure — the mapping layer,
+   not the evidence layer, is what decides whether an existing row moves or a new one is
+   inserted.
+2. **No narrative/identity fields appear anywhere in this file** — that's intentional. A
+   `release_signal` evidence file has no way to touch `metadata.productName`,
+   `overview.narrative`, `architecture`, etc.; see `overview-source-precedence.yaml`'s
+   `excluded_sources` for those fields.
+3. **Both items clear the auto-apply threshold (80)** per
+   `rules/overview-evidence-confidence-rule.yaml` — no manual review needed for this run.

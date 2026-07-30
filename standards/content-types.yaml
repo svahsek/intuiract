@@ -35,3 +35,36 @@ content_types:
         Until version tags are introduced, consumer repositories should fetch
         the manifest and source files from a pinned branch or commit SHA to
         reduce drift.
+
+  overview:
+    name: "Overview"
+    status: "active"
+    visibility: "public"
+    description: >-
+      Schema-driven product/component overview pages maintained by a single incremental
+      pipeline: a one-time bootstrap ingestion (existing overview page + features page)
+      followed by ongoing patches driven by the release-notes pipeline's own output, so
+      the feature-coverage table and upcoming-features list stay current with what actually
+      shipped without a human rewriting the whole page every release.
+    manifest: "standards/content-types/overview.yaml"
+    templates_root: "templates/overview"
+    skill: "skills/overview/SKILL.md"
+    consumer_skill: "skills/overview/consumer-overview.skill.md"
+    source_files:
+      schema: "templates/overview/overview-schema.yaml"
+      rendering: "templates/overview/overview-rendering.yaml"
+      quick_reference: "templates/overview/overview-quick-reference.md"
+      overview: "templates/overview/readme.md"
+      examples:
+        - "templates/overview/examples/minimal-overview.yaml"
+        - "templates/overview/examples/overview-evidence.sample.yaml"
+    intended_consumers:
+      - "Workspace-local agent skills"
+      - "Other repositories using raw GitHub file URLs"
+      - "Validation and rendering pipelines"
+      - "The release-notes pipeline's consumer skill, as an upstream evidence producer"
+    temporary_remote_usage:
+      recommendation: >-
+        Until version tags are introduced, consumer repositories should fetch
+        the manifest and source files from a pinned branch or commit SHA to
+        reduce drift.

@@ -1,0 +1,223 @@
+# Overview Source Precedence Rules (Machine-Readable)
+
+## Purpose
+
+Define field-level source precedence for overview evidence reconciliation. This is the
+automation authority — not embedded in skill prose, but machine-readable and deterministic.
+
+Unlike release-notes (one pipeline, evidence always comes from GitHub), the overview content
+type is a **single incremental pipeline with two possible evidence sources per run**:
+
+- `bootstrap_ingestion` — existing overview.md content + the features page (used on the very
+  first run for a product, and optionally re-run later as a deliberate full refresh)
+- `release_signal` — the release-notes pipeline's own output (`release-notes.yaml` /
+  `release-evidence.yaml`) for a single shipped release (used on every ongoing run)
+
+The two sources are not competing on the same fields. `release_signal` is scoped to touch only
+`featureCoverage` and `upcomingFeatures` — it is never a source for narrative/identity fields.
+This file's job is to make that boundary explicit and enforceable, not to arbitrate a conflict
+between them on the same field (there shouldn't be one).
+
+## Version
+
+- Version: 1.0.0
+- Last Updated: 2026-07-30
+- Authority: Standards maintainers
+
+## Field-Level Precedence
+
+```yaml
+version: "1.0.0"
+last_updated: "2026-07-30"
+description: "Field-level source precedence for overview evidence reconciliation"
+
+field_precedence:
+
+  # === Narrative / Identity Fields ===
+  # These are human-authored prose. release_signal is never a valid source for them —
+  # they are populated once during bootstrap_ingestion and preserved verbatim on every
+  # subsequent release_signal run.
+
+  metadata.productName:
+    description: "Product name"
+    primary: "existing_overview_page"
+    fallback:
+      - "features_page"
+      - "manual_input"
+    excluded_sources: ["release_signal"]
+
+  metadata.targetUsers:
+    description: "Who the product is for"
+    primary: "existing_overview_page"
+    fallback:
+      - "features_page"
+      - "manual_input"
+    excluded_sources: ["release_signal"]
+
+  metadata.coreFunctionality:
+    description: "One-sentence statement of what the product does"
+    primary: "existing_overview_page"
+    fallback:
+      - "features_page"
+      - "manual_input"
+    excluded_sources: ["release_signal"]
+
+  overview.narrative:
+    description: "Opening overview paragraph"
+    primary: "existing_overview_page"
+    fallback:
+      - "manual_input"
+    excluded_sources: ["features_page", "release_signal"]
+    resolution_rule: |
+      1. If an existing overview.md has an '## Overview' paragraph, use it verbatim.
+      2. If missing entirely (true first-time authoring, not a refresh), draft from
+         features_page framing + operator input, then flag for human review — this is the
+         one narrative field allowed to be agent-drafted, because there is no existing prose
+         to preserve.
+      3. Never regenerate this field on a release_signal run, even if phrasing could be improved.
+
+  architecture.description:
+    description: "Architecture narrative"
+    primary: "existing_overview_page"
+    fallback:
+      - "manual_input"
+    excluded_sources: ["release_signal"]
+
+  deployment:
+    description: "Deployment modes and links"
+    primary: "existing_overview_page"
+    fallback:
+      - "manual_input"
+    excluded_sources: ["features_page", "release_signal"]
+
+  configurations:
+    description: "Configuration blocks"
+    primary: "existing_overview_page"
+    excluded_sources: ["features_page", "release_signal"]
+
+  documentation:
+  contribution:
+    description: "Documentation and contribution links"
+    primary: "existing_overview_page"
+    fallback:
+      - "manual_input"
+    excluded_sources: ["release_signal"]
+
+  # === Feature Coverage Fields ===
+  # These are the fields the incremental pipeline exists to maintain.
+
+  featureCoverage.features[*].name:
+  featureCoverage.features[*].description:
+    description: "Feature name/description in the coverage table"
+    primary: "features_page"
+    fallback:
+      - "existing_overview_page"
+    resolution_rule: |
+      1. features_page is the most current, most detailed source for what a feature is called
+         and how it's described — trust it over a possibly-stale overview page.
+      2. If a feature exists in the overview page's table but not in features_page, retain it
+         (do not silently drop rows the operator hasn't confirmed are gone) and flag it in
+         unresolved[] for human confirmation rather than deleting.
+    excluded_sources: ["release_signal"]
+    note: "release_signal changes a row's status (see below), never its name/description."
+
+  featureCoverage.features[*].status:
+    description: "supported / unsupported / planned"
+    primary: "release_signal"
+    fallback:
+      - "features_page"
+      - "existing_overview_page"
+    resolution_rule: |
+      1. On a release_signal run: if a feature named in featureCoverage or upcomingFeatures
+         matches a shipped item in release-notes.yaml / release-evidence.yaml (shipped == true,
+         confidence >= 60 per release-evidence-confidence-rule.yaml), flip status to "supported".
+      2. On a bootstrap_ingestion run: status comes from features_page (does the features page
+         document this as currently supported?), falling back to whatever the existing overview
+         page's ✅/❌ table already says if features_page is silent on it.
+      3. Tag_boundary rule from release-notes' own source-precedence.yaml still applies upstream —
+         this file trusts release-notes.yaml's shipped_status field, it doesn't re-derive it.
+    special_case: |
+      If features_page says "supported" but no release_signal has ever confirmed a shipping
+      release for it (e.g. it shipped before this pipeline existed), accept features_page's
+      claim during bootstrap_ingestion, tag provenance = "bootstrap_ingestion", and leave
+      sourceRelease empty. Do not block on backfilling historical release evidence.
+
+  featureCoverage.features[*].sourceRelease:
+  featureCoverage.features[*].lastConfirmedVersion:
+  featureCoverage.features[*].lastConfirmedDate:
+    description: "Provenance of the current status"
+    primary: "release_signal"
+    fallback:
+      - "manual_input"
+    resolution_rule: |
+      Only populated (or updated) when status changes via release_signal. Left as-is on
+      bootstrap_ingestion runs unless the operator supplies them manually.
+
+  upcomingFeatures.items:
+    description: "Planned/roadmap features not yet shipped"
+    primary: "existing_overview_page"
+    fallback:
+      - "features_page"
+    resolution_rule: |
+      1. Retain whatever the existing overview page already lists as upcoming.
+      2. On a release_signal run: any item here whose name matches a feature that just flipped
+         to featureCoverage.status == "supported" is REMOVED from this list — this is the
+         other half of the same transition, not a separate field to negotiate.
+    excluded_sources: ["release_signal (as an addition source; it only removes, never adds)"]
+
+## Conflict Resolution Examples
+
+### Scenario 1: Feature ships, was already tracked in upcomingFeatures
+```
+upcomingFeatures.items: ["SD-JWT VC issuance"]
+release_signal (v0.15.0): change_type=feature, shipped=true, confidence=92,
+  normalized_for_release_notes.feature_name = "SD-JWT VC Issuance Support"
+
+Resolution:
+1. Fuzzy-match "SD-JWT VC issuance" against shipped feature name → match.
+2. Remove from upcomingFeatures.items.
+3. Add/update row in featureCoverage.features:
+     name: "SD-JWT VC Issuance Support", status: "supported",
+     sourceRelease: "0.15.0", lastConfirmedDate: <release_date>,
+     provenance: "release_signal"
+```
+
+### Scenario 2: Feature ships but was never listed anywhere on the overview page
+```
+release_signal (v0.15.0): shipped feature with no match in upcomingFeatures or featureCoverage
+
+Resolution:
+→ Add new row to featureCoverage.features with status "supported", provenance "release_signal".
+→ Do NOT touch overview.narrative or any other prose field to "announce" it — that's a
+  human decision for a future bootstrap_ingestion pass, not automatic.
+```
+
+### Scenario 3: features_page and existing overview page disagree during bootstrap
+```
+features_page: "Selective Disclosure" → supported
+existing overview page table: "Selective Disclosure" → ❌ (unsupported)
+
+Resolution:
+→ features_page wins (primary source for status during bootstrap_ingestion).
+→ Flag in unresolved[] for one human confirmation pass on first bootstrap run only —
+  after that, this field is under the pipeline's normal management.
+```
+
+## Consumer Repository Extensions
+
+Consumer repos can extend or override these rules via `standards/overview-source-precedence-overrides.yaml`,
+following the same deep-merge convention as `source-precedence-overrides.yaml` for release-notes.
+
+## Implementation Notes
+
+1. **No Hardcoding**: Extraction/reconciliation logic should NOT embed these precedence rules —
+   all logic reads from this file.
+2. **Hard boundary, not a priority order**: `excluded_sources` is a stronger statement than
+   "lower fallback priority" — it means that source must never be consulted for that field,
+   full stop. This is what keeps a release_signal run from ever rewriting hand-authored prose.
+3. **Auditability**: Every patched field must carry a `provenance` tag (bootstrap_ingestion /
+   release_signal / manual_edit) so a reviewer can see why a value is what it is.
+
+## Version History
+
+- **v1.0.0** (2026-07-30): Initial field-level precedence model for the overview content type.

@@ -1,0 +1,62 @@
+id: "overview"
+name: "Overview"
+status: "active"
+last_updated: "2026-07-30"
+description: >-
+  Public manifest for the overview content type. Consumer repositories can fetch this
+  file first, then resolve the schema, rendering rules, examples, and agent guidance from
+  the referenced paths. Unlike release-notes, this content type runs a single incremental
+  pipeline against a long-lived overview.yaml per product — there is no per-run YAML that
+  gets regenerated from scratch.
+
+ownership:
+  maintained_by: "Documentation Team"
+  repository_scope: "intuiract standards repository"
+
+entrypoints:
+  schema: "templates/overview/overview-schema.yaml"
+  rendering: "templates/overview/overview-rendering.yaml"
+  quick_reference: "templates/overview/overview-quick-reference.md"
+  overview: "templates/overview/readme.md"
+  skill: "skills/overview/SKILL.md"
+  consumer_skill: "skills/overview/consumer-overview.skill.md"
+  human_rules: "rules/overview/overview-rule.yaml"
+  source_precedence: "standards/overview-source-precedence.yaml"
+  overview_evidence_fields: "standards/overview-evidence-fields.yaml"
+  confidence_rule: "rules/overview-evidence-confidence-rule.yaml"
+  mapping: "templates/overview/evidence-to-overview-mapping.yaml"
+  legacy_manual_template: "templates/overview/overview-page.template.md"
+
+upstream_dependency:
+  content_type: "release-notes"
+  manifest: "standards/content-types/release-notes.yaml"
+  note: >-
+    The overview pipeline's ongoing (non-bootstrap) runs consume the release-notes
+    pipeline's own output (release-notes.yaml and/or release-evidence.yaml) as their evidence
+    source. Resolve the release-notes manifest the same way you'd resolve any other
+    entrypoint — do not hardcode its file paths here, since they can move independently.
+
+examples:
+  minimal: "templates/overview/examples/minimal-overview.yaml"
+  evidence_sample: "templates/overview/examples/overview-evidence.sample.yaml"
+
+consumer_usage:
+  workflow:
+    - "Fetch this manifest file from the central repository."
+    - "Resolve the schema and rendering files from the entrypoints section."
+    - "First run for a product: bootstrap-ingest the existing overview page + features page into overview.yaml."
+    - "Every run after that: patch overview.yaml using the release-notes pipeline's output for the release that just shipped."
+    - "Validate the YAML before rendering Markdown output."
+    - "Optionally use the skill file as the orchestration contract for an agent."
+  remote_reference_strategy:
+    recommended_now: "Use direct raw URLs to these files from main or a pinned commit SHA."
+    recommended_later: "Pin to a release tag such as v1 once multiple content types stabilize."
+  notes:
+    - "The schema is the source of truth for required fields and validation rules."
+    - "The rendering file defines deterministic YAML-to-Markdown behavior."
+    - "The quick reference is optimized for agent prompting and lightweight generation."
+    - "The consumer_skill is a full orchestration template for consumer repos — copy and adapt."
+    - "consumer_skill has no separate input file: per-product and per-run configuration is edited directly in its Step 0a Product Configuration block after copying."
+    - "source_precedence, overview_evidence_fields, confidence_rule, and mapping are all required by the reconciliation and patch steps (Steps 4-5 of consumer_skill) — resolve them from this manifest the same way as schema/rendering, do not hardcode their paths."
+    - "skill (skills/overview/SKILL.md) documents the full pipeline this manifest and consumer_skill implement — read it for the conceptual model, not for file paths, since every path it names is also an entrypoint above."
+    - "legacy_manual_template is the pre-existing hand-written Markdown template this schema formalizes. It is not part of the automated pipeline — kept only as a reference for anyone drafting overview content by hand instead of through the agent."

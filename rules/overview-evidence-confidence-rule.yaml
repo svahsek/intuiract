@@ -1,0 +1,153 @@
+# overview-evidence-confidence-rule.yaml
+
+version: "1.0"
+description: "Confidence scoring rules for overview evidence items. Used by reconciliation to decide whether a feature-status patch auto-applies, applies with a warning, or requires manual review."
+last_updated: "2026-07-30"
+
+# Simpler than release-evidence-confidence-rule.yaml's 5-component/100-point model because
+# overview evidence isn't gating a release train — it's deciding whether to trust a claim about
+# a feature's current coverage status. Three components, 100 points total.
+
+scoring_components:
+
+  # Is the claim backed by an explicit, current documentation source?
+  doc_presence:
+    component_name: "Documentation Presence"
+    max_points: 40
+    rules:
+      - name: "explicit_features_page_entry"
+        description: "features_page explicitly documents this feature with a clear status"
+        points: 40
+      - name: "release_notes_feature_entry"
+        description: "release-notes evidence has a normalized_for_release_notes.feature_* entry naming this feature"
+        points: 35
+      - name: "implied_by_related_content"
+        description: "Feature mentioned in passing (e.g. inside another feature's description) but not documented as its own row"
+        points: 15
+      - name: "no_documentation_found"
+        description: "Claim inferred only from an item name match, no supporting text"
+        points: 0
+    penalty_for_gap: 40
+
+  # Is there a shipped release confirming this status?
+  release_confirmation:
+    component_name: "Release Confirmation"
+    max_points: 40
+    rules:
+      - name: "shipped_release_signal"
+        description: "release-notes evidence confirms shipped.included_in_release == true for this feature"
+        points: 40
+      - name: "planned_release_signal"
+        description: "release-notes evidence shows the item as planned/in-progress but not yet shipped"
+        points: 15
+      - name: "bootstrap_only_no_release_evidence"
+        description: "No release-notes evidence exists at all (e.g. feature shipped before this pipeline existed); status asserted from features_page/overview page only"
+        points: 20
+        note: "Not zero — a pre-existing, already-documented feature shouldn't be penalized for predating the pipeline. See special_case in overview-source-precedence.yaml."
+      - name: "no_release_evidence_and_undocumented"
+        points: 0
+    penalty_for_gap: 20
+
+  # Does this claim agree with what's already on the overview page?
+  consistency:
+    component_name: "Consistency With Existing Content"
+    max_points: 20
+    rules:
+      - name: "agrees_with_existing_overview"
+        description: "New claim matches what the existing overview.yaml/overview.md already states"
+        points: 20
+      - name: "no_prior_claim_net_new_row"
+        description: "Feature not previously listed anywhere; this is a net-new row"
+        points: 15
+      - name: "contradicts_existing_overview"
+        description: "New claim conflicts with the existing overview page's table (e.g. features_page says supported, overview page says unsupported)"
+        points: 5
+        note: "Low but nonzero — the newer source is usually right, but a contradiction always needs the unresolved[] flag regardless of score."
+    penalty_for_gap: 10
+
+# Confidence Score Tiers
+
+auto_apply_threshold: 80
+  description: "Score >= 80: Patch overview.yaml automatically. No operator intervention needed."
+  approval_required: false
+
+apply_with_warning_threshold: 50
+  description: "Score 50-79: Apply the patch but flag it with a confidence warning in the run's validation report."
+  approval_required: false
+
+manual_review_threshold: 0
+  description: "Score < 50: Do not patch. Move to unresolved[] for operator review."
+  approval_required: true
+  action: "Leave the existing overview.yaml row untouched; operator reviews and approves manually"
+
+# Calculation Algorithm
+
+calculation_algorithm: |
+  For each overview evidence item:
+    1. Score doc_presence (0-40): Is there explicit documentation for this claim?
+    2. Score release_confirmation (0-40): Is there a shipped release-notes entry, or is this
+       predating the pipeline (bootstrap-only, no penalty)?
+    3. Score consistency (0-20): Does this agree with, extend, or contradict existing content?
+
+    Total Score = Sum of all components (0-100)
+
+    Assign Tier:
+      if Total >= 80: "auto_apply"
+      elif Total >= 50: "apply_with_warning"
+      else: "manual_review"
+
+  Regardless of tier, any item flagged as contradicting existing content (consistency
+  rule "contradicts_existing_overview") is ALSO added to unresolved[] for one-time human
+  confirmation, even if its total score clears the auto_apply threshold — a high score from
+  the other two components should not silently overwrite a contradiction.
+
+# Examples
+
+examples:
+  example_1:
+    item: "SD-JWT VC Issuance Support"
+    scenario: "Shipped in v0.15.0, release-notes evidence links it explicitly, no prior mention anywhere"
+    scoring:
+      doc_presence: 35   # release_notes_feature_entry
+      release_confirmation: 40  # shipped_release_signal
+      consistency: 15    # no_prior_claim_net_new_row
+    total: 90
+    confidence_tier: "auto_apply"
+    action: "Add new row to featureCoverage.features, status=supported, provenance=release_signal"
+
+  example_2:
+    item: "Selective Disclosure"
+    scenario: "features_page says supported; existing overview page table says unsupported"
+    scoring:
+      doc_presence: 40
+      release_confirmation: 20  # bootstrap_only_no_release_evidence
+      consistency: 5     # contradicts_existing_overview
+    total: 65
+    confidence_tier: "apply_with_warning"
+    additional_action: "Also added to unresolved[] due to contradiction, despite clearing 50"
+
+  example_3:
+    item: "Batch Credential Issuance"
+    scenario: "Only mentioned in passing inside another feature's description; no release evidence"
+    scoring:
+      doc_presence: 15
+      release_confirmation: 0
+      consistency: 15
+    total: 30
+    confidence_tier: "manual_review"
+    action: "Leave overview.yaml untouched; flag for operator"
+
+# Version & Change Log
+
+metadata:
+  version: "1.0.0"
+  created_date: "2026-07-30"
+  status: "Draft"
+
+change_log:
+  - version: "1.0.0"
+    date: "2026-07-30"
+    changes:
+      - "Initial 3-component confidence model for overview evidence (doc_presence, release_confirmation, consistency)"
+      - "Defined auto_apply (80+), apply_with_warning (50-79), manual_review (<50) tiers"
+      - "Added the contradiction override: always flag to unresolved[] regardless of score"
