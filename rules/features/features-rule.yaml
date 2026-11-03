@@ -1,0 +1,34 @@
+rules:
+  structure:
+    STR-001:
+      severity: error
+      rule: "metadata, overview, and features must be present."
+    STR-002:
+      severity: error
+      field: metadata.lastUpdated
+      pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+  content:
+    CON-001:
+      severity: error
+      rule: "overview.narrative must be at least 50 characters."
+    CON-002:
+      severity: error
+      rule: "Every feature id and name must be unique."
+    CON-003:
+      severity: error
+      condition: "provenance == release_signal"
+      requires: [sourceRelease, lastConfirmedDate]
+    CON-004:
+      severity: warning
+      rule: "Each feature should have a documentation URL."
+    CON-005:
+      severity: error
+      prohibited: [TBD, TODO, FIXME, WIP, "Coming Soon", "[UPDATE THIS]"]
+      applies_to: "all content fields"
+  security:
+    SEC-001:
+      severity: error
+      prohibited: [internal team names, personal developer names, internal ticket URLs without public context]
+  prose:
+    PRO-001: { vale_style: "Features/NoMarketing.yml" }
+    PRO-002: { vale_style: "Features/ConsistentTense.yml" }

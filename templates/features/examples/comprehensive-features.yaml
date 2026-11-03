@@ -1,0 +1,26 @@
+metadata:
+  productName: "Example Platform"
+  targetUsers: ["Developers", "Platform Administrators"]
+  lastUpdated: "2026-11-03"
+  lastUpdateSource: "release_signal"
+overview:
+  narrative: "Example Platform enables developers and administrators to manage integrations, credentials, and audit information through self-service workflows."
+featureGroups:
+  - name: "Integration Setup"
+    description: "Capabilities used to establish and manage integrations."
+features:
+  - id: "REL-001"
+    name: "Self-Service Client Management"
+    description: "Developers can create and manage API clients without requesting manual provisioning."
+    group: "Integration Setup"
+    useCase: "Set up an integration independently."
+    keyCapabilities:
+      - "Create clients with scoped credentials"
+      - "Rotate client secrets"
+    documentation:
+      title: "Client management guide"
+      url: "https://docs.example.com/client-management"
+    relatedIssues: ["#1234"]
+    sourceRelease: "1.2.3"
+    lastConfirmedDate: "2026-11-03"
+    provenance: "release_signal"

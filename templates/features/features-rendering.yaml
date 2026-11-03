@@ -1,0 +1,52 @@
+renderingRules:
+  output: "features.md"
+  source: "features-schema.yaml"
+sections:
+  header:
+    template: |
+      ---
+      title: "{metadata.productName} Features"
+      description: "Product capabilities for {join(metadata.targetUsers, ', ')}"
+      ---
+
+      # Features
+
+      ## Overview
+
+      {overview.narrative}
+  groupedFeatures:
+    template: |
+      {for group in featureGroups}
+      ## {group.name}
+
+      {group.description}
+
+      {renderFeatures(features where group == group.name)}
+      {/for}
+  recentlyAdded:
+    template: |
+      {if features where group is empty}
+      ## Recently Added Features
+
+      {renderFeatures(features where group is empty)}
+      {/if}
+  feature:
+    template: |
+      ### {feature.name}
+
+      {feature.description}
+
+      {if feature.useCase}
+      **Use case:** {feature.useCase}
+      {/if}
+
+      {renderCapabilities(feature.keyCapabilities)}
+
+      {if feature.documentation.url}
+      **Documentation:** [{feature.documentation.title or "Learn more"}]({feature.documentation.url})
+      {/if}
+rules:
+  - "Render featureGroups in declared order."
+  - "Render ungrouped features in Recently Added Features; never infer a group from technical scope."
+  - "Render each capability as `- **Name**: benefit` when the source provides that structure; otherwise render it as a bullet."
+  - "Omit empty optional fields and sections."

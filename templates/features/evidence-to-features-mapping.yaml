@@ -1,0 +1,38 @@
+version: "1.0.0"
+last_updated: "2026-11-03"
+description: "Map canonical release evidence into the incremental features catalog."
+
+release_signal_mapping:
+  filtering:
+    change_type: "feature"
+    shipped_status: true
+    confidence_threshold: 85
+  matching:
+    primary: "item.item_id -> features[*].id"
+    fallback: "case-insensitive item.normalized_for_release_notes.feature_name -> features[*].name"
+    no_match: "append an ungrouped feature; do not invent a user-journey group"
+  fields:
+    id: "item.item_id"
+    name: "item.normalized_for_release_notes.feature_name"
+    description: "item.normalized_for_release_notes.feature_description"
+    useCase: "item.normalized_for_release_notes.feature_use_case"
+    keyCapabilities: "item.normalized_for_release_notes.feature_key_capabilities"
+    documentation.url: "item.normalized_for_release_notes.feature_documentation_link"
+    relatedIssues: "item.normalized_for_release_notes.feature_related_issues"
+    sourceRelease: "release.version"
+    lastConfirmedDate: "release.release_date"
+    provenance: "release_signal"
+  preservation:
+    - "Retain an existing feature's group."
+    - "Do not overwrite existing non-empty operator-refined description, useCase, or keyCapabilities."
+    - "Retain all features not represented in the current release evidence."
+
+bootstrap_mapping:
+  source: "existing product features page plus manual input"
+  target: "metadata, overview, featureGroups, and features"
+  rule: "Set provenance to bootstrap_ingestion; do not require a sourceRelease."
+
+validation_before_write:
+  - "Exclude items that are not shipped or score below 85; place them in unresolved review output."
+  - "Reject placeholder text and duplicate id or name values."
+  - "Validate features.yaml against features-schema.yaml before rendering."

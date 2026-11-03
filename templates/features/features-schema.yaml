@@ -1,0 +1,64 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://github.com/intuiract/intuiract/templates/features/schema/v1"
+title: "Product Features"
+description: "Structured, incremental source for a product feature catalog"
+type: "object"
+required: [metadata, overview, features]
+properties:
+  metadata:
+    type: object
+    required: [productName, targetUsers]
+    properties:
+      productName: { type: string, minLength: 1, maxLength: 100 }
+      targetUsers:
+        type: array
+        minItems: 1
+        items: { type: string }
+      lastUpdated: { type: string, format: date, pattern: "^\\d{4}-\\d{2}-\\d{2}$" }
+      lastUpdateSource:
+        type: string
+        enum: [bootstrap_ingestion, release_signal, manual_edit]
+  overview:
+    type: object
+    required: [narrative]
+    properties:
+      narrative: { type: string, minLength: 50, maxLength: 800 }
+  featureGroups:
+    type: array
+    description: "Optional operator-defined user-journey or stakeholder group order."
+    items:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 3, maxLength: 100 }
+        description: { type: string, maxLength: 300 }
+  features:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required: [id, name, description, keyCapabilities]
+      properties:
+        id: { type: string, pattern: "^REL-\\d+$", description: "Stable release-evidence item ID" }
+        name: { type: string, minLength: 5, maxLength: 100 }
+        description: { type: string, minLength: 20, maxLength: 300 }
+        group: { type: string, description: "Optional matching featureGroups name; ungrouped features render as Recently Added Features." }
+        useCase: { type: string, minLength: 10, maxLength: 250 }
+        keyCapabilities:
+          type: array
+          minItems: 1
+          maxItems: 8
+          items: { type: string, minLength: 5, maxLength: 250 }
+        documentation:
+          type: object
+          properties:
+            title: { type: string }
+            url: { type: string, format: uri }
+        relatedIssues:
+          type: array
+          items: { type: string }
+        sourceRelease: { type: string }
+        lastConfirmedDate: { type: string, format: date, pattern: "^\\d{4}-\\d{2}-\\d{2}$" }
+        provenance:
+          type: string
+          enum: [bootstrap_ingestion, release_signal, manual_edit]

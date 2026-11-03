@@ -1,0 +1,44 @@
+id: "features"
+name: "Features"
+status: "active"
+last_updated: "2026-11-03"
+description: >-
+  Public manifest for an incremental product feature catalog. Bootstrap from an
+  existing features page once; subsequent release-signal runs upsert shipped,
+  high-confidence features without replacing manually organized content.
+
+ownership:
+  maintained_by: "Documentation Team"
+  repository_scope: "intuiract standards repository"
+
+entrypoints:
+  schema: "templates/features/features-schema.yaml"
+  rendering: "templates/features/features-rendering.yaml"
+  quick_reference: "templates/features/features-quick-reference.md"
+  overview: "templates/features/readme.md"
+  skill: "skills/features/SKILL.md"
+  consumer_skill: "skills/features/consumer-features.skill.md"
+  human_rules: "rules/features/features-rule.yaml"
+  mapping: "templates/features/evidence-to-features-mapping.yaml"
+  release_evidence_contract: "docs/course-correction/release-evidence-contract-v1.md"
+  release_evidence_fields: "standards/release-evidence-fields.yaml"
+  confidence_rule: "rules/release-evidence-confidence-rule.yaml"
+
+upstream_dependency:
+  content_type: "release-notes"
+  manifest: "standards/content-types/release-notes.yaml"
+  note: "Resolve release-evidence.yaml through the release-notes manifest; do not hardcode its location."
+
+examples:
+  minimal: "templates/features/examples/minimal-features.yaml"
+  comprehensive: "templates/features/examples/comprehensive-features.yaml"
+
+consumer_usage:
+  workflow:
+    - "Fetch this manifest and resolve all entrypoints from it."
+    - "Bootstrap features.yaml from the existing product features page once."
+    - "For later releases, upsert only qualifying items from release-evidence.yaml."
+    - "Validate features.yaml before rendering features.md."
+  notes:
+    - "release-evidence.yaml is the canonical upstream evidence; rendered release notes are not an input."
+    - "Manual grouping and operator-refined prose are retained during release-signal updates."

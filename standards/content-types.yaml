@@ -1,5 +1,5 @@
 version: "0.1.0"
-last_updated: "2026-07-10"
+last_updated: "2026-11-03"
 description: >-
   Central registry of content types that can be consumed from this
   repository by local agents, reusable skills, or external repositories.
@@ -69,3 +69,28 @@ content_types:
         Until version tags are introduced, consumer repositories should fetch
         the manifest and source files from a pinned branch or commit SHA to
         reduce drift.
+
+  features:
+    name: "Features"
+    status: "active"
+    visibility: "public"
+    description: >-
+      An incremental, product-level feature catalog bootstrapped from an existing
+      page and updated from high-confidence shipped release evidence.
+    manifest: "standards/content-types/features.yaml"
+    templates_root: "templates/features"
+    skill: "skills/features/SKILL.md"
+    consumer_skill: "skills/features/consumer-features.skill.md"
+    source_files:
+      schema: "templates/features/features-schema.yaml"
+      rendering: "templates/features/features-rendering.yaml"
+      quick_reference: "templates/features/features-quick-reference.md"
+      overview: "templates/features/readme.md"
+      examples:
+        - "templates/features/examples/minimal-features.yaml"
+        - "templates/features/examples/comprehensive-features.yaml"
+    intended_consumers:
+      - "Workspace-local agent skills"
+      - "Other repositories using raw GitHub file URLs"
+      - "Validation and rendering pipelines"
+      - "Release-evidence producers"

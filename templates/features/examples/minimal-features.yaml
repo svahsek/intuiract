@@ -1,0 +1,14 @@
+metadata:
+  productName: "Example Platform"
+  targetUsers: ["Developers"]
+  lastUpdated: "2026-11-03"
+  lastUpdateSource: "manual_edit"
+overview:
+  narrative: "Example Platform helps developers manage integrations through a focused set of documented capabilities."
+features:
+  - id: "REL-001"
+    name: "Self-Service Client Management"
+    description: "Developers can create and manage API clients without requesting manual provisioning."
+    keyCapabilities:
+      - "Create clients with scoped credentials"
+    provenance: "manual_edit"
