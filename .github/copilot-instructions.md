@@ -56,6 +56,12 @@ and `skills/`) in manifests. Use `.github/` only for an asset that really
 exists in this repository; consumer examples should use
 `consumer-repo/.github/...`.
 
+Consumer repositories resolve standards remotely by default from a pinned Intuiract commit SHA
+or immutable release tag. Downloads belong only in the agent's ephemeral session workspace;
+do not cache schemas, rules, renderers, or skills in the consumer repository. `vendored` mode
+is an explicit offline exception and must be recorded with source file hashes in validation
+output.
+
 ## Evidence Pipelines
 
 `release-notes` and `overview` are active content types. Their skills are

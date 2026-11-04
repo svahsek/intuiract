@@ -1,7 +1,7 @@
 id: "features"
 name: "Features"
 status: "active"
-last_updated: "2026-11-03"
+last_updated: "2026-11-04"
 description: >-
   Public manifest for an incremental product feature catalog. Bootstrap from an
   existing features page once; subsequent release-signal runs upsert shipped,
@@ -10,6 +10,14 @@ description: >-
 ownership:
   maintained_by: "Documentation Team"
   repository_scope: "intuiract standards repository"
+
+distribution:
+  standards_mode: "remote"
+  allowed_modes: ["remote", "vendored"]
+  pinned_revision_required: true
+  ephemeral_downloads_only: true
+  validation_report:
+    required: ["standards_mode", "manifest_url", "resolved_commit_sha", "entrypoint_hashes"]
 
 entrypoints:
   schema: "templates/features/features-schema.yaml"

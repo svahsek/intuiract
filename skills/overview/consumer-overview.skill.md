@@ -52,6 +52,11 @@ core_functionality: ""                     # one sentence — used only on boots
 output_dir: "docs/overview/"
 overview_yaml_filename: ""                 # blank = "{product_name_slug}-overview.yaml"
 
+# ─── STANDARDS DISTRIBUTION (set once) ─────────────────────────────────────
+standards_mode: "remote"                  # remote | vendored; remote is required by default
+standards_revision: ""                    # required: Intuiract commit SHA or immutable release tag
+standards_vendor_root: ""                 # required only when standards_mode is vendored
+
 # ─── BOOTSTRAP SOURCES (used only when overview.yaml doesn't exist yet, or force_full_refresh) ─
 existing_overview_page_path: ""            # e.g. "docs/product-overview.md" — blank if none exists
 features_page_path: ""                     # e.g. "docs/features.md"
@@ -111,10 +116,11 @@ Fetch the manifest first. Resolve all other URLs from it — never hardcode file
 
 ```
 Manifest URL:
-https://raw.githubusercontent.com/svahsek/intuiract/main/standards/content-types/overview.yaml
+https://raw.githubusercontent.com/svahsek/intuiract/{standards_revision}/standards/content-types/overview.yaml
 ```
 
-> For stability in CI/CD, pin to a commit SHA instead of `main`.
+`standards_revision` is required in `remote` mode and must be a commit SHA or immutable release
+tag. Resolve a tag to its commit SHA before loading entrypoints.
 
 | Entrypoint key | What to do with it |
 |---|---|
@@ -130,21 +136,20 @@ https://raw.githubusercontent.com/svahsek/intuiract/main/standards/content-types
 
 **Also resolve, only in release-signal mode**: `standards/content-types/release-notes.yaml`
 (this is the `upstream_dependency` entry in the overview manifest) — resolve its `entrypoints`
-the same way, don't hardcode `release-notes.yaml`'s file paths here either.
+from the same pinned standards revision, don't hardcode `release-notes.yaml`'s file paths here
+either.
 
 **Always pull YAML/structured standards files with `curl`/raw content, never `WebFetch`** —
 `WebFetch` runs content through a summarizing model and returns paraphrase instead of exact YAML.
 
-**Cache on first fetch.** Write all resolved entrypoints into `.github/standards/` in this repo.
-On every subsequent run, check that cache before any network call.
+In `remote` mode, download the manifest and resolved entrypoints only to the agent's ephemeral
+session workspace. Never write standards files into the consumer repository. If Intuiract or the
+pinned revision is unavailable, stop before bootstrap or patching; do not skip validation or use
+a local fallback. `vendored` mode is an explicit offline exception: load only from
+`standards_vendor_root`, record that mode and every file hash, and never silently switch modes.
 
-**Fallback if manifest URL is unreachable:**
-```
-WARNING: Central manifest URL unreachable.
-Falling back to locally cached versions if present in .github/standards/.
-If no local cache exists, validation will be skipped and a WARNING will be added
-to the output noting that rules were not applied.
-```
+Every validation report must record `standards_mode`, the manifest URL, resolved commit SHA, and
+SHA-256 hashes for each loaded entrypoint before rule results.
 
 ---
 
@@ -293,6 +298,8 @@ metadata:
 
 Run all deterministic checks from `human_rules` (loaded in Step 1), in order:
 
+Include the standards provenance captured in Step 1 before rule results in the validation report.
+
 **1. Structure rules (STR-*) — stop if ERROR**
 STR-001 required sections present · STR-002 product name consistent · STR-003 date format
 
@@ -330,7 +337,7 @@ Save to `{inputs.output_dir}` (default: `docs/overview/`).
 | Overview evidence | `{product}-overview-evidence.yaml` | Ephemeral — normalized, reconciled, scored (not required to be committed) |
 | YAML source | `{product}-overview.yaml` | The long-lived source of truth — commit this |
 | Markdown output | `overview.md` | Publishable overview page |
-| Validation report | `{product}-overview-validation-report.txt` | Warnings and rule check results |
+| Validation report | `{product}-overview-validation-report.txt` | Standards provenance, warnings, and rule check results |
 
 If validation produced ERRORs, output only the evidence file, the annotated YAML, and the
 validation report — do not create the `.md` file until all ERRORs are resolved.
@@ -374,7 +381,8 @@ independently, guarantees the release-evidence file this skill needs already exi
 
 | Failure | Behaviour |
 |---|---|
-| Manifest URL unreachable | Use local `.github/standards/` cache if present; log WARNING; skip validation if no cache |
+| Remote manifest or pinned revision unreachable | Stop with ERROR; do not bootstrap, patch, or validate against unverified standards |
+| Vendored standards root unavailable | Stop with ERROR; select `remote` mode or provide the configured vendor root |
 | Bootstrap mode, no source files resolvable | Stop with ERROR: nothing to ingest |
 | Release-signal mode, no evidence file found | Stop with ERROR: nothing to patch against — do not fall back to bootstrap |
 | Duplicate key detected in Step 0a block | Stop at Step 0 and report the duplicated key |

@@ -22,6 +22,9 @@ argument-hint: 'No external input file. Edit the Release Configuration block in 
 - Manually: run in VS Code Copilot chat to draft release notes before a release.
 - To validate an existing release YAML payload before rendering.
 
+Consumer repositories keep a small local skill only so Copilot can discover the release
+configuration. It must reference a pinned Intuiract revision and must not copy standards assets.
+
 ## Extraction Philosophy (read this before Step 3)
 
 Naively mining every commit/PR, classifying it, and only *then* discarding most of it at
@@ -79,6 +82,11 @@ output_dir: "docs/releases/"
 target_audience:
   - "Developers"
   - "Implementers"
+
+# ─── STANDARDS DISTRIBUTION (set once) ─────────────────────────────────────
+standards_mode: "remote"                  # remote | vendored; remote is required by default
+standards_revision: ""                    # required: Intuiract commit SHA or immutable release tag
+standards_vendor_root: ""                 # required only when standards_mode is vendored
 
 # ─── EVIDENCE SOURCE (per-release scope selectors — feeds Step 3a) ────────
 evidence_source:
@@ -174,10 +182,11 @@ Fetch the manifest first. Resolve all other URLs from it — never hardcode file
 
 ```
 Manifest URL:
-https://raw.githubusercontent.com/svahsek/intuiract/main/standards/content-types/release-notes.yaml
+https://raw.githubusercontent.com/svahsek/intuiract/{standards_revision}/standards/content-types/release-notes.yaml
 ```
 
-> For stability in CI/CD, pin to a commit SHA instead of `main`.
+`standards_revision` is required in `remote` mode and must be a commit SHA or immutable release
+tag. Resolve a tag to its commit SHA before loading entrypoints.
 
 | Entrypoint key | What to do with it |
 |---|---|
@@ -201,18 +210,21 @@ inventing a URL.
 `WebFetch` runs content through a summarizing model and returns paraphrase instead of exact YAML.
 Reserve `WebFetch` for genuinely prose content where a summary is acceptable.
 
-**Cache on first fetch.** Write all resolved entrypoints — `schema.yaml`, `rendering.yaml`,
-`human-rules.yaml`, `classification-rules.yaml`, `source-precedence.yaml`,
-`release-evidence-fields.yaml`, `release-evidence-confidence-rule.yaml`,
-`evidence-to-release-notes-mapping.yaml` — into `.github/standards/` in this repo. On every
-subsequent run, check that cache before any network call — don't re-fetch from network every time.
+In `remote` mode, download the manifest and resolved entrypoints only to the agent's ephemeral
+session workspace. Never write standards files into the consumer repository. If Intuiract or the
+pinned revision is unavailable, stop before extraction; do not skip validation or use a local
+fallback. `vendored` mode is an explicit offline exception: load only from
+`standards_vendor_root`, record that mode and every file hash, and never silently switch modes.
 
-**Fallback if manifest URL is unreachable:**
-```
-WARNING: Central manifest URL unreachable.
-Falling back to locally cached versions if present in .github/standards/.
-If no local cache exists, validation will be skipped and a WARNING will be added
-to the output noting that rules were not applied.
+Record this provenance in every validation report:
+
+```yaml
+standards_provenance:
+  standards_mode: remote
+  manifest_url: "https://raw.githubusercontent.com/svahsek/intuiract/{standards_revision}/standards/content-types/release-notes.yaml"
+  resolved_commit_sha: "{sha}"
+  entrypoint_hashes:
+    schema: "sha256:{hash}"
 ```
 
 ---
@@ -222,11 +234,11 @@ to the output noting that rules were not applied.
 Load in this order and deep-merge:
 
 ```
-1. Central baseline (from manifest or direct URL):
-   https://raw.githubusercontent.com/svahsek/intuiract/main/standards/classification-rules.yaml
+1. Central baseline (the `classification_rules` entrypoint resolved from the manifest):
+   load from the same pinned revision as every other standard.
 
 2. Consumer overrides (local, product-specific):
-   .github/standards/classification-overrides.yaml
+   .github/release-notes-classification-overrides.yaml
    → If file does not exist, use central baseline only
 ```
 
@@ -469,6 +481,9 @@ content:
 
 Run all deterministic checks from the human_rules file loaded in Step 1, in order:
 
+The validation report must include the `standards_provenance` record from Step 1 before rule
+results so the output can be reproduced against the exact standards revision.
+
 **1. Structure rules (STR-*) — stop if ERROR**
 STR-001 required sections present · STR-002 version pattern · STR-003 date format
 
@@ -504,7 +519,7 @@ Save to `{inputs.output_dir}` (default: `docs/releases/`).
 | Canonical evidence | `{version}-release-evidence.yaml` | Normalized, reconciled, scored |
 | YAML source | `{version}-release-notes.yaml` | Source of truth for automation |
 | Markdown output | `{version}-release-notes.md` | Publishable release notes |
-| Validation report | `{version}-validation-report.txt` | Warnings and rule check results |
+| Validation report | `{version}-validation-report.txt` | Standards provenance, warnings, and rule check results |
 
 If validation produced ERRORs, output only the evidence file, the annotated YAML, and the
 validation report — do not create the `.md` file until all ERRORs are resolved.
@@ -568,8 +583,8 @@ block as part of adapting this file for the repo, and don't change per run.
 
 | Failure | Behaviour |
 |---|---|
-| Manifest URL unreachable | Use local `.github/standards/` cache if present; log WARNING; skip validation if no cache |
-| Classification rules URL unreachable | Use local `classification-overrides.yaml` only; log WARNING |
+| Remote manifest or pinned revision unreachable | Stop with ERROR; do not extract, generate, or validate against unverified standards |
+| Vendored standards root unavailable | Stop with ERROR; select `remote` mode or provide the configured vendor root |
 | `git log` returns zero commits | Stop with ERROR: "No commits found between {base_tag} and {target_ref}. Verify refs exist." |
 | `.github/release.yml` absent, or present but no labeled PRs in range | Log once, no WARNING; fall through to `classification-rules.yaml` baseline (Step 2) — this is expected steady state, not a degraded run |
 | PO notes draft absent at conventional/configured path | Log once, no WARNING; agent drafts narrative fields from evidence (Step 6) exactly as if this source never existed as a concept |

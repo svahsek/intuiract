@@ -1,7 +1,7 @@
 id: "overview"
 name: "Overview"
 status: "active"
-last_updated: "2026-07-30"
+last_updated: "2026-11-04"
 description: >-
   Public manifest for the overview content type. Consumer repositories can fetch this
   file first, then resolve the schema, rendering rules, examples, and agent guidance from
@@ -12,6 +12,14 @@ description: >-
 ownership:
   maintained_by: "Documentation Team"
   repository_scope: "intuiract standards repository"
+
+distribution:
+  standards_mode: "remote"
+  allowed_modes: ["remote", "vendored"]
+  pinned_revision_required: true
+  ephemeral_downloads_only: true
+  validation_report:
+    required: ["standards_mode", "manifest_url", "resolved_commit_sha", "entrypoint_hashes"]
 
 entrypoints:
   schema: "templates/overview/overview-schema.yaml"
@@ -51,8 +59,7 @@ consumer_usage:
     - "Validate the YAML before rendering Markdown output."
     - "Optionally use the skill file as the orchestration contract for an agent."
   remote_reference_strategy:
-    recommended_now: "Use direct raw URLs to these files from main or a pinned commit SHA."
-    recommended_later: "Pin to a release tag such as v1 once multiple content types stabilize."
+    recommendation: "Use a pinned commit SHA or immutable release tag; never use a moving branch."
   notes:
     - "The schema is the source of truth for required fields and validation rules."
     - "The rendering file defines deterministic YAML-to-Markdown behavior."

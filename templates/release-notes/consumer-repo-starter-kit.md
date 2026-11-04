@@ -12,7 +12,7 @@ Configuration is inline: the consumer skill embeds per-repo and per-release sett
 
 ### Required
 
-1. Local consumer skill file, adapted for this repo — copy of
+1. Local consumer skill file, adapted for this repo — a small configuration wrapper for
    [`consumer-release-notes.skill.md`](../../skills/release-notes/consumer-release-notes.skill.md)
 2. Output folder for generated artifacts
 
@@ -25,8 +25,8 @@ Configuration is inline: the consumer skill embeds per-repo and per-release sett
 
 ### Optional
 
-1. `classification-overrides.yaml` (product-specific categorization rules)
-2. Local cache of standards files for offline/air-gapped usage (`.github/standards/`)
+1. `release-notes-classification-overrides.yaml` (product-specific categorization rules)
+2. An explicitly configured vendored standards root for offline/air-gapped use
 3. A PO-written release notes draft and/or a `.github/release.yml` taxonomy — both are
    conditional accelerants the skill probes for automatically; neither needs to exist for the
    skill to produce full-quality output. See the skill's "Extraction Philosophy" section.
@@ -38,9 +38,9 @@ Configuration is inline: the consumer skill embeds per-repo and per-release sett
 ```text
 consumer-repo/.github/
   skills/
-    consumer-release-notes.skill.md         # copied and adapted — configuration lives inside it
-  standards/
-    classification-overrides.yaml           # optional
+    release-notes/
+      SKILL.md                              # local configuration wrapper; standards stay remote
+  release-notes-classification-overrides.yaml # optional product taxonomy
 
 docs/
   releases/
@@ -59,14 +59,15 @@ skill file itself.
 
 ## Setup Steps
 
-1. Copy [`consumer-release-notes.skill.md`](../../skills/release-notes/consumer-release-notes.skill.md)
-   into `consumer-repo/.github/skills/`.
+1. Create `consumer-repo/.github/skills/release-notes/SKILL.md` from
+   [`consumer-release-notes.skill.md`](../../skills/release-notes/consumer-release-notes.skill.md).
 2. Open the copy and fill in the **PER-REPO** section of the Step 0a Release Configuration
    block once (`product_name`, `product_name_abbr`, `jira_project_key`, `output_dir`,
    `target_audience`, `documentation` links, `compatible_modules`, `repositories_released`).
    This is a one-time step per repo, not per release.
-3. Resolve manifest/schema/rendering URLs from Step 1 of the skill (points at this central
-   repo) — pin to a commit SHA in CI for stability.
+3. Set `standards_mode: remote` and a pinned Intuiract commit SHA or immutable release tag.
+   The agent downloads the manifest and entrypoints only into its ephemeral session workspace;
+   it does not copy standards into the consumer repository.
 
 ---
 
@@ -90,7 +91,7 @@ Those are standards-level assets and should remain centralized.
 
 ---
 
-## Central Standards You Fetch (Read-Only in Consumer Repo)
+## Central Standards You Fetch (Read-Only, Ephemeral)
 
 1. `standards/content-types/release-notes.yaml` (manifest)
 2. `standards/source-precedence.yaml`
@@ -101,7 +102,10 @@ Those are standards-level assets and should remain centralized.
 7. `templates/release-notes/release-notes-rendering.yaml`
 8. `rules/release-notes/release-notes-rule.yaml`
 
-Pin to commit SHA in CI for stability.
+Resolve every file from the manifest at the configured pinned revision. Record the manifest URL,
+resolved commit SHA, and SHA-256 hash of every entrypoint in the validation report. If the
+remote revision is unavailable, stop; do not skip validation. Use local files only when
+`standards_mode: vendored` was deliberately configured for an offline exception.
 
 ---
 
@@ -137,10 +141,11 @@ No partial release-notes publication.
 
 ## Quick Adoption Checklist
 
-- [ ] Added `consumer-repo/.github/skills/consumer-release-notes.skill.md` to consumer repo
+- [ ] Added `consumer-repo/.github/skills/release-notes/SKILL.md` to consumer repo
 - [ ] Filled the PER-REPO section of its Step 0a block once
+- [ ] Set `standards_mode: remote` and an immutable Intuiract revision
 - [ ] Confirmed output folder `docs/releases/`
-- [ ] Confirmed standards manifest URL and pinned SHA
+- [ ] Confirmed validation reports record standards provenance and hashes
 - [ ] Dry-run completed on one past release
 - [ ] Validation report reviewed and accepted
 - [ ] CI env var mapping confirmed, if using CI mode
