@@ -80,12 +80,14 @@ content_types:
     manifest: "standards/content-types/features.yaml"
     templates_root: "templates/features"
     skill: "skills/features/SKILL.md"
+    review_and_remediate_skill: "skills/features/review-and-remediate.skill.md"
     consumer_skill: "skills/features/consumer-features.skill.md"
     source_files:
       schema: "templates/features/features-schema.yaml"
       rendering: "templates/features/features-rendering.yaml"
       quick_reference: "templates/features/features-quick-reference.md"
       overview: "templates/features/readme.md"
+      writing_guidelines: "templates/features/features-page.guidelines.md"
       examples:
         - "templates/features/examples/minimal-features.yaml"
         - "templates/features/examples/comprehensive-features.yaml"

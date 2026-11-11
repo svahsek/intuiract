@@ -1,7 +1,7 @@
 id: "features"
 name: "Features"
 status: "active"
-last_updated: "2026-11-04"
+last_updated: "2026-11-11"
 description: >-
   Public manifest for an incremental product feature catalog. Bootstrap from an
   existing features page once; subsequent release-signal runs upsert shipped,
@@ -24,7 +24,9 @@ entrypoints:
   rendering: "templates/features/features-rendering.yaml"
   quick_reference: "templates/features/features-quick-reference.md"
   overview: "templates/features/readme.md"
+  writing_guidelines: "templates/features/features-page.guidelines.md"
   skill: "skills/features/SKILL.md"
+  review_and_remediate_skill: "skills/features/review-and-remediate.skill.md"
   consumer_skill: "skills/features/consumer-features.skill.md"
   human_rules: "rules/features/features-rule.yaml"
   mapping: "templates/features/evidence-to-features-mapping.yaml"
