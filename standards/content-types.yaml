@@ -96,3 +96,30 @@ content_types:
       - "Other repositories using raw GitHub file URLs"
       - "Validation and rendering pipelines"
       - "Release-evidence producers"
+
+  user-guide:
+    name: "User Guide"
+    status: "draft"
+    visibility: "public"
+    description: >-
+      Markdown-first standards and remediation workflow for improving existing
+      user-guide pages without changing unverified product facts.
+    manifest: "standards/content-types/user-guide.yaml"
+    templates_root: "templates/user-guide"
+    skill: "skills/user-guide/SKILL.md"
+    review_and_remediate_skill: "skills/user-guide/review-and-remediate.skill.md"
+    source_files:
+      content_model: "templates/user-guide/user-guide-content-model.yaml"
+      rendering: "templates/user-guide/user-guide-rendering.yaml"
+      quick_reference: "templates/user-guide/user-guide-quick-reference.md"
+      overview: "templates/user-guide/readme.md"
+      writing_guidelines: "templates/user-guide/user-guide-writing-guidelines.md"
+      audit_report_schema: "templates/user-guide/audit-report-schema.yaml"
+      examples:
+        - "templates/user-guide/examples/minimal-user-guide.md"
+        - "templates/user-guide/examples/comprehensive-user-guide.md"
+      fixtures: "templates/user-guide/examples/fixtures/"
+    intended_consumers:
+      - "Existing Markdown user-guide pages"
+      - "Consumer-repository review skills"
+      - "Documentation quality workflows"

@@ -1,0 +1,5 @@
+target_page: "flawed-connect-account-draft.md"
+expected_rule_ids: [STR-002, TPC-001, TPC-005, PRO-001, PRO-002, PRO-003, SEC-001, SEC-002]
+notes:
+  - "The 45-second claim must remain blocked unless an authoritative source is supplied."
+  - "The task has steps but no goal or expected result."

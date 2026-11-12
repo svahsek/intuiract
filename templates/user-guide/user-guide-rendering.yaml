@@ -1,0 +1,18 @@
+rendering_rules:
+  format: "Markdown"
+  purpose: "Render or preserve clear Markdown structure for User Guide content."
+  headings:
+    title: "Use one H1 for the page title."
+    sections: "Use H2 for major user purposes and H3 for contained topics or tasks."
+    hierarchy: "Do not skip heading levels solely for visual styling."
+  task_sections:
+    goal: "State the outcome before procedural steps."
+    prerequisites: "Place prerequisites before the ordered procedure."
+    steps: "Use a numbered list for dependent actions."
+    expected_result: "State how the user can confirm completion."
+  prose:
+    style: "Use direct, active, user-focused language."
+    links: "Use descriptive link text that identifies the destination."
+    code: "Keep commands, values, and UI labels distinct from prose."
+  notes:
+    rule: "Use notes, cautions, and warnings only when the user needs a distinct action or decision."

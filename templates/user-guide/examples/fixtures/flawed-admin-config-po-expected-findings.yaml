@@ -1,0 +1,2 @@
+target_page: "flawed-admin-config-po-draft.md"
+expected_rule_ids: [TPC-003, TPC-004, PRO-004, SEC-001]

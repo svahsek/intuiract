@@ -1,0 +1,3 @@
+target_page: "mixed-topic-no-transitions.md"
+expected_rule_ids: [CLS-001, TPC-005]
+expected_low_confidence_units: 1

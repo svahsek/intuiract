@@ -1,0 +1,108 @@
+rules:
+  structure:
+    _meta: {prefix: STR, description: "Deterministic Markdown structure"}
+    STR-001:
+      name: "One Page Title"
+      severity: error
+      check_type: deterministic
+      rule: "Exactly one non-empty H1 title."
+      remediation_class: review_required
+      exceptions: []
+      guideline_ref: "UG-STR-001"
+    STR-002:
+      name: "Logical Heading Hierarchy"
+      severity: warning
+      check_type: deterministic
+      rule: "Do not skip heading levels unless the target repository explicitly permits it."
+      remediation_class: review_required
+      exceptions: ["Intentional site-generator hierarchy documented by the target repository."]
+      guideline_ref: "UG-STR-002"
+    STR-003:
+      name: "Reader Orientation"
+      severity: warning
+      check_type: heuristic
+      rule: "Opening content should establish audience, purpose, or goal."
+      remediation_class: review_required
+      exceptions: ["Reference-only pages whose title unambiguously identifies the lookup target."]
+      guideline_ref: "UG-STR-003"
+
+  classification:
+    _meta: {prefix: CLS, description: "Topic-purpose classification confidence"}
+    CLS-001:
+      name: "Ambiguous Topic Purpose"
+      severity: info
+      check_type: judgment
+      rule: "A low-confidence unit must list candidate types and skip topic-completeness scoring."
+      remediation_class: review_required
+      exceptions: []
+      guideline_ref: "UG-CLS-001"
+
+  topic_purpose:
+    _meta: {prefix: TPC, description: "Completeness by classified reader purpose"}
+    TPC-001:
+      name: "Task Completeness"
+      severity: warning
+      check_type: heuristic
+      applies_to: "task units with classification_confidence in [high, medium]"
+      requires: ["goal", "ordered actionable steps", "expected result"]
+      remediation_class: review_required
+      exceptions: ["A short inline task whose parent section supplies the goal and expected result."]
+      guideline_ref: "UG-TPC-001"
+      source_rationale: "DITA strict task; Diataxis how-to; TGDP how-to."
+    TPC-002:
+      name: "Tutorial Completeness"
+      severity: warning
+      check_type: heuristic
+      applies_to: "tutorial units with classification_confidence in [high, medium]"
+      requires: ["learning objective", "starting state", "guided steps", "verification checkpoint"]
+      remediation_class: review_required
+      exceptions: []
+      guideline_ref: "UG-TPC-002"
+      source_rationale: "Diataxis tutorial; TGDP tutorial."
+    TPC-003:
+      name: "Reference Precision"
+      severity: warning
+      check_type: judgment
+      applies_to: "reference units with classification_confidence in [high, medium]"
+      rule: "Use precise terms and structured facts; avoid procedural or persuasive filler."
+      remediation_class: review_required
+      exceptions: ["Short reference notes that are intentionally prose-only."]
+      guideline_ref: "UG-TPC-003"
+      source_rationale: "DITA reference; Diataxis reference."
+    TPC-004:
+      name: "Troubleshooting Recovery Path"
+      severity: warning
+      check_type: heuristic
+      applies_to: "troubleshooting units with classification_confidence in [high, medium]"
+      requires: ["symptom", "resolution", "next action or escalation"]
+      remediation_class: review_required
+      exceptions: []
+      guideline_ref: "UG-TPC-004"
+      source_rationale: "DITA troubleshooting; TGDP troubleshooting."
+    TPC-005:
+      name: "Clear Topic Transition"
+      severity: warning
+      check_type: judgment
+      rule: "Different topic-purpose clusters require a heading, transition, admonition, or distinct block."
+      remediation_class: review_required
+      exceptions: ["A one-sentence context immediately preceding a task."]
+      guideline_ref: "UG-TPC-005"
+
+  prose:
+    _meta: {prefix: PRO, description: "Readable, direct, and accessible prose"}
+    PRO-001: {name: "Direct Voice", severity: warning, check_type: heuristic, rule: "Prefer direct active voice.", remediation_class: review_required, exceptions: ["Passive voice is clearer when the actor is unknown or irrelevant."], guideline_ref: "UG-PRO-001", vale_style: "UserGuide/DirectVoice.yml"}
+    PRO-002: {name: "Specific Action Verbs", severity: warning, check_type: heuristic, rule: "Flag vague action verbs when a specific action is available from context.", remediation_class: review_required, exceptions: [], guideline_ref: "UG-PRO-002", vale_style: "UserGuide/VagueVerbs.yml"}
+    PRO-003: {name: "Descriptive Link Text", severity: warning, check_type: deterministic, pattern: "(?i)\\[(click here|here|this link|read more)\\]", remediation_class: review_required, exceptions: [], guideline_ref: "UG-PRO-003", vale_style: "UserGuide/LinkText.yml"}
+    PRO-004: {name: "Consistent Terminology", severity: warning, check_type: judgment, rule: "Do not silently rename the same concept in one page.", remediation_class: review_required, exceptions: ["A stated synonym or product rename."], guideline_ref: "UG-PRO-004"}
+    PRO-005: {name: "Dense Sentences", severity: info, check_type: heuristic, rule: "Flag sentences over 35 words with multiple actions or conditions.", remediation_class: review_required, exceptions: ["Necessary legal or protocol statements."], guideline_ref: "UG-PRO-005"}
+
+  safety:
+    _meta: {prefix: SEC, description: "Content that cannot be safely repaired by inference"}
+    SEC-001: {name: "No Placeholder Text", severity: error, check_type: deterministic, prohibited: ["TBD", "TODO", "FIXME", "WIP", "[UPDATE THIS]", "Coming Soon"], remediation_class: blocked_or_uncertain, exceptions: [], guideline_ref: "UG-SEC-001"}
+    SEC-002: {name: "No Unverified Product Change", severity: error, check_type: judgment, rule: "Do not alter product behavior, a metric, a limit, or a missing procedure without an authoritative source.", remediation_class: blocked_or_uncertain, exceptions: [], guideline_ref: "UG-SEC-002"}
+    SEC-003: {name: "No Internal-Only Content", severity: error, check_type: heuristic, prohibited: ["internal team names", "personal developer names", "internal ticket URLs without public context"], remediation_class: review_required, exceptions: [], guideline_ref: "UG-SEC-003"}
+
+  accessibility:
+    _meta: {prefix: ACC, description: "Readable and accessible Markdown"}
+    ACC-001: {name: "Distinct Code and UI Labels", severity: warning, check_type: deterministic, rule: "UI labels and literal values are distinct from prose.", remediation_class: review_required, exceptions: [], guideline_ref: "UG-ACC-001"}
+    ACC-002: {name: "Informational Image Alt Text", severity: warning, check_type: deterministic, rule: "Informational Markdown images have non-empty alt text.", remediation_class: review_required, exceptions: ["Decorative image explicitly marked as decorative."], guideline_ref: "UG-ACC-002"}

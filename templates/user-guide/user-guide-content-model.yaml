@@ -1,0 +1,68 @@
+version: "1.1.0"
+description: >-
+  Markdown-first classification model for User Guide remediation. It applies
+  DITA, Diataxis, and The Good Docs Project as editorial lenses, not formats.
+
+section_segmentation:
+  rule: >-
+    A section starts at an H2, or an H3 when it has no H2 parent, and ends before
+    the next heading at the same or higher level. Content before the first H2 is
+    the orientation unit and is never topic-scored.
+  mixed_cluster_rule: >-
+    When paragraph clusters within a section answer different classification
+    questions, classify each cluster separately. A heading, transitional sentence,
+    admonition, or visually distinct block is a clear transition.
+
+classification_compass:
+  acquisition:
+    action: "tutorial"
+    cognition: "concept"
+  application:
+    action: "task"
+    cognition: "reference"
+  note: "Troubleshooting is a recovery-oriented specialization of application/action."
+
+topic_types:
+  concept:
+    aliases: ["explanation"]
+    compass: {informs: "cognition", serves: "acquisition"}
+    required_signals: ["context or rationale", "scope or boundary"]
+    structural_signals: ["declarative prose", "why/because framing", "no dependent procedure"]
+    avoid: ["unexplained procedural steps"]
+    sources: ["DITA concept", "Diataxis explanation"]
+  task:
+    aliases: ["how-to"]
+    compass: {informs: "action", serves: "application"}
+    required_signals: ["goal", "ordered actionable steps", "expected result"]
+    structural_signals: ["imperative verbs", "numbered list", "confirmation after steps"]
+    avoid: ["multiple unrelated goals", "implicit prerequisites"]
+    sources: ["DITA strict task", "Diataxis how-to", "TGDP how-to"]
+  tutorial:
+    compass: {informs: "action", serves: "acquisition"}
+    required_signals: ["learning objective", "starting state", "guided steps", "checkpoint"]
+    structural_signals: ["learner framing", "safe setup", "you should now see"]
+    avoid: ["reference-only detail", "assumed learning prerequisites"]
+    sources: ["Diataxis tutorial", "TGDP tutorial"]
+  reference:
+    compass: {informs: "cognition", serves: "application"}
+    required_signals: ["precise terms", "constraints or structured facts"]
+    structural_signals: ["tables", "parameter lists", "definition lists"]
+    avoid: ["persuasive prose", "ambiguous instructions"]
+    sources: ["DITA reference", "Diataxis reference"]
+  troubleshooting:
+    compass: {informs: "action", serves: "application"}
+    required_signals: ["symptom", "resolution", "next action or escalation"]
+    structural_signals: ["error or symptom", "likely cause", "if/then recovery"]
+    avoid: ["unsupported diagnosis", "missing recovery path"]
+    sources: ["DITA troubleshooting", "TGDP troubleshooting"]
+
+classification_confidence:
+  high: "Compass answer is unambiguous and at least two structural signals are present."
+  medium: "Compass answer is clear but fewer than two structural signals are present."
+  low: "Compass answer is ambiguous or clusters conflict without a clear transition."
+  low_confidence_behavior: >-
+    Emit UGD-CLASSIFY-AMBIGUOUS and do not score the unit against topic-completeness
+    rules until an operator confirms its purpose.
+
+page_summary:
+  rule: "Report topic-type distribution as informational only; a mixed page is valid."

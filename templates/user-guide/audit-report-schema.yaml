@@ -1,0 +1,27 @@
+version: "1.0.0"
+title: "User Guide Remediation Report"
+required:
+  - target_page
+  - mode
+  - standards_provenance
+  - page_classification
+  - summary
+  - findings
+  - applied_changes
+  - deferred_findings
+  - unresolved
+properties:
+  target_page: {type: string}
+  mode: {type: string, enum: [audit, suggest, apply]}
+  standards_provenance:
+    required: [standards_mode, registry_url, manifest_url, resolved_commit_sha, entrypoint_hashes]
+  page_classification:
+    required: [units]
+  findings:
+    items:
+      required: [id, rule_id, severity, check_type, class, location, finding, evidence, requires_approval]
+      id_pattern: "^UGD-\\d{4}$"
+  unresolved:
+    rule: "Every blocked_or_uncertain finding ID appears here."
+  post_apply_verification:
+    required_for: [apply]

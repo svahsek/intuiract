@@ -54,7 +54,7 @@ Do not assume `standards/content-types/features.yaml` exists in the consumer rep
 In `remote` mode:
 
 1. Fetch the pinned registry:
-   `https://raw.githubusercontent.com/{intuiract_repository}/{standards_revision}/standards/content-types.yaml`.
+   `https://raw.githubusercontent.com/svahsek/intuiract/68f07ab50dd4fcfee614463a7ade473ff0300a7e/standards/content-types.yaml`.
 2. Read `content_types.features.manifest`.
 3. Fetch that manifest from the same pinned revision.
 4. Resolve and download its `schema`, `rendering`, `human_rules`, `quick_reference`,
@@ -170,3 +170,17 @@ suggestion into an edit.
 - Do not create a `features.yaml` file as part of page remediation.
 - Do not alter unrelated pages.
 - Do not apply a semantic rewrite solely because a general style guide prefers different wording.
+
+
+<!-- Guide 
+target_page: "docs/features.md" # actual repository-relative path
+mode: "audit"
+
+standards_mode: "remote"
+intuiract_repository: "svahsek/intuiract"
+standards_revision: "68f07ab50dd4fcfee614463a7ade473ff0300a7e"
+
+repository_style_guide: ""      # set if that repo has one
+report_path: "docs/reports/features-remediation-report.yaml"
+
+-->

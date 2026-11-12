@@ -1,0 +1,47 @@
+id: "user-guide"
+name: "User Guide"
+status: "draft"
+last_updated: "2026-11-11"
+description: >-
+  Markdown-first User Guide standards for auditing, suggesting, and safely
+  remediating existing documentation. Topic-purpose guidance informs review;
+  it does not require XML, guide maps, or generated YAML content.
+
+ownership:
+  maintained_by: "Documentation Team"
+  repository_scope: "intuiract standards repository"
+
+distribution:
+  standards_mode: "remote"
+  allowed_modes: ["remote", "vendored"]
+  pinned_revision_required: true
+  ephemeral_downloads_only: true
+  validation_report:
+    required: ["standards_mode", "manifest_url", "resolved_commit_sha", "entrypoint_hashes"]
+
+entrypoints:
+  content_model: "templates/user-guide/user-guide-content-model.yaml"
+  rendering: "templates/user-guide/user-guide-rendering.yaml"
+  quick_reference: "templates/user-guide/user-guide-quick-reference.md"
+  overview: "templates/user-guide/readme.md"
+  writing_guidelines: "templates/user-guide/user-guide-writing-guidelines.md"
+  audit_report_schema: "templates/user-guide/audit-report-schema.yaml"
+  human_rules: "rules/user-guide/user-guide-rule.yaml"
+  skill: "skills/user-guide/SKILL.md"
+  review_and_remediate_skill: "skills/user-guide/review-and-remediate.skill.md"
+
+examples:
+  minimal: "templates/user-guide/examples/minimal-user-guide.md"
+  comprehensive: "templates/user-guide/examples/comprehensive-user-guide.md"
+  fixtures: "templates/user-guide/examples/fixtures/"
+
+consumer_usage:
+  workflow:
+    - "Configure a target Markdown page, review mode, and pinned Intuiract revision."
+    - "Resolve this manifest and its standards remotely into the agent session workspace."
+    - "Audit the page, then suggest or apply approved editorial changes."
+    - "Write a report with findings and standards provenance."
+  notes:
+    - "The target page is the required content input; no release evidence or generated YAML is required."
+    - "The content model classifies section purpose for review. It does not impose a DITA or Diataxis file format."
+    - "Do not change product claims or missing facts without a supplied authoritative source."
